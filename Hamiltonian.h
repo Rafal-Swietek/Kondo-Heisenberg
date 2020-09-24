@@ -7,11 +7,11 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <math.h>
 #include <cmath>
 #include <algorithm>
 #include <complex>
 #include <armadillo>
+#include <cassert> // assert terminates program
 
 using namespace std;
 using namespace arma;
@@ -37,15 +37,12 @@ public:
     mat H;
     mat eigenvectors;
     vec eigenvalues;
+
 public:
 	HamiltonianKH(int L, double t, double U, double K, double J_H); //Constructor for total Hamiltonian
 	HamiltonianKH(int L, int num_of_electrons, double t, double U, double K, double J_H); //Constructor for subblock Hamiltonian
 	// num_of_electrons =0,...,2*L
 	~HamiltonianKH();
-
-	mat get_hamil();
-	vec get_energy();
-	cx_vec coeff;
 
 	void Hamiltonian();
 	void Diagonalization();
@@ -56,7 +53,7 @@ public:
 	// Tools
 		void generate_mapping_subblock();
 		void generate_mapping_total();
-        void mappingAddIfNeeded(int &bSz, int &fSz, int& N_e, int &j, int &idx);
+        void CreateMappingElem(int &bSz, int &fSz, int& N_e, int &j, int &idx);
         void setHamiltonianElem(int k, double value, std::vector<int> temp);
 	//-----------------------------
 
