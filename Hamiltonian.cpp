@@ -67,10 +67,15 @@ HamiltonianKH::HamiltonianKH(int L, double t, double U, double K, double J_H) {
 //----------------------------------------BUILD HAMILTONIAN-------------------------------------
 //----------------------------------------------------------------------------------------------
 
+void HamiltonianKH::setHamiltonianElem(int k, double value, std::vector<int> temp){
+    int idx = mapping[binary_to_int(temp)];
+    H(idx, k) += value;
+    H(k, idx) += value;
+}
+
 // Generating Hamiltonian
 void HamiltonianKH::Hamiltonian() {
-	int s_i, s_j; //i=j, j=j+1
-	int idx = 0; //indices equivalent to spin-filp due to kinetic term
+    int s_i, s_j; //i=j, j=j+1
 	bool PBC = 0; //allows periodic boundary conditions if =1
 	int next_j;
     for (int k = 0; k < N; k++){
@@ -95,9 +100,7 @@ void HamiltonianKH::Hamiltonian() {
             if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
                 temp[j] = base_vector[j] - 4; //spin filp
                 temp[next_j] = base_vector[next_j] + 4;
-                idx = mapping[binary_to_int(temp)];
-                H(idx, k) += K / 2.;
-                H(k, idx) += K / 2.;
+                setHamiltonianElem(k,K/2.,temp);
             }
             //---------------------
             // electron hopping
@@ -108,9 +111,7 @@ void HamiltonianKH::Hamiltonian() {
                 if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
                     temp[next_j] -= 1; // anihilate spin-up electron
                     temp[j] += 1; // create spin-up electron
-                    idx = mapping[binary_to_int(temp)];
-                    H(idx, k) += t;
-                    H(k, idx) += t;
+                    setHamiltonianElem(k,t,temp);
                 }
             //spin down
                 temp = base_vector;
@@ -119,18 +120,14 @@ void HamiltonianKH::Hamiltonian() {
                     if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
                         temp[next_j] -= 2; // anihilate spin-down electron
                         temp[j] += 2; // create spin-down electron
-                        idx = mapping[binary_to_int(temp)];
                         if (base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 0){
-                            H(idx, k) -= t;
-                            H(k, idx) -= t;
+                            setHamiltonianElem(k,-t,temp);
                         }
                         else if (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2){
-                            H(idx, k) -= t;
-                            H(k, idx) -= t;
+                            setHamiltonianElem(k,-t,temp);
                         }
                         else{
-                            H(idx, k) += t;
-                            H(k, idx) += t;
+                            setHamiltonianElem(k,+t,temp);
                         }
                     }
                 }
@@ -144,9 +141,7 @@ void HamiltonianKH::Hamiltonian() {
 				temp = base_vector;
 				if (base_vector[j] == 5) {// S_i^+ s_i^-
 					temp[j] = 2;
-					idx = mapping[binary_to_int(temp)];
-					H(idx, k) -= J_H;
-                    H(k, idx) -= J_H;
+                    setHamiltonianElem(k,-J_H,temp);
                 }
 				//Diagonal - z part
 				if (base_vector[j] == 1 || base_vector[j] == 6)
@@ -232,8 +227,6 @@ int binary_to_int(vector<int> vec) {
 //----------------------------------------------------------------------------------------------
 
 void HamiltonianKH::Diagonalization() {
-	this->eigenvalues = vec(N); //eigenvalues
-	this->eigenvectors = mat(N, N); //eigenvectors
 	try {
 		arma::eig_sym(eigenvalues, H);
 	}
@@ -311,7 +304,7 @@ void Main_DOS_U(int L, int N_e, double t) {
 		Object.Diagonalization();
 		Object.Density_of_states(N_e);
 
-		cout << "U = " << U << " done!" << endl;
+        out << "U = " << U << " done!" << endl;
 	}
-	cout << "\n DOS for various U calculated" << endl;
+    out << "\n DOS for various U calculated" << endl;
 }

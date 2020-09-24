@@ -57,6 +57,7 @@ public:
 		void generate_mapping_subblock();
 		void generate_mapping_total();
         void mappingAddIfNeeded(int &bSz, int &fSz, int& N_e, int &j, int &idx);
+        void setHamiltonianElem(int k, double value, std::vector<int> temp);
 	//-----------------------------
 
 };
