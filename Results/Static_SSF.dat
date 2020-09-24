@@ -1,0 +1,12 @@
+
+set title 'Static Structure Factor'
+set key top left
+set ylabel 'S(q)'
+set xlabel 'q/{/Symbol p}'
+ 
+set xrange[0:1]
+
+plot 'Static_SSF_n=1.00.txt' w lp ps 2 title 'n=2.00', 'Static_SSF_n=1.33.txt' w lp ps 2 title 'n=2.33', \
+'Static_SSF_n=1.50.txt' w lp ps 2 title 'n=2.50', 'Static_SSF_n=1.66.txt' w lp ps 2 title 'n=2.66', 'Static_SSF_n=2.00.txt' w lp ps 2 title 'n=3.00'
+
+set autoscale xy

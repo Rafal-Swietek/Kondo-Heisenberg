@@ -1,0 +1,1 @@
+/usr/bin/c++  -g  -rdynamic CMakeFiles/KondoHeisenberg.dir/main.cpp.o CMakeFiles/KondoHeisenberg.dir/Hamiltonian.cpp.o  -o KondoHeisenberg -larmadillo -std=c++17 
