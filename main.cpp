@@ -18,7 +18,7 @@ int main() {
 			Object.Hamiltonian();
 			Object.Diagonalization();
 			//Object.Density_of_states(N_e);
-            cout << "E = " << setprecision(8) << Object.get_energy()(0) << endl;
+            out << "E = " << Object.eigenvalues(0) << endl;
 
 	//------------------------------------------------------------
 

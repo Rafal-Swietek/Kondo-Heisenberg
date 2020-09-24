@@ -10,21 +10,14 @@ void myassert(std::string text){
 
 
 mutex my_mutex;
-//complex<double> i = 1i;
 #define im std::complex<double>(0.0,1.0)
 
-double pi = 3.141592653;
+double pi = M_PI;
 
-//Destructor
 HamiltonianKH::~HamiltonianKH() {
 	H.~Mat();
 	eigenvectors.~Mat();
-	/*H_Lanczos.~Mat();
-	Krylov_space.~Mat();
-	Lanczos_eigenVal.~vec();*/
-
 	eigenvalues.~vec();
-    //mapping.~vector();
 }
 //-----------------------
 
@@ -79,57 +72,59 @@ void HamiltonianKH::Hamiltonian() {
 	int idx = 0; //indices equivalent to spin-filp due to kinetic term
 	bool PBC = 0; //allows periodic boundary conditions if =1
 	int next_j;
-	for (int k = 0; k < N; k++) {
+    for (int k = 0; k < N; k++){
 		base_vector = int_to_binary(mapping_inv[k], L);
 		vector<int> temp(base_vector);
 		for (int j = 0; j <= L - 1; j++) {
 			if (PBC == 1 && j == L - 1) next_j = 0;
-			else if (PBC == 0 && j == L - 1) goto kinetic_term_omitted;
-			else next_j = j + 1;
-			// Diagonal spin part
-			// i
-			if (base_vector[j] < 4) s_i = 1;
-			else s_i = 0;
-			// PBC = i+1 : (L-1)+1 = 0
-			if (base_vector[next_j] < 4) s_j = 1;
-			else s_j = 0;
-			H(k, k) += K * (s_i - 0.5) * (s_j - 0.5);
-			//Kinetic spin part: S+ S-
-			temp = base_vector;
-			if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
-				temp[j] = base_vector[j] - 4; //spin filp
-				temp[next_j] = base_vector[next_j] + 4;
-				idx = mapping[binary_to_int(temp)];
-				H(idx, k) += K / 2.;
+            else if (PBC == 0 && j == L - 1) goto kinetic_term_omitted;
+
+            else next_j = j + 1;
+            // Diagonal spin part
+            // i
+            if (base_vector[j] < 4){
+                s_i = 1;
+            } else{ s_i = 0; }
+            // PBC = i+1 : (L-1)+1 = 0
+            if (base_vector[next_j] < 4) s_j = 1;
+            else s_j = 0;
+            H(k, k) += K * (s_i - 0.5) * (s_j - 0.5);
+            //Kinetic spin part: S+ S-
+            temp = base_vector;
+            if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                temp[j] = base_vector[j] - 4; //spin filp
+                temp[next_j] = base_vector[next_j] + 4;
+                idx = mapping[binary_to_int(temp)];
+                H(idx, k) += K / 2.;
                 H(k, idx) += K / 2.;
             }
-			//---------------------
-			// electron hopping
-				//spin up
-						//j+1 -> j
-				temp = base_vector;
-				//only odd numbers have up-electrons  //even numbers lack one up-electron
-				if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
-					temp[next_j] -= 1; // anihilate spin-up electron
-					temp[j] += 1; // create spin-up electron
-					idx = mapping[binary_to_int(temp)];
-					H(idx, k) += t;
+            //---------------------
+            // electron hopping
+                //spin up
+                        //j+1 -> j
+                temp = base_vector;
+                //only odd numbers have up-electrons  //even numbers lack one up-electron
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                    temp[next_j] -= 1; // anihilate spin-up electron
+                    temp[j] += 1; // create spin-up electron
+                    idx = mapping[binary_to_int(temp)];
+                    H(idx, k) += t;
                     H(k, idx) += t;
                 }
-			//spin down
-				temp = base_vector;
-				// the if statement contains every possible down-electron hopping: next_j->j
-				if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
-					if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
-						temp[next_j] -= 2; // anihilate spin-down electron
-						temp[j] += 2; // create spin-down electron 
-						idx = mapping[binary_to_int(temp)];
+            //spin down
+                temp = base_vector;
+                // the if statement contains every possible down-electron hopping: next_j->j
+                if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                    if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
+                        temp[next_j] -= 2; // anihilate spin-down electron
+                        temp[j] += 2; // create spin-down electron
+                        idx = mapping[binary_to_int(temp)];
                         if (base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 0){
-							H(idx, k) -= t;
+                            H(idx, k) -= t;
                             H(k, idx) -= t;
                         }
                         else if (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2){
-							H(idx, k) -= t;
+                            H(idx, k) -= t;
                             H(k, idx) -= t;
                         }
                         else{
@@ -138,7 +133,7 @@ void HamiltonianKH::Hamiltonian() {
                         }
                     }
                 }
-			kinetic_term_omitted:
+            kinetic_term_omitted:
 				//---------------------
 			// electron repulsion
 				if (base_vector[j] == 7 || base_vector[j] == 3) 
@@ -163,35 +158,43 @@ void HamiltonianKH::Hamiltonian() {
 }
 //----------------------------------------------------
 
+void HamiltonianKH::mappingAddIfNeeded(int &bSz, int &fSz, int &N_e, int &j,int &idx){
+    mapping[j] = -1;
+    if ((bSz + fSz == 0) && N_e == num_of_electrons){
+        mapping_inv.push_back(j);
+        mapping[j] = idx;
+        idx++;
+    }
+}
+
+std::tuple<int,int,int> calculateSpinElements(int L, int j){
+    int bSz = 0; //bosonic total spin - spin of upper orbital locked to n=1 filling
+    int fSz = 0; //fermionic total spin
+    int N_e = 0; // numer of electrons in given state
+    vector<int> temp = int_to_binary(j, L);
+
+    for (int k = 0; k < L; k++) {
+        if (temp[k] < 4) bSz += 1;
+        else bSz -= 1;
+        if (temp[k] % 4 == 1) {
+            fSz += 1;
+            N_e += 1;
+        } else if (temp[k] % 4 == 2) {
+            fSz -= 1;
+            N_e += 1;
+        } else if (temp[k] % 4 == 3)
+            N_e += 2;
+    }
+
+    return std::make_tuple(bSz,fSz,N_e);
+}
+
 //generates the vector, which maps the base_vector index to the index in given subblock
 void HamiltonianKH::generate_mapping_subblock() {
 	int idx = 0;
 	for (int j = 0; j < std::pow(8, L); j++) {
-		vector<int> temp = int_to_binary(j, L);
-		int bSz = 0; //bosonic total spin - spin of upper orbital locked to n=1 filling
-		int fSz = 0; //fermionic total spin
-		int N_e = 0; // numer of electrons in given state
-		mapping[j] = -1;
-		for (int k = 0; k < L; k++) {
-			if (temp[k] < 4) bSz += 1;
-			else bSz -= 1;
-			// if temp[k] % 4 == 0 then fSz += 0 and N_e += 0
-			if (temp[k] % 4 == 1) {
-				fSz += 1;
-				N_e += 1;
-			}
-			else if (temp[k] % 4 == 2) {
-				fSz -= 1;
-				N_e += 1;
-			}
-			else if (temp[k] % 4 == 3)
-				N_e += 2;
-		}
-		if ((bSz + fSz == 0) && N_e == num_of_electrons) {
-			mapping_inv.push_back(j);
-            mapping[j] = idx;
-			idx++;
-        }
+        auto [bSz,fSz,N_e] = calculateSpinElements(L,j);
+        mappingAddIfNeeded(bSz,fSz, N_e,j,idx);
     }
 	if (idx < 1) {
         myassert("Not possible number of electrons - no. of states < 1");
@@ -215,7 +218,7 @@ vector<int> int_to_binary(int idx, int L) {
 	}
 	return vec;
 }
-// Conversion of binary vector to int
+
 int binary_to_int(vector<int> vec) {
 	int val = 0;
 	for (int k = 0; k < vec.size(); k++) {
@@ -229,7 +232,6 @@ int binary_to_int(vector<int> vec) {
 //--------------------------------------Diagonalization & exercises-----------------------------
 //----------------------------------------------------------------------------------------------
 
-//Diagonalizes the hamiltonian
 void HamiltonianKH::Diagonalization() {
 	this->eigenvalues = vec(N); //eigenvalues
 	this->eigenvectors = mat(N, N); //eigenvectors
@@ -286,33 +288,6 @@ void HamiltonianKH::Density_of_states(int N_e) {
 //----------------------------------------------------------------------------------------------
 //----------------------------------------Rest methods & functions------------------------------
 //----------------------------------------------------------------------------------------------
-
-//Getting private fields for usage outside the class
-mat HamiltonianKH::get_hamil() {
-	return this->H;
-}
-//----------------------------------------------------
-
-// Getting the energy eigenvalues from the private field
-vec HamiltonianKH::get_energy() {
-	return this->eigenvalues;
-}
-//----------------------------------------------------
-
-//Factorial!!! - screw tgamma function, is shit
-long long int factorial(int n) {
-	if (n > 1) return n * factorial(n - 1);
-	else return 1;
-}
-
-// Binomial: n po k = n!/( k!*(n-k)! )
-long long int Binomial(int n, int k) {
-	return factorial(n) / factorial(k) / factorial(n - k);
-}
-
-//----------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------
-
 
 void Main_DOS_U(int L, int N_e, double t) {
 	// Changing U
