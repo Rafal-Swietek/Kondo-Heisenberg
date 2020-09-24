@@ -2,6 +2,7 @@
 #include <cassert>
 
 typedef std::complex<double> cpx;
+typedef std::vector<double> vect;
 
 void myassert(std::string text){
     std::cerr << text << std::endl;
@@ -196,9 +197,7 @@ void HamiltonianKH::generate_mapping_subblock() {
         auto [bSz,fSz,N_e] = calculateSpinElements(L,j);
         mappingAddIfNeeded(bSz,fSz, N_e,j,idx);
     }
-	if (idx < 1) {
-        myassert("Not possible number of electrons - no. of states < 1");
-    }
+    assert(idx>0 && "Not possible number of electrons - no. of states < 1");
 }
 //----------------------------------------------------
 
@@ -246,43 +245,51 @@ void HamiltonianKH::Diagonalization() {
 }
 //----------------------------------------------------
 
+
+std::vector<double> prepareOmegaVec(arma::vec &eigenvalues, double dOmega){
+    vector<double> omega_vec;
+    double omega=eigenvalues(0);
+    while (omega <= eigenvalues(eigenvalues.size() - 1)) {
+        omega_vec.push_back(omega);
+        omega += dOmega;
+    }
+    return omega_vec;
+}
+
+void printDOS(vect resultSF, double U, double N_e, int L, vect omega_vec, double maximum){
+    ofstream DOSfile;
+    stringstream Ustr, Nstr;
+    Ustr << setprecision(1) << fixed << U;
+    Nstr << setprecision(2) << fixed << (double)N_e / (double)L;
+    DOSfile.open("DOS_n=" + Nstr.str() + "_U=" + Ustr.str() + ".txt");
+    //DOSfile.open("DOS_2_U=" + Ustr.str() + ".txt");
+
+    for (int k = 0; k < omega_vec.size(); k++)
+        DOSfile << omega_vec[k] << "\t\t" << resultSF[k]/maximum + 5.1*U << endl;
+
+    DOSfile.close();
+}
+
 // Calculates the density of states using one-particle greens function
 void HamiltonianKH::Density_of_states(int N_e) {
 	double omega = eigenvalues(0); // eigenvalues(0) - eigenvalues(N - 1);
 	double domega = 0.001;
 
-	vector<double> omega_vec;
-	while (omega <= eigenvalues(N - 1)) {
-		omega_vec.push_back(omega);
-		omega += domega;
-	}
-	int nloop = omega_vec.size();
+    vector<double> omega_vec = prepareOmegaVec(eigenvalues,domega);
+    vector<double> resultSF(omega_vec.size());
 
-	ofstream DOSfile;
-	stringstream Ustr, Nstr; 
-	Ustr << setprecision(1) << fixed << U;
-	Nstr << setprecision(2) << fixed << (double)N_e / (double)L;
-	DOSfile.open("DOS_n=" + Nstr.str() + "_U=" + Ustr.str() + ".txt");
-	//DOSfile.open("DOS_2_U=" + Ustr.str() + ".txt");
-
-	vector<double> resultSF(nloop);
-		double DOS = 0;
-		double maximum = 0;
-		for (int w = 0; w < nloop; w++) {
-			omega = omega_vec[w];
-			DOS = 0;
-			for (int n = 0; n < N; n++)
-                DOS += -1. / (double)L / pi * cpx(1. / (omega + 2*domega*im - eigenvalues(n))).imag();
-			if (DOS > maximum) 
-				maximum = DOS;
-			resultSF[w] = DOS;
-		}
-		for (int k = 0; k < nloop; k++)
-			DOSfile << omega_vec[k] << "\t\t" << resultSF[k]/maximum + 5.1*U << endl;
-
-	resultSF.~vector();
-	omega_vec.~vector();
-	DOSfile.close();
+    double DOS = 0;
+    double maximum = 0;
+    for (int w = 0; w < omega_vec.size(); w++) {
+        omega = omega_vec[w];
+        DOS = 0;
+        for (int n = 0; n < N; n++)
+            DOS += -1. / (double)L / pi * cpx(1. / (omega + 2*domega*im - eigenvalues(n))).imag();
+        if (DOS > maximum)
+            maximum = DOS;
+        resultSF[w] = DOS;
+    }
+    printDOS(resultSF,U,N_e,L,omega_vec,maximum);
 }
 
 //----------------------------------------------------------------------------------------------
