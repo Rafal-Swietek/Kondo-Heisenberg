@@ -6,7 +6,7 @@ int main() {
 
 	int L = 4; //chain length
 	double t = 1; //electron hopping = t_00
-	double U = 1; // electron repulsion
+    double U = 1; // electron repulsion
 	double K = 1; // spin exchange integral*.
 	double J_H = 1; // electron-spin interaction
 	int N_e = 4; // numer of electrons - parity same as number of sites

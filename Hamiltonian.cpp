@@ -91,14 +91,15 @@ void HamiltonianKH::Hamiltonian() {
 				temp[next_j] = base_vector[next_j] + 4;
 				idx = mapping[binary_to_int(temp)];
 				H(idx, k) += K / 2.;
+                H(k, idx) += K / 2.;
 			}
 			temp = base_vector;
-			if (s_i == 1 && s_j == 0) { // S_i^- S_i+1^+
-				temp[j] = base_vector[j] + 4; //spin filp
-				temp[next_j] = base_vector[next_j] - 4;
-				idx = mapping[binary_to_int(temp)];
-				H(idx, k) += K / 2.;
-			}
+//			if (s_i == 1 && s_j == 0) { // S_i^- S_i+1^+
+//				temp[j] = base_vector[j] + 4; //spin filp
+//				temp[next_j] = base_vector[next_j] - 4;
+//				idx = mapping[binary_to_int(temp)];
+//				H(idx, k) += K / 2.;
+//			}
 			//---------------------
 			// electron hopping
 				//spin up
