@@ -15,9 +15,6 @@ HamiltonianKH::~HamiltonianKH() {
 
 	eigenvalues.~vec();
     //mapping.~vector();
-    //mapping_inv.~vector();
-
-    //base_vector.~vector();
 }
 //-----------------------
 
@@ -209,15 +206,9 @@ void HamiltonianKH::generate_mapping_subblock() {
 		}
 		if ((bSz + fSz == 0) && N_e == num_of_electrons) {
 			mapping_inv.push_back(j);
-			mapping[j] = idx;
-			/*cout << "map(" << j << ")=" << mapping[j] << "\t map_inv(" << idx << ")=" << mapping_inv[idx] << "\t";
-			cout << "|";
-			//temp = int_to_binary(mapping_inv(idx), L);
-			for (int p = 0; p < L; p++) cout << temp[p];
-			cout << ">\n";*/
+            mapping[j] = idx;
 			idx++;
-		}
-        //temp.~vector();
+        }
     }
 	if (idx < 1) {
 		cout << "Not possible number of electrons - no. of states < 1" << endl;
@@ -267,41 +258,7 @@ void HamiltonianKH::Diagonalization() {
 		std::cout << "Memory exceeded" << e.what() << "\n";
 		std::cout << H.size() * sizeof(H(0, 0)) << "\n";
 		exit(123);
-	}
-	//cout << "H = \n" << H << endl;
-	// Some shit to print most probable base_vector as ground state
-	/*bool print_ground_state = 0;
-	if (print_ground_state == 1) {
-		int tmp = 0;
-		vec temp = eigenvectors.col(0); //ground state
-		for (int j = 1; j < N; j++) //get biggest base state from ground state
-			if (temp(j) > temp(tmp))
-				tmp = j;
-
-		vector<int> some_vec = int_to_binary(mapping_inv[tmp], L);
-		std::cout << "\nGround state:" << "\n\t\t";
-		//for (int j = 0; j < L; j++) std::cout << some_vec[L - j];
-		//std::cout << endl;
-
-		locale loc = locale(locale(), "en_US.UTF8", locale::ctype);
-		wcout.imbue(loc);
-		SetConsoleOutputCP(CP_UTF8);
-		wcout << "|";
-		for (int j = 0; j < L; j++) {
-			if (some_vec[L - j - 1] < 4) wcout << L"\x2191  ";
-			else  wcout << L"\x2193  ";
-		}
-		wcout << ">" << "\n\t\t|";
-		for (int j = 0; j < L; j++) {
-			if (some_vec[L - j - 1] % 4 == 1) wcout << L"\x2191  ";
-			else if (some_vec[L - j - 1] % 4 == 2)  wcout << L"\x2193  ";
-			else if (some_vec[L - j - 1] % 4 == 3)  wcout << L"\x2191" << L"\x2193 ";
-			else wcout << ".  ";
-		}
-		wcout << ">\n" << endl;
-
-		temp.~vec(); some_vec.~vector();
-	}*/
+    }
 }
 //----------------------------------------------------
 

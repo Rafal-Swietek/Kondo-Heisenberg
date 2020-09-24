@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HAMILTONIAN_H
+#define HAMILTONIAN_H
 
 #include <iostream>
 #include <fstream>
@@ -11,14 +12,6 @@
 #include <algorithm>
 #include <complex>
 #include <armadillo>
-//#include <Windows.h>
-//#include <mpi.h>
-//#include <clocale>
-//include <thread> //multithreading
-//#include <mutex>
-//#include <omp.h>
-//#include <execution>
-//#include <atomic> // atomic variable type allows multithreading without mutex locking
 
 using namespace std;
 using namespace arma;
@@ -79,4 +72,5 @@ long long int Binomial(int n, int k); //Binomial coefficient n over k
 
 void Main_DOS_U(int L, int N_e, double t);
 
+#endif
 
