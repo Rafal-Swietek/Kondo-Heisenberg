@@ -16,6 +16,8 @@
 using namespace std;
 using namespace arma;
 
+#define out << std::setprecision(8) << std::fixed
+
 class HamiltonianKH {
 private:
 	int L; //chain length

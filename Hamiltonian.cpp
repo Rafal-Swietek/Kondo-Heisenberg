@@ -1,8 +1,18 @@
 #include "Hamiltonian.h"
+#include <cassert>
+
+typedef std::complex<double> cpx;
+
+void myassert(std::string text){
+    std::cerr << text << std::endl;
+    assert(false);
+}
 
 
 mutex my_mutex;
-complex<double> i = 1i;
+//complex<double> i = 1i;
+#define im std::complex<double>(0.0,1.0)
+
 double pi = 3.141592653;
 
 //Destructor
@@ -92,14 +102,7 @@ void HamiltonianKH::Hamiltonian() {
 				idx = mapping[binary_to_int(temp)];
 				H(idx, k) += K / 2.;
                 H(k, idx) += K / 2.;
-			}
-			temp = base_vector;
-//			if (s_i == 1 && s_j == 0) { // S_i^- S_i+1^+
-//				temp[j] = base_vector[j] + 4; //spin filp
-//				temp[next_j] = base_vector[next_j] - 4;
-//				idx = mapping[binary_to_int(temp)];
-//				H(idx, k) += K / 2.;
-//			}
+            }
 			//---------------------
 			// electron hopping
 				//spin up
@@ -111,15 +114,8 @@ void HamiltonianKH::Hamiltonian() {
 					temp[j] += 1; // create spin-up electron
 					idx = mapping[binary_to_int(temp)];
 					H(idx, k) += t;
-				}
-				//j -> j+1
-				temp = base_vector;
-				if (base_vector[j] % 2 == 1 && base_vector[next_j] % 2 == 0) {
-					temp[j] -= 1; // anihilate spin-up electron
-					temp[next_j] += 1; // create spin-up electron
-					idx = mapping[binary_to_int(temp)];
-					H(idx, k) += t;
-				}
+                    H(k, idx) += t;
+                }
 			//spin down
 				temp = base_vector;
 				// the if statement contains every possible down-electron hopping: next_j->j
@@ -128,29 +124,20 @@ void HamiltonianKH::Hamiltonian() {
 						temp[next_j] -= 2; // anihilate spin-down electron
 						temp[j] += 2; // create spin-down electron 
 						idx = mapping[binary_to_int(temp)];
-						if (base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 0)
+                        if (base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 0){
 							H(idx, k) -= t;
-						else if (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)
+                            H(k, idx) -= t;
+                        }
+                        else if (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2){
 							H(idx, k) -= t;
-						else
-							H(idx, k) += t;
-					}
-				}
-				//j -> j+1
-				temp = base_vector;
-				if (base_vector[j] % 4 == 2 || base_vector[j] % 4 == 3) {
-					if (base_vector[next_j] % 4 == 0 || base_vector[next_j] % 4 == 1) {
-						temp[j] -= 2; // anihilate spin-down electron
-						temp[next_j] += 2; // create spin-down electron 
-						idx = mapping[binary_to_int(temp)];
-						if (base_vector[j] % 4 == 3 && base_vector[next_j] % 4 == 0)
-							H(idx, k) -= t;
-						else if (base_vector[next_j] % 4 == 1 && base_vector[j] % 4 == 2)
-							H(idx, k) -= t;
-						else
-							H(idx, k) += t;
-					}
-				}
+                            H(k, idx) -= t;
+                        }
+                        else{
+                            H(idx, k) += t;
+                            H(k, idx) += t;
+                        }
+                    }
+                }
 			kinetic_term_omitted:
 				//---------------------
 			// electron repulsion
@@ -163,20 +150,15 @@ void HamiltonianKH::Hamiltonian() {
 					temp[j] = 2;
 					idx = mapping[binary_to_int(temp)];
 					H(idx, k) -= J_H;
-				}
-				if (base_vector[j] == 2) {// S_i^-s_i^+
-					temp[j] = 5;
-					idx = mapping[binary_to_int(temp)];
-					H(idx, k) -= J_H;
-				}
+                    H(k, idx) -= J_H;
+                }
 				//Diagonal - z part
 				if (base_vector[j] == 1 || base_vector[j] == 6)
 					H(k, k) -= 2.0 * J_H * 0.25;
 				if (base_vector[j] == 2 || base_vector[j] == 5)
 					H(k, k) += 2.0 * J_H * 0.25;
 				//--------------------
-		}
-        //temp.~vector();
+        }
 	}
 }
 //----------------------------------------------------
@@ -212,9 +194,8 @@ void HamiltonianKH::generate_mapping_subblock() {
         }
     }
 	if (idx < 1) {
-		cout << "Not possible number of electrons - no. of states < 1" << endl;
-		exit(-3);
-	}
+        myassert("Not possible number of electrons - no. of states < 1");
+    }
 }
 //----------------------------------------------------
 
@@ -258,7 +239,7 @@ void HamiltonianKH::Diagonalization() {
 	catch (const bad_alloc& e) {
 		std::cout << "Memory exceeded" << e.what() << "\n";
 		std::cout << H.size() * sizeof(H(0, 0)) << "\n";
-		exit(123);
+        assert(false);
     }
 }
 //----------------------------------------------------
@@ -289,7 +270,7 @@ void HamiltonianKH::Density_of_states(int N_e) {
 			omega = omega_vec[w];
 			DOS = 0;
 			for (int n = 0; n < N; n++)
-//				DOS += -1. / (double)L / pi * imag(1. / (omega + 2*domega*1i - eigenvalues(n)));
+                DOS += -1. / (double)L / pi * cpx(1. / (omega + 2*domega*im - eigenvalues(n))).imag();
 			if (DOS > maximum) 
 				maximum = DOS;
 			resultSF[w] = DOS;
@@ -348,7 +329,6 @@ void Main_DOS_U(int L, int N_e, double t) {
 		Object.Diagonalization();
 		Object.Density_of_states(N_e);
 
-		Object.~HamiltonianKH();
 		cout << "U = " << U << " done!" << endl;
 	}
 	cout << "\n DOS for various U calculated" << endl;
