@@ -1,12 +1,13 @@
 #PBS -S /bin/bash
 #PBS -q main
 #PBS -l walltime=95:59:59
-#PBS -l select=1:mem=32GB
+#PBS -l select=1:mem=16GB
 
 module load Armadillo
+module load mkl
 
 cd $PBS_O_WORKDIR/
 
-g++ main.cpp Hamiltonian.cpp -o program.o -larmadillo -std=c++17
+g++ -g main.cpp Hamiltonian.cpp -o program.o -larmadillo -std=c++17
 
-./program.o >& log.txt
+valgrind --leak-check=full --show-reachable=yes --track-origins=yes ./program.o >& log.txt

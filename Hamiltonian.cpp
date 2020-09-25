@@ -219,13 +219,13 @@ int binary_to_int(vector<int> vec) {
 
 void HamiltonianKH::Diagonalization() {
 	try {
-		arma::eig_sym(eigenvalues, H);
+		arma::eig_sym(eigenvalues, eigenvectors, H);
 	}
 	catch (const bad_alloc& e) {
 		std::cout << "Memory exceeded" << e.what() << "\n";
 		std::cout << H.size() * sizeof(H(0, 0)) << "\n";
-        assert(false);
-    }
+        	assert(false);
+    	}
 }
 //----------------------------------------------------
 
