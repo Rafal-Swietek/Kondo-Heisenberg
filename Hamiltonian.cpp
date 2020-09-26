@@ -219,7 +219,7 @@ int binary_to_int(vector<int> vec) {
 
 void HamiltonianKH::Diagonalization() {
 	try {
-		arma::eig_sym(eigenvalues, eigenvectors, H);
+		arma::eig_sym(eigenvalues, H);
 	}
 	catch (const bad_alloc& e) {
 		std::cout << "Memory exceeded" << e.what() << "\n";
@@ -239,7 +239,10 @@ std::vector<double> prepareOmegaVec(arma::vec &eigenvalues, double dOmega){
     }
     return omega_vec;
 }
-void printDOS(vect resultSF, double U, double N_e, int L, vect omega_vec, double maximum){
+//-----------
+
+// Calculates the density of states using one-particle greens function
+void printDOS(vect resultSF, double U, double N_e, int L, vect omega_vec, double maximum) {
     ofstream DOSfile;
     stringstream Ustr, Nstr;
     Ustr << setprecision(1) << fixed << U;
@@ -248,13 +251,10 @@ void printDOS(vect resultSF, double U, double N_e, int L, vect omega_vec, double
     //DOSfile.open("DOS_2_U=" + Ustr.str() + ".txt");
 
     for (int k = 0; k < omega_vec.size(); k++)
-        DOSfile << omega_vec[k] << "\t\t" << resultSF[k]/maximum + 5.1*U << endl;
+        DOSfile << omega_vec[k] << "\t\t" << resultSF[k] / maximum + 5.1 * U << endl;
 
     DOSfile.close();
 }
-//-----------
-
-// Calculates the density of states using one-particle greens function
 void HamiltonianKH::Density_of_states(int N_e) {
 	double omega;
 	double domega = 0.001;
