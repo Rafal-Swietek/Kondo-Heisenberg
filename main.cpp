@@ -9,16 +9,15 @@ int main() {
     double U = 2.1; // electron repulsion
 	double K = 0.0429; // spin exchange integral*.
     double J_H = U / 4.; // electron-spin interaction
-    int N_e = 4; // numer of electrons - parity same as number of sites
+    int N_e = 6; // numer of electrons - parity same as number of sites
 
 	// Main Program---------------------------------------
-		//Main_DOS_U(L, N_e, t);
-            cout << "Ground state for:" << endl;
+		    Main_DOS_U(L, N_e, t);
+            /*cout << "Ground state for:" << endl;
             HamiltonianKH Object(L, N_e, t, U, K, J_H);
             Object.Hamiltonian();
             Object.Diagonalization();
-        //Object.Density_of_states(N_e);
-            	out << "E = " << Object.eigenvalues(0) << endl;
+            out << "E = " << Object.eigenvalues(0) << endl;*/
 
 	//------------------------------------------------------------
 

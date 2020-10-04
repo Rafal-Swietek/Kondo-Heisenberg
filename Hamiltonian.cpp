@@ -217,7 +217,7 @@ int binary_to_int(vector<int> vec) {
 //----------------------------------------------------
 
 //----------------------------------------------------------------------------------------------
-//--------------------------------------Diagonalization & exercises-----------------------------
+//--------------------------------------Diagonalization & Quantities-----------------------------
 //----------------------------------------------------------------------------------------------
 
 void HamiltonianKH::Diagonalization() {
@@ -254,7 +254,7 @@ void printDOS(vect resultSF, double U, double N_e, int L, vect omega_vec, double
     //DOSfile.open("DOS_2_U=" + Ustr.str() + ".txt");
 
     for (int k = 0; k < omega_vec.size(); k++)
-        DOSfile << omega_vec[k] << "\t\t" << resultSF[k] / maximum + 5.1 * U << endl;
+        DOSfile << omega_vec[k] << "\t\t" << resultSF[k] << endl;
 
     DOSfile.close();
 }
@@ -279,7 +279,35 @@ void HamiltonianKH::Density_of_states(int N_e) {
     printDOS(resultSF,U,N_e,L,omega_vec,maximum);
 }
 
-//----------------------------------------------------------------------------------------------
+void HamiltonianKH::Heat_Capacity() {
+    double dT = 0.001;
+    double T = 0.005;
+    double energy_av; //average of energy E
+    double energy2_av; //average of E^2
+
+    ofstream savefile;
+    stringstream Ustr, Nstr;
+    Ustr << setprecision(1) << fixed << U;
+    Nstr << setprecision(2) << fixed << (double)num_of_electrons / (double)L;
+    savefile.open("C_V_n=" + Nstr.str() + "_U=" + Ustr.str() + ".txt");
+
+    while (T <= 5.0) {
+        double Partition_Function = 0;
+        energy_av = 0; energy2_av = 0;
+        for (int j = 0; j < N; j++) {
+            Partition_Function += std::exp(-eigenvalues(j) / T); //partition function(T)
+            energy_av += eigenvalues(j) * std::exp(-eigenvalues(j) / T); //average energy(T)
+            energy2_av += eigenvalues(j) * eigenvalues(j) * std::exp(-eigenvalues(j) / T); //average energy^2(T)
+        }
+        energy_av = energy_av / Partition_Function;
+        energy2_av = energy2_av / Partition_Function;
+        double heat_capacity = (energy2_av - energy_av * energy_av) / T / T / (L + 0.0);
+        savefile << T << "\t\t" << heat_capacity << endl; //save heat capacity to file
+        T += dT;
+    }
+    savefile.close();
+}
+   //----------------------------------------------------------------------------------------------
 //----------------------------------------Rest methods & functions------------------------------
 //----------------------------------------------------------------------------------------------
 
@@ -292,11 +320,11 @@ void Main_DOS_U(int L, int N_e, double t) {
 			J_H = 0.25 * U;
 		}
 		else { K = 1; J_H = 0; }
-		K = 0; J_H = 0;
 		HamiltonianKH Object(L, N_e, t, U, K, J_H);
 		Object.Hamiltonian();
 		Object.Diagonalization();
 		Object.Density_of_states(N_e);
+        Object.Heat_Capacity();
 
         out << "U = " << U << " done!" << endl;
 	}

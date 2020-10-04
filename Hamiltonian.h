@@ -46,7 +46,7 @@ public:
 
 	void Hamiltonian();
 	void Diagonalization();
-
+	void Heat_Capacity();
 	void Density_of_states(int N_e);
 
 
