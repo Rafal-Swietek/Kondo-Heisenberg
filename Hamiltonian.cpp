@@ -107,7 +107,10 @@ void HamiltonianKH::Hamiltonian() {
                     if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
                         temp[next_j] -= 1; // anihilate spin-up electron
                         temp[j] += 1; // create spin-up electron
-                        setHamiltonianElem(k,t,temp);
+                        if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                            setHamiltonianElem(k, -t, temp);
+                        }
+                        else  setHamiltonianElem(k, +t, temp);
                     }
                 //spin down
                     temp = base_vector;
@@ -116,7 +119,7 @@ void HamiltonianKH::Hamiltonian() {
                         if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
                             temp[next_j] -= 2; // anihilate spin-down electron
                             temp[j] += 2; // create spin-down electron
-                            if ( (base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 0) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2) ){
+                            if ( (base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2) ){
                                 setHamiltonianElem(k, -t, temp);
                             }
                             else  setHamiltonianElem(k,+t,temp);
