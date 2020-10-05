@@ -12,6 +12,7 @@
 #include <complex>
 #include <armadillo>
 #include <cassert> // assert terminates program
+#include <omp.h>
 
 using namespace std;
 using namespace arma;
@@ -28,7 +29,7 @@ private:
 
 	int num_of_electrons; //number of electrons
 
-	int N; //number of states - if using blocks its binomial(n,i) - i-th block, otherwise N=2^L
+	int N; //number of states
 	vector<int> base_vector;
 	vector<int> mapping; //generates the mapping of the base_vector number to the number in the block
 	vector<int> mapping_inv;

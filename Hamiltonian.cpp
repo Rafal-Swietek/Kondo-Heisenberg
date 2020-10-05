@@ -67,8 +67,8 @@ HamiltonianKH::HamiltonianKH(int L, double t, double U, double K, double J_H) {
 
 void HamiltonianKH::setHamiltonianElem(int k, double value, std::vector<int> temp){
     int idx = mapping[binary_to_int(temp)];
-    H(idx, k) += value;
-    H(k, idx) += value;
+        H(idx, k) += value;
+        H(k, idx) += value;
 }
 void HamiltonianKH::Hamiltonian() {
     int s_i, s_j; //i=j, j=j+1
@@ -235,7 +235,7 @@ void HamiltonianKH::Diagonalization() {
 // Helpful tools
 std::vector<double> prepareOmegaVec(arma::vec &eigenvalues, double dOmega){
     vector<double> omega_vec;
-    double omega=eigenvalues(0);
+    double omega = eigenvalues(0);
     while (omega <= eigenvalues(eigenvalues.size() - 1)) {
         omega_vec.push_back(omega);
         omega += dOmega;
@@ -245,38 +245,39 @@ std::vector<double> prepareOmegaVec(arma::vec &eigenvalues, double dOmega){
 //-----------
 
 // Calculates the density of states using one-particle greens function
-void printDOS(vect resultSF, double U, double N_e, int L, vect omega_vec, double maximum) {
+void printDOS(vect resultDOS, double U, double N_e, int L, vect omega_vec, double maximum) {
     ofstream DOSfile;
     stringstream Ustr, Nstr;
     Ustr << setprecision(1) << fixed << U;
     Nstr << setprecision(2) << fixed << (double)N_e / (double)L;
     DOSfile.open("DOS_n=" + Nstr.str() + "_U=" + Ustr.str() + ".txt");
-    //DOSfile.open("DOS_2_U=" + Ustr.str() + ".txt");
 
     for (int k = 0; k < omega_vec.size(); k++)
-        DOSfile << omega_vec[k] << "\t\t" << resultSF[k] << endl;
+        DOSfile << omega_vec[k] << "\t\t" << resultDOS[k] << endl;
 
     DOSfile.close();
 }
 void HamiltonianKH::Density_of_states(int N_e) {
-	double omega;
-	double domega = 0.001;
+	double domega = 0.002;
 
     vector<double> omega_vec = prepareOmegaVec(eigenvalues,domega);
-    vector<double> resultSF(omega_vec.size());
+    vector<double> resultDOS(omega_vec.size());
 
-    double DOS = 0;
     double maximum = 0;
+#pragma omp parallel for shared(omega_vec, resultDOS) num_threads(16)
     for (int w = 0; w < omega_vec.size(); w++) {
-        omega = omega_vec[w];
-        DOS = 0;
+        double omega = omega_vec[w];
+        double DOS = 0;
+    //#pragma omp parallel for shared(omega_vec, resultDOS) reduction(+: DOS)
         for (int n = 0; n < N; n++)
-            DOS += -1. / (double)L / pi * cpx(1. / (omega + 2*domega*im - eigenvalues(n))).imag();
-        if (DOS > maximum)
-            maximum = DOS;
-        resultSF[w] = DOS;
+                DOS += -1. / (double)L / pi * imag(1. / (omega + 2 * domega * 1i - eigenvalues(n)));
+
+        /* if (DOS > maximum)
+             maximum = DOS;*/
+
+        resultDOS[w] = DOS;
     }
-    printDOS(resultSF,U,N_e,L,omega_vec,maximum);
+    printDOS(resultDOS,U,N_e,L,omega_vec,maximum);
 }
 
 void HamiltonianKH::Heat_Capacity() {
@@ -307,19 +308,29 @@ void HamiltonianKH::Heat_Capacity() {
     }
     savefile.close();
 }
-   //----------------------------------------------------------------------------------------------
+
+
+//----------------------------------------------------------------------------------------------
+//--------------------------------------------------LANCZOS-------------------------------------
+//----------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+//----------------------------------------------------------------------------------------------
 //----------------------------------------Rest methods & functions------------------------------
 //----------------------------------------------------------------------------------------------
 
 void Main_DOS_U(int L, int N_e, double t) {
 	// Changing U
-	for (double U = 0.0; U <= 2.8; U += 0.2) {
+	for (double U = 0.2; U <= 2.8; U += 0.4) {
 		double K, J_H;
-		if (U != 0) {
-			K = 4 * 0.15 * 0.15 / U;
-			J_H = 0.25 * U;
-		}
-		else { K = 1; J_H = 0; }
+		K = 4 * 0.15 * 0.15 / U;
+		J_H = 0.25 * U;
 		HamiltonianKH Object(L, N_e, t, U, K, J_H);
 		Object.Hamiltonian();
 		Object.Diagonalization();
