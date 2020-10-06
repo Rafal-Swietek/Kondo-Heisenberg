@@ -281,15 +281,16 @@ void HamiltonianKH::Density_of_states(int N_e) {
 }
 
 void HamiltonianKH::Heat_Capacity() {
-    double dT = 0.001;
+    double dT = 0.005;
     double T = 0.005;
     double energy_av; //average of energy E
     double energy2_av; //average of E^2
 
     ofstream savefile;
     stringstream Ustr, Nstr;
-    Ustr << setprecision(1) << fixed << U;
+    Ustr << setprecision(2) << fixed << J_H / U;
     Nstr << setprecision(2) << fixed << (double)num_of_electrons / (double)L;
+    //savefile.open("C_V_n=" + Nstr.str() + "_U=" + Ustr.str() + ".txt");
     savefile.open("C_V_n=" + Nstr.str() + "_U=" + Ustr.str() + ".txt");
 
     while (T <= 5.0) {
@@ -322,22 +323,35 @@ void HamiltonianKH::Heat_Capacity() {
 
 
 //----------------------------------------------------------------------------------------------
-//----------------------------------------Rest methods & functions------------------------------
+//----------------------------------------Main subroutines---------------------------------------
 //----------------------------------------------------------------------------------------------
 
-void Main_DOS_U(int L, int N_e, double t) {
-	// Changing U
-	for (double U = 0.2; U <= 2.8; U += 0.4) {
+void Main_U(int L, int N_e, double t) {
+	for (double U = 0.2; U < 3.0; U += 0.4) {
 		double K, J_H;
 		K = 4 * 0.15 * 0.15 / U;
 		J_H = 0.25 * U;
 		HamiltonianKH Object(L, N_e, t, U, K, J_H);
 		Object.Hamiltonian();
 		Object.Diagonalization();
-		Object.Density_of_states(N_e);
+		//Object.Density_of_states(N_e);
         Object.Heat_Capacity();
 
         out << "U = " << U << " done!" << endl;
 	}
-    out << "\n DOS for various U calculated" << endl;
 }
+
+void Main_Jh(int L, int N_e, double t, double K, double U) {
+    double J_H = 0.05 * U;
+    while(J_H <= 0.3*U) {
+        HamiltonianKH Object(L, N_e, t, U, K, J_H);
+        Object.Hamiltonian();
+        Object.Diagonalization();
+        //Object.Density_of_states(N_e);
+        Object.Heat_Capacity();
+
+        out << "J_H/U = " << J_H / U << " done!" << endl;
+        J_H += 0.05 * U;
+    }
+}
+

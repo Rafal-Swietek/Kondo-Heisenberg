@@ -1,4 +1,5 @@
 ﻿  Hamiltonian.cpp
+  main.cpp
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(35,38): warning C4244: 'argument': conversion from 'double' to 'const unsigned __int64', possible loss of data
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(38,30): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(51,20): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
