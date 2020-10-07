@@ -13,13 +13,14 @@ int main() {
 
 	// Main Program---------------------------------------
 		    //Main_U(L, N_e, t);
-            Main_Jh(L, N_e, t, K, U);
-            cout << "Ground state for:" << endl;
+            //Main_Jh(L, N_e, t, K, U);
             HamiltonianKH Object(L, N_e, t, U, K, J_H);
             Object.Hamiltonian();
             Object.Diagonalization();
-            Object.Heat_Capacity();
-            out << "E = " << Object.eigenvalues(0) << endl;
+            Object.Build_Lanczos_Hamil(Object.Create_Random_vec(), 200);
+            //Object.Heat_Capacity();
+            out << "E   = " << Object.eigenvalues(0) << endl;
+            out << "E_L = " << Object.eigenVal_L(0) << endl;
 
 	//------------------------------------------------------------
 

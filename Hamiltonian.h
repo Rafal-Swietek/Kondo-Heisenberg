@@ -17,7 +17,7 @@
 using namespace std;
 using namespace arma;
 
-#define out std::cout << std::setprecision(8) << std::fixed
+#define out std::cout << std::setprecision(16) << std::fixed
 
 class HamiltonianKH {
 private:
@@ -39,6 +39,11 @@ public:
     mat eigenvectors;
     vec eigenvalues;
 
+	//mat Krylov_space; // Krylov
+	mat H_L; // lanczos hamiltonian
+	vec eigenVal_L; // lanczos eigenvalues
+
+
 public:
 	HamiltonianKH(int L, double t, double U, double K, double J_H); //Constructor for total Hamiltonian
 	HamiltonianKH(int L, int num_of_electrons, double t, double U, double K, double J_H); //Constructor for subblock Hamiltonian
@@ -57,6 +62,12 @@ public:
         void CreateMappingElem(int &bSz, int &fSz, int& N_e, int &j, int &idx);
         void setHamiltonianElem(int k, double value, std::vector<int> temp);
 	//-----------------------------
+
+	// Lanczos 
+		vec Create_Random_vec();
+		void Build_Lanczos_Hamil(vec initial_vec, int Lanczos_steps);
+		vec Hamil_vector_multiply(vec initial_vec);
+	//----------------
 
 };
 
