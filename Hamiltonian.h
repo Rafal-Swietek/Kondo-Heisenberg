@@ -39,9 +39,10 @@ public:
     mat eigenvectors;
     vec eigenvalues;
 
-	//mat Krylov_space; // Krylov
+	mat Krylov_space; // Krylov
 	mat H_L; // lanczos hamiltonian
 	vec eigenVal_L; // lanczos eigenvalues
+	vec Lanczos_GS;
 
 
 public:
@@ -66,7 +67,10 @@ public:
 	// Lanczos 
 		vec Create_Random_vec();
 		void Build_Lanczos_Hamil(vec initial_vec, int Lanczos_steps);
+		void Build_Lanczos_Hamil_wKrylovSpace(vec initial_vec, int Lanczos_steps);
 		vec Hamil_vector_multiply(vec initial_vec);
+		double Cv_kernel(double T);
+		void Heat_Capacity_Lanczos();
 	//----------------
 
 };
@@ -74,7 +78,7 @@ public:
 vector<int> int_to_binary(int idx, int L); //converges int to binary code of length N
 int binary_to_int(vector<int> vec); //converges vector with binary code to decimal system
 void Main_U(int L, int N_e, double t);
-void Main_Jh(int L, int N_e, double t, double K, double U);
+void Main_Jh(int L, int N_e, double t, double K, double U); 
 
 #endif
 

@@ -17,10 +17,12 @@ int main() {
             HamiltonianKH Object(L, N_e, t, U, K, J_H);
             Object.Hamiltonian();
             Object.Diagonalization();
-            Object.Build_Lanczos_Hamil(Object.Create_Random_vec(), 200);
-            //Object.Heat_Capacity();
+            srand(time(NULL));
+            Object.Build_Lanczos_Hamil(Object.Create_Random_vec(), 100);
             out << "E   = " << Object.eigenvalues(0) << endl;
             out << "E_L = " << Object.eigenVal_L(0) << endl;
+            Object.Heat_Capacity();
+            Object.Heat_Capacity_Lanczos();
 
 	//------------------------------------------------------------
 
