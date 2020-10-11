@@ -20,6 +20,7 @@ HamiltonianKH::~HamiltonianKH() {
 
     H_L.~Mat();
     eigenVal_L.~vec();
+    Krylov_space.~Mat();
 }
 //-----------------------
 
@@ -284,14 +285,14 @@ void HamiltonianKH::Density_of_states(int N_e) {
 }
 
 void HamiltonianKH::Heat_Capacity() {
-    double dT = 0.01;
-    double T = 0.01;
+    double dT = 0.05;
+    double T = 0.05;
     double energy_av; //average of energy E
     double energy2_av; //average of E^2
 
     ofstream savefile;
     stringstream Ustr, Nstr;
-    Ustr << setprecision(2) << fixed << J_H / U;
+    Ustr << setprecision(2) << fixed << U;
     Nstr << setprecision(2) << fixed << (double)num_of_electrons / (double)L;
     //savefile.open("C_V_n=" + Nstr.str() + "_U=" + Ustr.str() + ".txt");
     savefile.open("C_V_n=" + Nstr.str() + "_U=" + Ustr.str() + ".txt");
@@ -324,6 +325,93 @@ vec HamiltonianKH::Create_Random_vec() {
     return random_vec;
 }
 
+
+vec HamiltonianKH::Hamil_vector_multiply(vec initial_vec) {
+    vec result_vec(N, fill::zeros);
+    bool PBC = 0;
+    int next_j, idx;
+    int s_i, s_j;
+    for (int k = 0; k < N; k++) {
+        base_vector = int_to_binary(mapping_inv[k], L);
+        vector<int> temp(base_vector);
+        for (int j = 0; j <= L - 1; j++) {
+            if (PBC == 1 && j == L - 1) next_j = 0;
+            else if (PBC == 0 && j == L - 1) goto kinetic_term_omitted2;
+            else next_j = j + 1;
+
+            if (base_vector[j] < 4) s_i = 1;
+            else s_i = 0;
+            if (base_vector[next_j] < 4) s_j = 1;
+            else s_j = 0;
+
+            result_vec(k) += K * (s_i - 0.5) * (s_j - 0.5) * initial_vec(k);
+            //Kinetic spin part: S+ S-
+            temp = base_vector;
+            if (s_i == 0 && s_j == 1) {
+                temp[j] = base_vector[j] - 4; //spin filp
+                temp[next_j] = base_vector[next_j] + 4;
+                idx = mapping[binary_to_int(temp)];
+                result_vec(idx) += K / 2. * initial_vec(k); //   S_i^+ * S_i+1^-
+                result_vec(k) += K / 2. * initial_vec(idx); //   S_i^+ * S_i+1^-
+            }
+            //---------------------
+
+            // electron hopping j+1 -> j
+                //spin up
+            temp = base_vector;
+            //only odd numbers have up-electrons  //even numbers lack one up-electron
+            if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                temp[next_j] -= 1; // anihilate spin-up electron
+                temp[j] += 1; // create spin-up electron
+                idx = mapping[binary_to_int(temp)];
+                if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                    result_vec(idx) += -t * initial_vec(k);
+                    result_vec(k) += -t * initial_vec(idx);
+                }
+                else {
+                    result_vec(idx) += t * initial_vec(k);
+                    result_vec(k) += t * initial_vec(idx);
+                }
+            }
+            // spin down
+            temp = base_vector;
+            // the if statement contains every possible down-electron hopping: next_j->j
+            if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
+                    temp[next_j] -= 2; // anihilate spin-down electron
+                    temp[j] += 2; // create spin-down electron
+                    idx = mapping[binary_to_int(temp)];
+                    if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                        result_vec(idx) += -t * initial_vec(k);
+                        result_vec(k) += -t * initial_vec(idx);
+                    }
+                    else {
+                        result_vec(idx) += t * initial_vec(k);
+                        result_vec(k) += t * initial_vec(idx);
+                    }
+                }
+            }
+        kinetic_term_omitted2:
+            // electron repulsion
+            if (base_vector[j] == 7 || base_vector[j] == 3)
+                result_vec(k) += U * initial_vec(k);
+            // electron-localised spin interaction ( interorbital electronic spin interaction)
+            temp = base_vector;
+            if (base_vector[j] == 5) {// S_i^+ s_i^-
+                temp[j] = 2;
+                idx = mapping[binary_to_int(temp)];
+                result_vec(idx) += -J_H * initial_vec(k);
+                result_vec(k) += -J_H * initial_vec(idx);
+            }
+            //Diagonal - z part
+            if (base_vector[j] == 1 || base_vector[j] == 6)
+                result_vec(k) -= 2.0 * J_H * 0.25 * initial_vec(k);
+            if (base_vector[j] == 2 || base_vector[j] == 5)
+                result_vec(k) += 2.0 * J_H * 0.25 * initial_vec(k);
+        }
+    }
+    return result_vec;
+}
 void HamiltonianKH::Build_Lanczos_Hamil_wKrylovSpace(vec initial_vec, int Lanczos_steps) {
     this->H_L = mat(Lanczos_steps, Lanczos_steps, fill::zeros);
     //this->Lanczos_GS = vec(N);
@@ -382,96 +470,15 @@ void HamiltonianKH::Build_Lanczos_Hamil(vec initial_vec, int Lanczos_steps) {
 
     tmp.~vec();
 }
-
-vec HamiltonianKH::Hamil_vector_multiply(vec initial_vec) {
-    vec result_vec(N, fill::zeros);
-    bool PBC = 0;
-    int next_j, idx;
-    int s_i, s_j;
-    for (int k = 0; k < N; k++) {
-        base_vector = int_to_binary(mapping_inv[k], L);
-        vector<int> temp(base_vector);
-        for (int j = 0; j <= L - 1; j++) {
-            if(PBC == 1 && j == L - 1) next_j = 0;
-            else if (PBC == 0 && j == L - 1) goto kinetic_term_omitted2;
-            else next_j = j + 1;
-
-            if (base_vector[j] < 4) s_i = 1;
-            else s_i = 0;
-            if (base_vector[next_j] < 4) s_j = 1;
-            else s_j = 0;
-
-            result_vec(k) += K * (s_i - 0.5) * (s_j - 0.5) * initial_vec(k);
-            //Kinetic spin part: S+ S-
-                temp = base_vector;
-                if (s_i == 0 && s_j == 1) { 
-                    temp[j] = base_vector[j] - 4; //spin filp
-                    temp[next_j] = base_vector[next_j] + 4;
-                    idx = mapping[binary_to_int(temp)];
-                    result_vec(idx) += K / 2. * initial_vec(k); //   S_i^+ * S_i+1^-
-                    result_vec(k) += K / 2. * initial_vec(idx); //   S_i^+ * S_i+1^-
-                }
-            //---------------------
-
-            // electron hopping j+1 -> j
-                //spin up
-                    temp = base_vector;
-                    //only odd numbers have up-electrons  //even numbers lack one up-electron
-                    if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
-                        temp[next_j] -= 1; // anihilate spin-up electron
-                        temp[j] += 1; // create spin-up electron
-                        idx = mapping[binary_to_int(temp)];
-                        if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
-                            result_vec(idx) += -t * initial_vec(k);
-                            result_vec(k) += -t * initial_vec(idx);
-                        }
-                        else {
-                            result_vec(idx) += t * initial_vec(k);
-                            result_vec(k) += t * initial_vec(idx);
-                        }
-                    }
-                // spin down
-                    temp = base_vector;
-                    // the if statement contains every possible down-electron hopping: next_j->j
-                    if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
-                        if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
-                            temp[next_j] -= 2; // anihilate spin-down electron
-                            temp[j] += 2; // create spin-down electron
-                            idx = mapping[binary_to_int(temp)];
-                            if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
-                                result_vec(idx) += -t * initial_vec(k);
-                                result_vec(k) += -t * initial_vec(idx);
-                            }
-                            else {
-                                result_vec(idx) += t * initial_vec(k);
-                                result_vec(k) += t * initial_vec(idx);
-                            }
-                        }
-                    }
-            kinetic_term_omitted2:
-            // electron repulsion
-                if (base_vector[j] == 7 || base_vector[j] == 3)
-                    result_vec(k) += U * initial_vec(k);
-            // electron-localised spin interaction ( interorbital electronic spin interaction)
-                temp = base_vector;
-                if (base_vector[j] == 5) {// S_i^+ s_i^-
-                    temp[j] = 2;
-                    idx = mapping[binary_to_int(temp)];
-                    result_vec(idx) += -J_H * initial_vec(k);
-                    result_vec(k) += -J_H * initial_vec(idx);
-                }
-            //Diagonal - z part
-                if (base_vector[j] == 1 || base_vector[j] == 6)
-                    result_vec(k) -= 2.0 * J_H * 0.25 * initial_vec(k);
-                if (base_vector[j] == 2 || base_vector[j] == 5)
-                    result_vec(k) += 2.0 * J_H * 0.25 * initial_vec(k);
-        }
-    }
-    return result_vec;
+void HamiltonianKH::Lanczos_Diagonalization(int lanczos_steps) {
+    srand(time(NULL));
+    Build_Lanczos_Hamil(Create_Random_vec(), lanczos_steps);
+    this->eigenVal_L = vec(lanczos_steps);
+    eig_sym(eigenVal_L, H_L);
 }
 
 double HamiltonianKH::Cv_kernel(double T) {
-    int random_cycles = 5; // number of random cycles to compute heat capacity
+    int random_cycles = 50; // number of random cycles to compute heat capacity
     int Lancz_steps = 200;
     double Z = 0; //partition function
     double E_av = 0; // average energy
@@ -483,15 +490,16 @@ double HamiltonianKH::Cv_kernel(double T) {
         Build_Lanczos_Hamil_wKrylovSpace(rand_vec, Lancz_steps);
         mat eigenVec;
         eig_sym(eigenVal_L, eigenVec, H_L);
-        mat Lanczos_eigenvec = Krylov_space * eigenVec;
+        mat Lanczos_eigenvec(N, Lancz_steps);
+        Lanczos_eigenvec = Krylov_space * eigenVec;
         eigenVec.~Mat();
 
         for (int m = 0; m < Lancz_steps; m++) {
-            overlap = abs(dot(rand_vec, Lanczos_eigenvec.col(m)));
+            overlap = dot(rand_vec, Lanczos_eigenvec.col(m));
             overlap *= overlap;
             Z += (double)N / (double)random_cycles * overlap * std::exp(-eigenVal_L(m) / T);
             E_av += eigenVal_L(m) * overlap * std::exp(-eigenVal_L(m) / T);
-            E_av += eigenVal_L(m) * eigenVal_L(m) * overlap * std::exp(-eigenVal_L(m) / T);
+            E2_av += eigenVal_L(m) * eigenVal_L(m) * overlap * std::exp(-eigenVal_L(m) / T);
         }
         Lanczos_eigenvec.~Mat();
     }
@@ -501,18 +509,20 @@ double HamiltonianKH::Cv_kernel(double T) {
     return (E2_av - E_av * E_av) / T / T / (L + 0.0);
 }
 void HamiltonianKH::Heat_Capacity_Lanczos() {
-    double dT = 0.01, T = dT;
+    double dT = 0.05, T = dT;
 
     ofstream savefile;
     stringstream Ustr, Nstr;
     Ustr << setprecision(1) << fixed << U;
     Nstr << setprecision(2) << fixed << (double)num_of_electrons / (double)L;
-    savefile.open("C_V_n=" + Nstr.str() + "_U=" + Ustr.str() + "_Lanczos.txt");
+    savefile.open("C_V_n=" + Nstr.str() + "_U=" + Ustr.str() + "_M=.txt");
 
-    while (T <= 5.0) {
-        savefile << T << "\t\t" << Cv_kernel(T) << endl;
+    srand(time(NULL));
+    while (T <= 4.0) {
+        double Cv = Cv_kernel(T);
+        savefile << T << "\t\t" << Cv << endl;
         T += dT;
-        out << T << endl;
+        out << T << "\t\t" << Cv << endl;
     }
     savefile.close();
 }

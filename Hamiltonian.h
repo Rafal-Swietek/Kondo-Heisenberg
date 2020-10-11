@@ -68,6 +68,8 @@ public:
 		vec Create_Random_vec();
 		void Build_Lanczos_Hamil(vec initial_vec, int Lanczos_steps);
 		void Build_Lanczos_Hamil_wKrylovSpace(vec initial_vec, int Lanczos_steps);
+
+		void Lanczos_Diagonalization(int lanczos_steps);
 		vec Hamil_vector_multiply(vec initial_vec);
 		double Cv_kernel(double T);
 		void Heat_Capacity_Lanczos();
