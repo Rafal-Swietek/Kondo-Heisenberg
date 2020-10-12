@@ -41,7 +41,6 @@ HamiltonianKH::HamiltonianKH(int L, int num_of_electrons, double t, double U, do
 	generate_mapping_subblock();
 	this->N = mapping_inv.size();
 
-	this->base_vector = vector<int>(L);
 	this->H = mat(N, N, arma::fill::zeros); //hamiltonian
 }
 //------------------------
@@ -56,7 +55,6 @@ HamiltonianKH::HamiltonianKH(int L, double t, double U, double K, double J_H) {
 	this->t = t; this->K = K;
 	this->J_H = J_H; this->U = U;
 
-	this->base_vector = vector<int>(L); //spin on each site, for instance |0100> for L=4
 	this->H = mat(N, N, arma::fill::zeros); //hamiltonian
 
 	this->mapping = vector<int>(N);
@@ -79,63 +77,58 @@ void HamiltonianKH::Hamiltonian() {
 	bool PBC = 0; //allows periodic boundary conditions if =1
 	int next_j;
     for (int k = 0; k < N; k++){
-		base_vector = int_to_binary(mapping_inv[k], L);
+		std::vector<int> base_vector = int_to_binary(mapping_inv[k], L);
 		vector<int> temp(base_vector);
 		for (int j = 0; j <= L - 1; j++) {
-			if (PBC == 1 && j == L - 1) next_j = 0;
-            else if (PBC == 0 && j == L - 1) goto kinetic_term_omitted;
-            else next_j = j + 1;
-            // Diagonal spin part
-            if (base_vector[j] < 4){
-                s_i = 1;
-            }
-            else{ s_i = 0; }
+            if (PBC == 1 && j == L - 1) next_j = 0;
+            if (j < L - 1 || PBC == 1) {
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                else next_j = j + 1;
+                // Diagonal spin part
+                if (base_vector[j] < 4) s_i = 1;
+                else s_i = 0;
 
-            // PBC = i+1 : (L-1)+1 = 0
-            if (base_vector[next_j] < 4) s_j = 1;
-            else s_j = 0;
-            H(k, k) += K * (s_i - 0.5) * (s_j - 0.5);
+                // PBC = i+1 : (L-1)+1 = 0
+                if (base_vector[next_j] < 4) s_j = 1;
+                else s_j = 0;
+                H(k, k) += K * (s_i - 0.5) * (s_j - 0.5);
 
-            //Kinetic spin part: S+ S-
+                //Kinetic spin part: S+ S-
                 temp = base_vector;
                 if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
                     temp[j] = base_vector[j] - 4; //spin filp
                     temp[next_j] = base_vector[next_j] + 4;
-                    setHamiltonianElem(k,K/2.,temp);
+                    setHamiltonianElem(k, K / 2., temp);
                 }
-            //---------------------
-            // electron hopping j+1 -> j  (j->j+1 is hermitian conjunagte)
-                //spin up
-                    temp = base_vector;
-                    //only odd numbers have up-electrons  //even numbers lack one up-electron
-                    if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
-                        temp[next_j] -= 1; // anihilate spin-up electron
-                        temp[j] += 1; // create spin-up electron
-                        if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                // electron hopping j+1 -> j  (j->j+1 is hermitian conjunagte)
+                    //spin up
+                temp = base_vector;
+                //only odd numbers have up-electrons  //even numbers lack one up-electron
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                    temp[next_j] -= 1; // anihilate spin-up electron
+                    temp[j] += 1; // create spin-up electron
+                    if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                        setHamiltonianElem(k, -t, temp);
+                    }
+                    else  setHamiltonianElem(k, +t, temp);
+                }
+                //spin down
+                temp = base_vector;
+                // the if statement contains every possible down-electron hopping: next_j->j
+                if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                    if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
+                        temp[next_j] -= 2; // anihilate spin-down electron
+                        temp[j] += 2; // create spin-down electron
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
                             setHamiltonianElem(k, -t, temp);
                         }
                         else  setHamiltonianElem(k, +t, temp);
                     }
-                //spin down
-                    temp = base_vector;
-                    // the if statement contains every possible down-electron hopping: next_j->j
-                    if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
-                        if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
-                            temp[next_j] -= 2; // anihilate spin-down electron
-                            temp[j] += 2; // create spin-down electron
-                            if ( (base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2) ){
-                                setHamiltonianElem(k, -t, temp);
-                            }
-                            else  setHamiltonianElem(k,+t,temp);
-                        }
-                    }
-            //---------------------
-
-            kinetic_term_omitted:
+                }
+            }
 			// electron repulsion
 				if (base_vector[j] == 7 || base_vector[j] == 3) 
 					H(k, k) += U;
-			//--------------------
 			// electron-localised spin interaction ( interorbital electronic spin interaction)
 				temp = base_vector;
 				if (base_vector[j] == 5) {// S_i^+ s_i^-
@@ -147,7 +140,6 @@ void HamiltonianKH::Hamiltonian() {
 					H(k, k) -= 2.0 * J_H * 0.25;
 				if (base_vector[j] == 2 || base_vector[j] == 5)
 					H(k, k) += 2.0 * J_H * 0.25;
-			//--------------------
         }
 	}
 }
@@ -162,21 +154,21 @@ void HamiltonianKH::CreateMappingElem(int& bSz, int& fSz, int& N_e, int& j, int&
         idx++;
     }
 }
-std::tuple<int, int, int> calculateSpinElements(int L, int j) {
-    int bSz = 0; //bosonic total spin - spin of upper orbital locked to n=1 filling
-    int fSz = 0; //fermionic total spin
+std::tuple<double, double, int> calculateSpinElements(int L, int j) {
+    double bSz = 0; //bosonic total spin - spin of upper orbital locked to n=1 filling
+    double fSz = 0; //fermionic total spin
     int N_e = 0; // numer of electrons in given state
     vector<int> temp = int_to_binary(j, L);
 
     for (int k = 0; k < L; k++) {
-        if (temp[k] < 4) bSz += 1;
-        else bSz -= 1;
+        if (temp[k] < 4) bSz += 0.5;
+        else bSz -= 0.5;
         if (temp[k] % 4 == 1) {
-            fSz += 1;
+            fSz += 0.5;
             N_e += 1;
         }
         else if (temp[k] % 4 == 2) {
-            fSz -= 1;
+            fSz -= 0.5;
             N_e += 1;
         }
         else if (temp[k] % 4 == 3)
@@ -237,6 +229,20 @@ void HamiltonianKH::Diagonalization() {
 //----------------------------------------------------
 
 // Helpful tools
+void HamiltonianKH::printEnergy() {
+    ofstream Efile;
+    stringstream Ustr, Nstr;
+    Ustr << setprecision(1) << fixed << U;
+    Nstr << setprecision(2) << fixed << (double)num_of_electrons / (double)L;
+    Efile.open("E_n=" + Nstr.str() + "_U=" + Ustr.str() + ".txt");
+
+    for (int k = 0; k < N; k++)
+        Efile << U << "\t\t" << eigenvalues(k) << endl;
+
+    Efile.close();
+
+}
+
 std::vector<double> prepareOmegaVec(arma::vec &eigenvalues, double dOmega){
     vector<double> omega_vec;
     double omega = eigenvalues(0);
@@ -257,18 +263,18 @@ void printDOS(vect resultDOS, double U, double N_e, int L, vect omega_vec, doubl
     DOSfile.open("DOS_n=" + Nstr.str() + "_U=" + Ustr.str() + ".txt");
 
     for (int k = 0; k < omega_vec.size(); k++)
-        DOSfile << omega_vec[k] << "\t\t" << resultDOS[k] << endl;
+        DOSfile << omega_vec[k] << "\t\t" << resultDOS[k] / maximum << endl;
 
     DOSfile.close();
 }
 void HamiltonianKH::Density_of_states(int N_e) {
-	double domega = 0.002;
+	double domega = 0.005;
 
     vector<double> omega_vec = prepareOmegaVec(eigenvalues,domega);
     vector<double> resultDOS(omega_vec.size());
 
     double maximum = 0;
-#pragma omp parallel for shared(omega_vec, resultDOS) num_threads(16)
+//#pragma omp parallel for shared(omega_vec, resultDOS) num_threads(16)
     for (int w = 0; w < omega_vec.size(); w++) {
         double omega = omega_vec[w];
         double DOS = 0;
@@ -276,8 +282,8 @@ void HamiltonianKH::Density_of_states(int N_e) {
         for (int n = 0; n < N; n++)
                 DOS += -1. / (double)L / pi * imag(1. / (omega + 2 * domega * 1i - eigenvalues(n)));
 
-        /* if (DOS > maximum)
-             maximum = DOS;*/
+        if (DOS > maximum)
+             maximum = DOS;
 
         resultDOS[w] = DOS;
     }
@@ -315,6 +321,33 @@ void HamiltonianKH::Heat_Capacity() {
 }
 
 
+
+double HamiltonianKH::spin_correlation_element(int site_i, int site_j, vec wavefunction) {
+    double result = 0;
+#pragma omp parallel for reduction(+:result)
+    for (int n = 0; n < N; n++) {
+        vector<int> temp = int_to_binary(n, L);
+        double fSz = 0, bSz = 0;
+
+        if (temp[site_i] < 4) bSz += 0.5;
+        else bSz -= 0.5;
+        if (temp[site_i] % 4 == 1)
+            fSz += 0.5;
+        else if (temp[site_i] % 4 == 2)
+            fSz -= 0.5;
+
+        if (temp[site_j] < 4) bSz += 0.5;
+        else bSz -= 0.5;
+        if (temp[site_j] % 4 == 1)
+            fSz += 0.5;
+        else if (temp[site_j] % 4 == 2)
+            fSz -= 0.5;
+
+        result += wavefunction(n) * (fSz + bSz) * wavefunction(n);
+    }
+    return result;
+}
+
 //----------------------------------------------------------------------------------------------
 //--------------------------------------------------LANCZOS-------------------------------------
 //----------------------------------------------------------------------------------------------
@@ -332,7 +365,7 @@ vec HamiltonianKH::Hamil_vector_multiply(vec initial_vec) {
     int next_j, idx;
     int s_i, s_j;
     for (int k = 0; k < N; k++) {
-        base_vector = int_to_binary(mapping_inv[k], L);
+        std::vector<int> base_vector = int_to_binary(mapping_inv[k], L);
         vector<int> temp(base_vector);
         for (int j = 0; j <= L - 1; j++) {
             if (PBC == 1 && j == L - 1) next_j = 0;
@@ -465,9 +498,6 @@ void HamiltonianKH::Build_Lanczos_Hamil(vec initial_vec, int Lanczos_steps) {
 
         initial_vec = tmp2;
     }
-    this->eigenVal_L = vec(Lanczos_steps);
-    eig_sym(eigenVal_L, H_L);
-
     tmp.~vec();
 }
 void HamiltonianKH::Lanczos_Diagonalization(int lanczos_steps) {
@@ -478,8 +508,8 @@ void HamiltonianKH::Lanczos_Diagonalization(int lanczos_steps) {
 }
 
 double HamiltonianKH::Cv_kernel(double T) {
-    int random_cycles = 50; // number of random cycles to compute heat capacity
-    int Lancz_steps = 200;
+    int random_cycles = 25; // number of random cycles to compute heat capacity
+    int Lancz_steps = 100;
     double Z = 0; //partition function
     double E_av = 0; // average energy
     double E2_av = 0; // average squared energy
@@ -541,8 +571,9 @@ void Main_U(int L, int N_e, double t) {
 		HamiltonianKH Object(L, N_e, t, U, K, J_H);
 		Object.Hamiltonian();
 		Object.Diagonalization();
-		//Object.Density_of_states(N_e);
-        Object.Heat_Capacity();
+		Object.Density_of_states(N_e);
+        Object.printEnergy();
+        //Object.Heat_Capacity();
 
         out << "U = " << U << " done!" << endl;
 	}

@@ -10,7 +10,7 @@ set xlabel '{/Symbol w}'
 
 set key outside bottom right
 
-start=0.0; end=2.6; inc=0.2
+start=0.2; end=3.0; inc=0.4
 list = ""; a=start-inc; while(a < end){list=list.sprintf("%.1f\n", a=a+inc)}    
 plot for [i in list] sprintf('DOS_n=%0.2f_U='.i.'.txt',n) w lp ps 0.3 title '{/*1.2 U='.i.'}'
 

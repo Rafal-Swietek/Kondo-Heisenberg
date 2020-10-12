@@ -30,7 +30,6 @@ private:
 	int num_of_electrons; //number of electrons
 
 	int N; //number of states
-	vector<int> base_vector;
 	vector<int> mapping; //generates the mapping of the base_vector number to the number in the block
 	vector<int> mapping_inv;
 
@@ -62,6 +61,8 @@ public:
 		void generate_mapping_total();
         void CreateMappingElem(int &bSz, int &fSz, int& N_e, int &j, int &idx);
         void setHamiltonianElem(int k, double value, std::vector<int> temp);
+
+		void printEnergy();
 	//-----------------------------
 
 	// Lanczos 
@@ -74,6 +75,8 @@ public:
 		double Cv_kernel(double T);
 		void Heat_Capacity_Lanczos();
 	//----------------
+
+		double spin_correlation_element(int site_i, int site_j, vec wavefunction);
 
 };
 
