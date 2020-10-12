@@ -9,7 +9,7 @@ int main() {
     double U = 2.1; // electron repulsion
 	double K = 0.0429; // spin exchange integral*.
     double J_H = U / 4.; // electron-spin interaction
-    int N_e = 4; // numer of electrons - parity same as number of sites
+    int N_e = 6; // numer of electrons - parity same as number of sites
 
 	// Main Program---------------------------------------
 		    Main_U(L, N_e, t);

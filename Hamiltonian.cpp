@@ -237,7 +237,7 @@ void HamiltonianKH::printEnergy() {
     Efile.open("E_n=" + Nstr.str() + "_U=" + Ustr.str() + ".txt");
 
     for (int k = 0; k < N; k++)
-        Efile << U << "\t\t" << eigenvalues(k) << endl;
+        Efile << U << "\t\t" << eigenvalues(k) - eigenvalues(0) << endl;
 
     Efile.close();
 
@@ -564,7 +564,7 @@ void HamiltonianKH::Heat_Capacity_Lanczos() {
 //----------------------------------------------------------------------------------------------
 
 void Main_U(int L, int N_e, double t) {
-	for (double U = 0.2; U < 3.0; U += 0.4) {
+	for (double U = 0.2; U < 3.0; U += 0.2) {
 		double K, J_H;
 		K = 4 * 0.15 * 0.15 / U;
 		J_H = 0.25 * U;
