@@ -1,9 +1,0 @@
-set title 'Energy values for different U values'
-set autoscale xy
-set key top right
-set ylabel 'E'
-set xlabel 'U' 
-start=0.0; end=2.; inc=0.2
-list = ""; a=start-inc; while(a < end){list=list.sprintf("%.1f\n", a=a+inc)}    
-plot for [i in list] 'energy_U='.i.'.txt' w p notitle
-

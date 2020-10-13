@@ -267,7 +267,7 @@ void printDOS(vect resultDOS, double U, double N_e, int L, vect omega_vec, doubl
 
     DOSfile.close();
 }
-void HamiltonianKH::Density_of_states(int N_e) {
+void HamiltonianKH::Total_Density_of_states() {
 	double domega = 0.005;
 
     vector<double> omega_vec = prepareOmegaVec(eigenvalues,domega);
@@ -287,7 +287,7 @@ void HamiltonianKH::Density_of_states(int N_e) {
 
         resultDOS[w] = DOS;
     }
-    printDOS(resultDOS,U,N_e,L,omega_vec,maximum);
+    printDOS(resultDOS,U, num_of_electrons,L,omega_vec,maximum);
 }
 
 void HamiltonianKH::Heat_Capacity() {
@@ -507,6 +507,42 @@ void HamiltonianKH::Lanczos_Diagonalization(int lanczos_steps) {
     eig_sym(eigenVal_L, H_L);
 }
 
+void HamiltonianKH::Lanczos_GroundState(int lanczos_steps) {
+
+    srand(time(NULL));
+    vec initial_vec = Create_Random_vec();
+    Build_Lanczos_Hamil(initial_vec, lanczos_steps);
+
+    mat eigenVec_L;
+    eig_sym(eigenVal_L, eigenVec_L, H_L);
+    vec ground_state = eigenVec_L.col(0); 
+    eigenVec_L.~Mat();
+
+    this->Lanczos_GS = vec(N, fill::zeros);
+
+    double beta = dot(initial_vec, initial_vec);
+    initial_vec = initial_vec / sqrt(beta); // normalized Krylov_space(j=0)
+    Lanczos_GS = ground_state(0) * initial_vec;
+
+    vec tmp = Hamil_vector_multiply(initial_vec); // tmp = H * Krylov_space(0)
+    double alfa = dot(initial_vec, tmp);
+    tmp = tmp - alfa * initial_vec;
+
+    for (int j = 1; j < lanczos_steps; j++) {
+        beta = sqrt(dot(tmp, tmp));
+        vec tmp2 = tmp / beta;
+
+        Lanczos_GS += ground_state(j) * tmp2;
+
+        tmp = Hamil_vector_multiply(tmp2); // tmp = H * tmp2
+        alfa = dot(tmp2, tmp);
+        tmp = tmp - alfa * tmp2 - beta * initial_vec;
+
+        initial_vec = tmp2;
+    }
+    tmp.~vec();
+}
+
 double HamiltonianKH::Cv_kernel(double T) {
     int random_cycles = 25; // number of random cycles to compute heat capacity
     int Lancz_steps = 100;
@@ -564,14 +600,14 @@ void HamiltonianKH::Heat_Capacity_Lanczos() {
 //----------------------------------------------------------------------------------------------
 
 void Main_U(int L, int N_e, double t) {
-	for (double U = 0.2; U < 3.0; U += 0.2) {
+	for (double U = 0.2; U < 6.0; U += 0.4) {
 		double K, J_H;
 		K = 4 * 0.15 * 0.15 / U;
 		J_H = 0.25 * U;
 		HamiltonianKH Object(L, N_e, t, U, K, J_H);
 		Object.Hamiltonian();
 		Object.Diagonalization();
-		Object.Density_of_states(N_e);
+		Object.Total_Density_of_states();
         Object.printEnergy();
         //Object.Heat_Capacity();
 
@@ -585,7 +621,7 @@ void Main_Jh(int L, int N_e, double t, double K, double U) {
         HamiltonianKH Object(L, N_e, t, U, K, J_H);
         Object.Hamiltonian();
         Object.Diagonalization();
-        //Object.Density_of_states(N_e);
+        //Object.Total_Density_of_states();
         Object.Heat_Capacity();
 
         out << "J_H/U = " << J_H / U << " done!" << endl;

@@ -53,7 +53,7 @@ public:
 	void Hamiltonian();
 	void Diagonalization();
 	void Heat_Capacity();
-	void Density_of_states(int N_e);
+	void Total_Density_of_states();
 
 
 	// Tools
@@ -69,6 +69,7 @@ public:
 		vec Create_Random_vec();
 		void Build_Lanczos_Hamil(vec initial_vec, int Lanczos_steps);
 		void Build_Lanczos_Hamil_wKrylovSpace(vec initial_vec, int Lanczos_steps);
+		void Lanczos_GroundState(int lanczos_steps);
 
 		void Lanczos_Diagonalization(int lanczos_steps);
 		vec Hamil_vector_multiply(vec initial_vec);
