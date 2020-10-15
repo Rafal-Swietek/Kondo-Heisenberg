@@ -4,7 +4,7 @@ using namespace std;
 
 int main() {
 
-    int L = 8; //chain length
+    int L = 4; //chain length
 	double t = 0.5; //electron hopping = t_00
     double U = 2.1; // electron repulsion
 	double K = 0.0429; // spin exchange integral*.
@@ -17,10 +17,10 @@ int main() {
             HamiltonianKH Object(L, N_e, t, U, K, J_H);
             //Object.Hamiltonian();
             //Object.Diagonalization();
-            out << "Start Lanczos" << endl;
-            Object.Lanczos_Diagonalization(200);
+            //out << "Start Lanczos" << endl;
+            //Object.Lanczos_Diagonalization(100);
             //out << "E   = " << Object.eigenvalues(0) << endl;
-            out << "E_L = " << Object.eigenVal_L(0) << endl;
+            //out << "E_L = " << Object.eigenVal_L(0) << endl;
             //Object.Heat_Capacity();
             Object.Heat_Capacity_Lanczos();
 

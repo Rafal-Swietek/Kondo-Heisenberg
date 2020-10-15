@@ -222,6 +222,7 @@ void HamiltonianKH::Diagonalization() {
 	}
 	catch (const bad_alloc& e) {
 		std::cout << "Memory exceeded" << e.what() << "\n";
+        out << "dim(H) = " << H.size() * sizeof(H(0, 0)) << "\n";
         	assert(false);
     }
     out << "dim(H) = " << H.size() * sizeof(H(0, 0)) << "\n";
@@ -353,12 +354,13 @@ double HamiltonianKH::spin_correlation_element(int site_i, int site_j, vec wavef
 //----------------------------------------------------------------------------------------------
 vec HamiltonianKH::Create_Random_vec() {
     vec random_vec(N, fill::zeros);
-    for (int j = 0; j < N; j++)
+    double norm = 0;
+    for (int j = 0; j < N; j++) {
         random_vec(j) = static_cast<double>(rand()) / (RAND_MAX + 0.0) - 0.5;
-    return random_vec;
+        norm += random_vec(j) * random_vec(j);
+    }
+    return random_vec / norm;
 }
-
-
 vec HamiltonianKH::Hamil_vector_multiply(vec initial_vec) {
     vec result_vec(N, fill::zeros);
     bool PBC = 0;
@@ -445,15 +447,17 @@ vec HamiltonianKH::Hamil_vector_multiply(vec initial_vec) {
     }
     return result_vec;
 }
+
 void HamiltonianKH::Build_Lanczos_Hamil_wKrylovSpace(vec initial_vec, int Lanczos_steps) {
     this->H_L = mat(Lanczos_steps, Lanczos_steps, fill::zeros);
     //this->Lanczos_GS = vec(N);
     try { this->Krylov_space = mat(N, Lanczos_steps, fill::zeros); }
     catch (const bad_alloc& e) {
         std::cout << "Memory exceeded" << e.what() << "\n";
+        out << "dim(Krylov_space) = " << Krylov_space.size() * sizeof(H(0, 0)) << "\n";
         assert(false);
     }
-    out << "dim(Krylov_space) = " << Krylov_space.size() * sizeof(H(0, 0)) << "\n";
+    //out << "dim(Krylov_space) = " << Krylov_space.size() * sizeof(H(0, 0)) << "\n";
 
     Krylov_space.col(0) = initial_vec;
     double beta = dot(Krylov_space.col(0), Krylov_space.col(0));
@@ -483,6 +487,7 @@ void HamiltonianKH::Build_Lanczos_Hamil(vec initial_vec, int Lanczos_steps) {
     
     double beta = dot(initial_vec, initial_vec);
     initial_vec = initial_vec / sqrt(beta); // normalized Krylov_space(j=0)
+    // already normalized input random vector
     
     vec tmp = Hamil_vector_multiply(initial_vec); // tmp = H * Krylov_space(0)
     double alfa = dot(initial_vec, tmp);
@@ -490,7 +495,7 @@ void HamiltonianKH::Build_Lanczos_Hamil(vec initial_vec, int Lanczos_steps) {
 
     H_L(0, 0) = alfa;
     for (int j = 1; j < Lanczos_steps; j++) {
-        beta = sqrt(dot(tmp, tmp));
+        double beta = sqrt(dot(tmp, tmp));
         vec tmp2 = tmp / beta;
 
         tmp = Hamil_vector_multiply(tmp2); // tmp = H * tmp2
@@ -502,15 +507,13 @@ void HamiltonianKH::Build_Lanczos_Hamil(vec initial_vec, int Lanczos_steps) {
         H_L(j - 1, j) = beta;
 
         initial_vec = tmp2;
-        out << j << "lanczos step" << endl;
     }
     tmp.~vec();
 }
 void HamiltonianKH::Lanczos_Diagonalization(int lanczos_steps) {
     srand(time(NULL));
     Build_Lanczos_Hamil(Create_Random_vec(), lanczos_steps);
-    this->eigenVal_L = vec(lanczos_steps);
-    eig_sym(eigenVal_L, H_L);
+    eig_sym(eigenVal_L, eigenVec_L, H_L);
 }
 
 void HamiltonianKH::Lanczos_GroundState(int lanczos_steps) {
@@ -519,10 +522,8 @@ void HamiltonianKH::Lanczos_GroundState(int lanczos_steps) {
     vec initial_vec = Create_Random_vec();
     Build_Lanczos_Hamil(initial_vec, lanczos_steps);
 
-    mat eigenVec_L;
     eig_sym(eigenVal_L, eigenVec_L, H_L);
     vec ground_state = eigenVec_L.col(0); 
-    eigenVec_L.~Mat();
 
     this->Lanczos_GS = vec(N, fill::zeros);
 
@@ -549,9 +550,38 @@ void HamiltonianKH::Lanczos_GroundState(int lanczos_steps) {
     tmp.~vec();
 }
 
+vec HamiltonianKH::RandVec_times_KrylovTranspose(vec randvec, int lanczos_steps) {
+    double beta = dot(randvec, randvec);
+    randvec = randvec / sqrt(beta); // normalized Krylov_space(j=0)
+
+    vec result_randvec(lanczos_steps, fill::zeros);
+    result_randvec(0) = dot(randvec, randvec);
+
+    vec tmp = Hamil_vector_multiply(randvec); // tmp = H * Krylov_space(0)
+    double alfa = dot(randvec, tmp);
+    tmp = tmp - alfa * randvec;
+
+    vec tmp2_prev = randvec;
+    for (int j = 1; j < lanczos_steps; j++) {
+        double beta = sqrt(dot(tmp, tmp));
+        vec tmp2 = tmp / beta;
+
+        result_randvec(j) = dot(randvec, tmp2); // overlap <Krylov.col(j)|ranvec>
+
+        tmp = Hamil_vector_multiply(tmp2); // tmp = H * tmp2
+        alfa = dot(tmp2, tmp);
+        tmp = tmp - alfa * tmp2 - beta * tmp2_prev;
+
+        tmp2_prev = tmp2;
+    }
+    tmp.~vec();
+    tmp2_prev.~vec();
+
+    return result_randvec;
+}
 double HamiltonianKH::Cv_kernel(double T) {
-    int random_cycles = 25; // number of random cycles to compute heat capacity
-    int Lancz_steps = 100;
+    int random_cycles = 20; // number of random cycles to compute heat capacity
+    int Lancz_steps = 150;
     double Z = 0; //partition function
     double E_av = 0; // average energy
     double E2_av = 0; // average squared energy
@@ -559,21 +589,20 @@ double HamiltonianKH::Cv_kernel(double T) {
 
     for (int r = 0; r < random_cycles; r++) {
         vec rand_vec = Create_Random_vec();
-        Build_Lanczos_Hamil_wKrylovSpace(rand_vec, Lancz_steps);
-        mat eigenVec;
-        eig_sym(eigenVal_L, eigenVec, H_L);
-        mat Lanczos_eigenvec(N, Lancz_steps);
-        Lanczos_eigenvec = Krylov_space * eigenVec;
-        eigenVec.~Mat();
+        Build_Lanczos_Hamil(rand_vec, Lancz_steps);
+        eig_sym(eigenVal_L, eigenVec_L, H_L);
+        /*mat Lanczos_eigenvec(N, Lancz_steps);
+        Lanczos_eigenvec = Krylov_space * eigenVec_L;*/
 
+        vec rand2 = RandVec_times_KrylovTranspose(rand_vec, Lancz_steps);
         for (int m = 0; m < Lancz_steps; m++) {
-            overlap = dot(rand_vec, Lanczos_eigenvec.col(m));
+            overlap = dot(rand2, eigenVec_L.col(m));
+            //overlap = dot(rand_vec, Lanczos_eigenvec.col(m));
             overlap *= overlap;
-            Z += (double)N / (double)random_cycles * overlap * std::exp(-eigenVal_L(m) / T);
-            E_av += eigenVal_L(m) * overlap * std::exp(-eigenVal_L(m) / T);
-            E2_av += eigenVal_L(m) * eigenVal_L(m) * overlap * std::exp(-eigenVal_L(m) / T);
+            Z += (double)N / (double)random_cycles * overlap * std::exp(-(eigenVal_L(m) - eigenVal_L(0)) / T);
+            E_av += eigenVal_L(m) * overlap * std::exp(-(eigenVal_L(m) - eigenVal_L(0)) / T);
+            E2_av += eigenVal_L(m) * eigenVal_L(m) * overlap * std::exp(-(eigenVal_L(m) - eigenVal_L(0)) / T);
         }
-        Lanczos_eigenvec.~Mat();
     }
     E_av = E_av / Z * (double)N / (double)random_cycles;
     E2_av = E2_av / Z * (double)N / (double)random_cycles;
@@ -581,16 +610,16 @@ double HamiltonianKH::Cv_kernel(double T) {
     return (E2_av - E_av * E_av) / T / T / (L + 0.0);
 }
 void HamiltonianKH::Heat_Capacity_Lanczos() {
-    double dT = 0.05, T = dT;
+    double dT = 0.01, T = dT;
 
     ofstream savefile;
     stringstream Ustr, Nstr;
     Ustr << setprecision(1) << fixed << U;
     Nstr << setprecision(2) << fixed << (double)num_of_electrons / (double)L;
-    savefile.open("C_V_n=" + Nstr.str() + "_U=" + Ustr.str() + "_M=.txt");
+    savefile.open("C_V_n=" + Nstr.str() + "_U=" + Ustr.str() + "_oldcode.txt");
 
     srand(time(NULL));
-    while (T <= 4.0) {
+    while (T <= 3.0) {
         double Cv = Cv_kernel(T);
         savefile << T << "\t\t" << Cv << endl;
         T += dT;

@@ -41,8 +41,10 @@ public:
 	mat Krylov_space; // Krylov
 	mat H_L; // lanczos hamiltonian
 	vec eigenVal_L; // lanczos eigenvalues
+	mat eigenVec_L; // lanczos eigenvect5ors in Krylov subspace
 	vec Lanczos_GS;
 
+	vec overlap_krylov; // overlap of random vector and eigenvectors
 
 public:
 	HamiltonianKH(int L, double t, double U, double K, double J_H); //Constructor for total Hamiltonian
@@ -73,6 +75,8 @@ public:
 
 		void Lanczos_Diagonalization(int lanczos_steps);
 		vec Hamil_vector_multiply(vec initial_vec);
+
+		vec RandVec_times_KrylovTranspose(vec randvec, int lanczos_steps);
 		double Cv_kernel(double T);
 		void Heat_Capacity_Lanczos();
 	//----------------
