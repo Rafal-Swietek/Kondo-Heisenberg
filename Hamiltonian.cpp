@@ -41,7 +41,6 @@ HamiltonianKH::HamiltonianKH(int L, int num_of_electrons, double t, double U, do
 	generate_mapping_subblock();
 	this->N = mapping_inv.size();
 
-	this->H = mat(N, N, arma::fill::zeros); //hamiltonian
 }
 //------------------------
 
@@ -55,7 +54,6 @@ HamiltonianKH::HamiltonianKH(int L, double t, double U, double K, double J_H) {
 	this->t = t; this->K = K;
 	this->J_H = J_H; this->U = U;
 
-	this->H = mat(N, N, arma::fill::zeros); //hamiltonian
 
 	this->mapping = vector<int>(N);
 	this->mapping_inv = vector<int>(N);
@@ -73,6 +71,8 @@ void HamiltonianKH::setHamiltonianElem(int k, double value, std::vector<int> tem
         H(k, idx) += value;
 }
 void HamiltonianKH::Hamiltonian() {
+    this->H = mat(N, N, arma::fill::zeros); //hamiltonian
+
     int s_i, s_j; //i=j, j=j+1
 	bool PBC = 0; //allows periodic boundary conditions if =1
 	int next_j;
@@ -222,9 +222,9 @@ void HamiltonianKH::Diagonalization() {
 	}
 	catch (const bad_alloc& e) {
 		std::cout << "Memory exceeded" << e.what() << "\n";
-		std::cout << H.size() * sizeof(H(0, 0)) << "\n";
         	assert(false);
-    	}
+    }
+    out << "dim(H) = " << H.size() * sizeof(H(0, 0)) << "\n";
 }
 //----------------------------------------------------
 
@@ -448,7 +448,12 @@ vec HamiltonianKH::Hamil_vector_multiply(vec initial_vec) {
 void HamiltonianKH::Build_Lanczos_Hamil_wKrylovSpace(vec initial_vec, int Lanczos_steps) {
     this->H_L = mat(Lanczos_steps, Lanczos_steps, fill::zeros);
     //this->Lanczos_GS = vec(N);
-    this->Krylov_space = mat(N, Lanczos_steps);
+    try { this->Krylov_space = mat(N, Lanczos_steps, fill::zeros); }
+    catch (const bad_alloc& e) {
+        std::cout << "Memory exceeded" << e.what() << "\n";
+        assert(false);
+    }
+    out << "dim(Krylov_space) = " << Krylov_space.size() * sizeof(H(0, 0)) << "\n";
 
     Krylov_space.col(0) = initial_vec;
     double beta = dot(Krylov_space.col(0), Krylov_space.col(0));
@@ -497,6 +502,7 @@ void HamiltonianKH::Build_Lanczos_Hamil(vec initial_vec, int Lanczos_steps) {
         H_L(j - 1, j) = beta;
 
         initial_vec = tmp2;
+        out << j << "lanczos step" << endl;
     }
     tmp.~vec();
 }
