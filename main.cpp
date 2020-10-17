@@ -4,26 +4,26 @@ using namespace std;
 
 int main() {
 
-    int L = 4; //chain length
-	double t = 0.5; //electron hopping = t_00
-    double U = 2.1; // electron repulsion
-	double K = 0.0429; // spin exchange integral*.
-    double J_H = U / 4.; // electron-spin interaction
+    int L = 6; //chain length
+	double t = 0; //electron hopping = t_00
+    double U = 0; // electron repulsion
+    double K = 1;// 0.0429; // spin exchange integral*.
+    double J_H = 0;// U / 4.; // electron-spin interaction
     int N_e = 3 * L / 2; // numer of electrons - parity same as number of sites
 
 	// Main Program---------------------------------------
 		    //Main_U(L, N_e, t);
             //Main_Jh(L, N_e, t, K, U);
-            HamiltonianKH Object(L, N_e, t, U, K, J_H);
-            //Object.Hamiltonian();
-            //Object.Diagonalization();
-            //out << "Start Lanczos" << endl;
-            //Object.Lanczos_Diagonalization(100);
-            //out << "E   = " << Object.eigenvalues(0) << endl;
-            //out << "E_L = " << Object.eigenVal_L(0) << endl;
-            //Object.Heat_Capacity();
-            Object.Heat_Capacity_Lanczos();
+    Main_Cv(L, N_e, t, K, U, J_H);
+    for (int M = 50; M <= 300; M += 50) {
+        Main_Cv_Lanczos(L, N_e, t, K, U, J_H, M);
+        out << M << endl;
+    }
 
+    /*Lanczos Ham(L, N_e, t, U, K, J_H, -N_e + 6, 200);
+    Ham.Lanczos_Diagonalization();
+    out << Ham.eigenVal_L.t();*/
+    //Main_DOS(L, N_e, t, K, U, J_H);
 	//------------------------------------------------------------
 
 
