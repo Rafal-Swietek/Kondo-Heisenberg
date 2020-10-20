@@ -5,8 +5,8 @@
 
 double pi = M_PI;
 
-double dT = 0.005;
-double T_end = 3.0;
+double dT = 0.01;
+double T_end = 10.0;
 double domega = 0.01;
 
 //Destructor
@@ -252,7 +252,7 @@ vec HamiltonianKH::Total_Density_of_states(std::vector<double> omega_vec) {
         double DOS = 0;
     //#pragma omp parallel for shared(omega_vec, resultDOS) reduction(+: DOS)
         for (ull_int n = 0; n < N; n++)
-                DOS += -1. / (double)L / pi * imag(1. / (omega + 2 * domega * 1i - eigenvalues(n)));
+            DOS += -1. / (double)L / pi * cpx(1. / (omega + 2 * domega * 1i - eigenvalues(n))).imag();
 
         if (DOS > maximum)
              maximum = DOS;
@@ -286,7 +286,7 @@ vec HamiltonianKH::Heat_Capacity() {
         energy2_av = energy2_av / Partition_Function;
         double heat_capacity = (energy2_av - energy_av * energy_av) / T / T / (L + 0.0);
         Cv(k) = heat_capacity;
-        chi_0(k) = X_0 / Partition_Function / T / (double)L;
+        chi_0(k) = X_0 / Partition_Function / (double)L;
         T += dT; k++;
     }
     return Cv;
@@ -294,10 +294,10 @@ vec HamiltonianKH::Heat_Capacity() {
 void HamiltonianKH::total_spin_squared() {
     this->Sz_tot2 = sp_mat(N, N);
     for (ull_int n = 0; n < N; n++) {
-        vector<int> temp = int_to_binary(n, L);
+        std::vector<int> temp = int_to_binary(mapping[n], L);
         double Sz_tot = 0;
         for (int a = 0; a < L; a++) {
-            for (int b = 0; b < L; b++) {
+            for (int b = a; b < L; b++) {
                 double fSz1 = 0, bSz1 = 0;
                 if (temp[a] < 4) bSz1 += 0.5;
                 else bSz1 -= 0.5;
@@ -314,7 +314,7 @@ void HamiltonianKH::total_spin_squared() {
                 else if (temp[b] % 4 == 2)
                     fSz2 -= 0.5;
 
-                Sz_tot = (fSz1 + bSz1) * (fSz2 + bSz2);
+                Sz_tot += (fSz1 + bSz1) * (bSz2 + fSz2);
             }
         }
         Sz_tot2(n, n) = Sz_tot;
@@ -355,7 +355,8 @@ void HamiltonianKH::show_ground_state() {
             val += (1 - int(base_vector[base_vector.size() - 1 - j] / 4)) * std::pow(2, j);
         GS(val) += ground_state(k);
     }
-    GS = arma::abs(GS) / dot(GS, GS); //normalizing to be sure
+    GS = arma::abs(GS);
+    GS = GS / dot(GS, GS); //normalizing to be sure
     out << endl;
     double maximum = arma::max(GS);
     for (ull_int k = 0; k < GS.size(); k++) {
@@ -406,7 +407,7 @@ vec Lanczos::Hamil_vector_multiply(vec initial_vec) {
     vec result_vec(N, fill::zeros);
     for (ull_int k = 0; k < N; k++) {
         std::vector<int> base_vector = int_to_binary(mapping[k], L);
-        vector<int> temp(base_vector);
+        std::vector<int> temp(base_vector);
         int PBC = 0;
         int next_j;
         ull_int idx;
@@ -718,8 +719,9 @@ void Main_Cv(int L, int N_e, double t, double K, double U, double J_H) {
         HamiltonianKH Hamil(L, N_e, t, U, K, J_H, Sz);
         Hamil.Hamiltonian();
         Hamil.Diagonalization();
-        Cv += Hamil.Heat_Capacity() / (N_e + 1);
-        chi_0 += Hamil.chi_0 / (N_e + 1);
+        Cv += Hamil.Heat_Capacity() / ((double)N_e + 1.0);
+        if(Sz == 0)
+            chi_0 = Hamil.chi_0 / ((double)N_e + 1.0);
     }
     print_Cv(Cv, U, N_e, L);
     print_chi(chi_0, U, N_e, L);

@@ -27,7 +27,6 @@ using namespace arma;
 
 typedef unsigned long long int ull_int;
 typedef std::complex<double> cpx;
-typedef std::vector<double> vect;
 
 #define out std::cout << std::setprecision(16) << std::fixed
 
