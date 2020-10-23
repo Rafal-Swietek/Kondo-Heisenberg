@@ -1,0 +1,32 @@
+vec Cv(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
+    this->chi_0 = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
+    this->partition_function = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
+
+    int k = 0;
+    double T = dT;
+    total_spin_squared(); //for chi_0 calculation
+    std::vector temperature = prepare_parameterVec(dT, T_end, dT);
+//#pragma omp parallel for shared(temperature) schedule(dynamic)
+    for (int k = 0; k < temperature.size(); k++) {
+        double T = temperature[k];
+
+        double energy_av = 0; //average of energy E
+        double energy2_av = 0; //average of E^2
+        double Partition_Function = 0;
+        double X_0 = 0; // static spin susceptibility
+        for (ull_int j = 0; j < N; j++) {
+            Partition_Function += std::exp(-(eigenvalues(j) - eigenvalues(0)) / T); //partition function(T)
+            energy_av += eigenvalues(j) * std::exp(-(eigenvalues(j) - eigenvalues(0)) / T); //average energy(T)
+            energy2_av += eigenvalues(j) * eigenvalues(j) * std::exp(-(eigenvalues(j) - eigenvalues(0)) / T); //average energy^2(T)
+
+            X_0 += Sz_tot2(j,j) * std::exp(-(eigenvalues(j) - eigenvalues(0)) / T);
+        }
+        energy_av = energy_av / Partition_Function;
+        energy2_av = energy2_av / Partition_Function;
+        double heat_capacity = (energy2_av - energy_av * energy_av) / T / T / (L + 0.0);
+        Cv(k) = heat_capacity;
+        chi_0(k) = X_0 / (double)L;
+        partition_function(k) = Partition_Function;
+    }
+    return Cv;
+}

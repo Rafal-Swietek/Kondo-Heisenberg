@@ -21,6 +21,7 @@
 #include <omp.h>
 #include <thread>
 #include <time.h>
+#include <future>
 
 using namespace std;
 using namespace arma;
@@ -29,6 +30,7 @@ typedef unsigned long long int ull_int;
 typedef std::complex<double> cpx;
 
 #define out std::cout << std::setprecision(16) << std::fixed
+#define num_of_threads 4
 
 class HamiltonianKH {
 public:
@@ -40,7 +42,7 @@ public:
 	int Sz; // total spin for spin-sector selection
 	int num_of_electrons; //number of electrons
 
-	vector<ull_int> mapping; //generates the mapping of the base_vector number to the number in the block
+	std::vector<ull_int> mapping; //generates the mapping of the base_vector number to the number in the block
 	ull_int N; //number of states
     mat H;
 	sp_mat H_sparse;
@@ -50,6 +52,7 @@ public:
 
 	sp_mat Sz_tot2; // square of total spin: Sz_tot^2 = sum_ij Sz^i Sz^j
 	vec chi_0; // static susceptibility
+	vec partition_function;
 
 public:
 	HamiltonianKH(); // default Constructor
@@ -61,32 +64,34 @@ public:
 	void Diagonalization();
 
 	void generate_mapping();
-    void CreateMappingElem(int &bSz, int &fSz, int& N_e, ull_int& j, ull_int& idx);
+	void mapping_kernel(int& L, ull_int& start, ull_int& stop, std::vector<ull_int>& map_threaded, int& _id, int& S_z, int& no_electrons);
     void setHamiltonianElem(ull_int k, double value, std::vector<int> temp);
 	void setHamiltonianElem_sparse(ull_int k, double value, std::vector<int> temp);
 	void printEnergy(double Ef);
 	void show_ground_state();
-	void total_spin_squared();
+
+	void print_base_vector(std::vector<int>& base_vector);
 
 // Functions not usable by Lanczos
-	vec Heat_Capacity();
 	vec Total_Density_of_states(std::vector<double> omega_vec);
-	double spin_correlation_element(int site_i, int site_j, vec wavefunction);
 };
 
 //----------------------------------------------------------------------------------------------
 //--------------------------------------------------TOOLS---------------------------------------
 //----------------------------------------------------------------------------------------------
-ull_int binary_search(std::vector<ull_int> arr, int l_point, int r_point, int element);
+ull_int binary_search(std::vector<ull_int> arr, int l_point, int r_point, ull_int element);
 
 vector<int> int_to_binary(ull_int idx, int L); //converges int to binary code of length N
-int binary_to_int(vector<int> vec); //converges vector with binary code to decimal system
+ull_int binary_to_int(vector<int> vec); //converges vector with binary code to decimal system
 double FermiLevel(int L, int N_e, double t, double K, double U, double J_H);
-std::vector<double> prepareOmegaVec(double omega_min, double omega_max, double dOmega);
-void printDOS(vec resultDOS, double U, double N_e, int L, std::vector<double> omega_vec, double maximum, double E_fermi);
-void print_Cv(vec Cv, double U, double N_e, int L);
-void print_Cv_Lanczos(vec Cv, double U, double N_e, int L, int M, int random_steps);
-void print_chi(vec chi, double U, double N_e, int L);
+std::vector<double> prepare_parameterVec(double _min, double _max, double step);
+void printDOS(vec& resultDOS, double U, double N_e, int L, std::vector<double>& omega_vec, double maximum, double E_fermi);
+void print_Cv(vec& Cv, double U, double N_e, int L);
+void print_Cv_Lanczos(vec& Cv, double U, double N_e, int L, int M, int random_steps);
+void print_chi(vec& chi, double U, double N_e, int L);
+
+void Heat_Capacity(std::vector<arma::vec>& energies, vec& Cv); 
+void static_spin_susceptibility(std::vector<arma::vec>& energies, vec& chi);
 
 
 void Main_U(int L, int N_e, double t);
@@ -102,7 +107,6 @@ class Lanczos : public HamiltonianKH {
 public:
 	int lanczos_steps; // number of lanczos steps
 
-	mat Krylov_space; // Krylov
 	mat H_L; // lanczos hamiltonian
 	vec randVec_inKrylovSpace; // overlap of random vector and eigenvectors
 
@@ -112,17 +116,14 @@ public:
 
 	vec Create_Random_vec();
 	void Build_Lanczos_Hamil(vec initial_vec);
-	void Build_Lanczos_Hamil_wKrylovSpace(vec initial_vec);
 	void Lanczos_GroundState();
 
 	void Lanczos_Diagonalization();
 	vec Hamil_vector_multiply(vec initial_vec);
 
-	vec RandVec_times_KrylovTranspose(vec randvec);
-	double Cv_kernel(double T, int random_steps);
+	vec thermal_average_lanczos(vec& quantity, int& random_steps);
 	vec Heat_Capacity_Lanczos(int random_steps);
 };
-
 
 #endif
 

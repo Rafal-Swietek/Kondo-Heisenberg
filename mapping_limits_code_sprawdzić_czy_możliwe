@@ -1,0 +1,16 @@
+void HamiltonianKH::calculate_mappnig_limits(ull_int& start, ull_int& stop) {
+    start = 0; stop = 0;
+    std::vector<int> base(L);
+    if (num_of_electrons % 2 == 0) {
+        for (int k = L - 1; k >= L / 2; k--)
+            base[k] = 7; // fill first sites with doubly occupation
+        for (int k = L / 2 - 1; k >= L / 4; k--)
+            base[k] = 3; // fill double occupation but flipped upper spin
+        for (int k = L / 4 - 1; k >= 0; k--)
+            base[k] = 0; // fill rest with no electrons on lower orbital and flipped upper spin - preserving total spin
+        start = binary_to_int(base);
+
+        for (int k = 0; k < L / 2; k--)
+            base[k] = 7; // fill first sites with doubly occupation
+    }
+}

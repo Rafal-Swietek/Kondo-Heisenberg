@@ -1,0 +1,47 @@
+vec Lanczos::RandVec_times_KrylovTranspose(vec randvec) {
+    double beta = dot(randvec, randvec);
+    randvec = randvec / sqrt(beta); // normalized Krylov_space(j=0)
+
+    vec result_randvec(lanczos_steps, fill::zeros);
+    result_randvec(0) = dot(randvec, randvec);
+
+    vec tmp = Hamil_vector_multiply(randvec); // tmp = H * Krylov_space(0)
+    double alfa = dot(randvec, tmp);
+    tmp = tmp - alfa * randvec;
+
+    vec tmp2_prev = randvec;
+    for (int j = 1; j < lanczos_steps; j++) {
+        double beta = sqrt(dot(tmp, tmp));
+        vec tmp2 = tmp / beta;
+
+        result_randvec(j) = dot(randvec, tmp2); // overlap <Krylov.col(j)|ranvec>
+
+        tmp = Hamil_vector_multiply(tmp2); // tmp = H * tmp2
+        alfa = dot(tmp2, tmp);
+        tmp = tmp - alfa * tmp2 - beta * tmp2_prev;
+
+        tmp2_prev = tmp2;
+    }
+    tmp.~vec();
+    tmp2_prev.~vec();
+
+    return result_randvec;
+}
+double Lanczos::Cv_kernel(double T, int random_steps) {
+    double Z = 0; //partition function
+    double E_av = 0; // average energy
+    double E2_av = 0; // average squared energy
+    double overlap = 0; //overlap of random vectopr and lanczos eigenvectors
+
+    for (int m = 0; m < lanczos_steps; m++) {
+        overlap = dot(randVec_inKrylovSpace, eigenvectors.col(m));
+        overlap *= overlap;
+        Z += (double)N / (double)random_steps * overlap * std::exp(-(eigenvalues(m) - eigenvalues(0)) / T);
+        E_av += eigenvalues(m) * overlap * std::exp(-(eigenvalues(m) - eigenvalues(0)) / T);
+        E2_av += eigenvalues(m) * eigenvalues(m) * overlap * std::exp(-(eigenvalues(m) - eigenvalues(0)) / T);
+    }
+    E_av = E_av / Z * (double)N / (double)random_steps;
+    E2_av = E2_av / Z * (double)N / (double)random_steps;
+    return (E2_av - E_av * E_av) / T / T / (L + 0.0);
+}
+
