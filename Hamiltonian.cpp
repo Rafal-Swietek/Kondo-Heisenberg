@@ -2,7 +2,7 @@
 
 #define im std::complex<double>(0.0,1.0)
 #define M_PI 3.14159265358979323846
-#define memory_over_performance true
+#define memory_over_performance false
 
 double pi = M_PI;
 

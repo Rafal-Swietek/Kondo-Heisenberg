@@ -4,7 +4,7 @@ using namespace std;
 
 int main() {
     clock_t tStart = clock();
-    int L = 6; //chain length
+    int L = 8; //chain length
     double t = 0.5; //electron hopping = t_00
     double U = 2.1; // electron repulsion
     double K = 0.0492; // spin exchange integral*.
