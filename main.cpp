@@ -4,7 +4,7 @@ using namespace std;
 
 int main() {
     clock_t tStart = clock();
-    int L = 4; //chain length
+    int L = 8; //chain length
     double t = 0.5; //electron hopping = t_00
     double U = 2.1; // electron repulsion
     double K = 0.0492; // spin exchange integral*.
@@ -15,10 +15,10 @@ int main() {
     // Main Program---------------------------------------
 
     //Main_DOS(L, N_e, t, K, U, J_H);
-    Main_Cv(L, N_e, 0, 1, 0, 0);
-    /*std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1, M));
+    //Main_Cv(L, N_e, 0, 1, 0, 0);
+    std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1, M));
     Hamil->Lanczos_GroundState();
-    Hamil->show_ground_state();*/
+    Hamil->show_ground_state();
     /*Main_Cv_Lanczos(4, 6, t, K, U, J_H, M, R);
     Main_Cv_Lanczos(6, 9, t, K, U, J_H, M, R);
     Main_Cv_Lanczos(8, 12, t, K, U, J_H, M, R);*/
