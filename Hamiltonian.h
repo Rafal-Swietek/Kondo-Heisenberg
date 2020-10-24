@@ -30,7 +30,7 @@ typedef unsigned long long int ull_int;
 typedef std::complex<double> cpx;
 
 #define out std::cout << std::setprecision(16) << std::fixed
-#define num_of_threads 4
+#define num_of_threads 16
 
 class HamiltonianKH {
 public:
@@ -51,8 +51,6 @@ public:
     vec eigenvalues;
 
 	sp_mat Sz_tot2; // square of total spin: Sz_tot^2 = sum_ij Sz^i Sz^j
-	vec chi_0; // static susceptibility
-	vec partition_function;
 
 public:
 	HamiltonianKH(); // default Constructor
@@ -79,7 +77,7 @@ public:
 //----------------------------------------------------------------------------------------------
 //--------------------------------------------------TOOLS---------------------------------------
 //----------------------------------------------------------------------------------------------
-ull_int binary_search(std::vector<ull_int> arr, int l_point, int r_point, ull_int element);
+ull_int binary_search(std::vector<ull_int>& arr, int l_point, int r_point, ull_int element);
 
 vector<int> int_to_binary(ull_int idx, int L); //converges int to binary code of length N
 ull_int binary_to_int(vector<int> vec); //converges vector with binary code to decimal system
@@ -93,12 +91,12 @@ void print_chi(vec& chi, double U, double N_e, int L);
 void Heat_Capacity(std::vector<arma::vec>& energies, vec& Cv); 
 void static_spin_susceptibility(std::vector<arma::vec>& energies, vec& chi);
 
-
 void Main_U(int L, int N_e, double t);
 void Main_Jh(int L, int N_e, double t, double K, double U);
 void Main_Cv(int L, int N_e, double t, double K, double U, double J_H);
 void Main_Cv_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int M, int random_steps);
 void Main_DOS(int L, int N_e, double t, double K, double U, double J_H);
+void Cv_Umap(int L, int N_e, double t);
 
 
 //----------------------------------------------------------------------------------------------

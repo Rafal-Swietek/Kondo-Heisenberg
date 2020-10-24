@@ -5,7 +5,7 @@
 
 double pi = M_PI;
 
-double dT = 0.05;
+double dT = 0.01;
 double T_end = 10.0;
 double domega = 0.01;
 
@@ -113,8 +113,14 @@ void HamiltonianKH::Hamiltonian() {
    //out << "dim(H) = " << (sizeof(H) + H.n_elem * sizeof(double)) / std::pow(10, 9) << " gb" << "\n";
 }
 
+ull_int findElement(std::vector<ull_int>& vector, ull_int element) {
+    std::vector<ull_int>::iterator it = find(vector.begin(), vector.end(), element);
+    assert(it != vector.end() && "Element not present in the array");
+    return (ull_int)std::distance(vector.begin(), it);
+}
 void HamiltonianKH::setHamiltonianElem_sparse(ull_int k, double value, std::vector<int> temp) {
-    ull_int idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
+    ull_int idx = findElement(mapping, binary_to_int(temp)); // binary_search(mapping, 0, N - 1, binary_to_int(temp));
+    assert(idx < N && "Somehow index out of scope, wtf?? Found element not possibly present in the array");
     H_sparse(idx, k) += value;
     H_sparse(k, idx) += value;
 }
@@ -125,7 +131,8 @@ void HamiltonianKH::Hamiltonian_sparse() {
         int s_i, s_j; //i=j, j=j+1
         bool PBC = 0; //allows periodic boundary conditions if =1
         int next_j;
-        for (ull_int k = 0; k < N; k++) {
+//#pragma omp parallel for shared(PBC) num_threads(num_of_threads)
+        for (int k = 0; k < N; k++) {
             std::vector<int> base_vector = int_to_binary(mapping[k], L);
             vector<int> temp(base_vector);
             for (int j = 0; j <= L - 1; j++) {
@@ -189,12 +196,13 @@ void HamiltonianKH::Hamiltonian_sparse() {
                 if (base_vector[j] == 2 || base_vector[j] == 5)
                     H_sparse(k, k) += 2.0 * J_H * 0.25;
             }
-            //if (k % (ull_int)std::pow(10, 7) == 0) out << k << endl;
+            //if (k % (ull_int)std::pow(10, 2) == 0) out << k << endl;
         }
     } catch (const bad_alloc& e) {
         std::cout << "Memory exceeded" << e.what() << "\n";
         assert(false);
     }
+    out << "Hamiltonian complete" << endl;
     //out << "dim(H) = " << (sizeof(H_sparse) + H_sparse.n_elem * sizeof(double)) / std::pow(10, 9) << " gb" << "\n";
 }
 
@@ -522,6 +530,7 @@ void Lanczos::Lanczos_GroundState() {
         tmp = tmp - alfa * tmp2 - beta * initial_vec;
 
         initial_vec = tmp2;
+        out << j << "lanczos" << endl;
     }
     tmp.~vec();
 }
@@ -531,7 +540,7 @@ vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
     vec E_av(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     vec E_av2(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     vec Z(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
-    this->chi_0 = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
+    //this->chi_0 = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
 
     srand(time(NULL));
     Hamiltonian_sparse();
@@ -585,7 +594,8 @@ vec Lanczos::thermal_average_lanczos(vec& quantity, int& random_steps){
 //----------------------------------------Main subroutines---------------------------------------
 //----------------------------------------------------------------------------------------------
 void Heat_Capacity(std::vector<arma::vec>& energies, vec& Cv) {
-    std::vector temperature = prepare_parameterVec(dT, T_end, dT);
+    std::vector<double> temperature = prepare_parameterVec(dT, T_end, dT);
+#pragma omp parallel for shared(temperature) num_threads(num_of_threads)
     for (int k = 0; k < temperature.size(); k++) {
         double T = temperature[k];
         double heat_capacity = 0;
@@ -611,14 +621,14 @@ void Heat_Capacity(std::vector<arma::vec>& energies, vec& Cv) {
     }
 }
 void static_spin_susceptibility(std::vector<arma::vec>& energies, vec& chi) {
-    std::vector temperature = prepare_parameterVec(dT, T_end, dT);
+    std::vector<double> temperature = prepare_parameterVec(dT, T_end, dT);
+//#pragma omp parallel for shared(temperature) num_threads(num_of_threads)
     for (int k = 0; k < temperature.size(); k++) {
         double T = temperature[k]; 
         double Z = 0;
         double X_0 = 0;
         for (int l = 0; l < energies.size(); l++) {
             double Sz = -((double)energies.size() - 1.0) / 2. + (double)l;
-            //out << Sz << endl;
             for (int n = 0; n < energies[l].size(); n++) {
                 Z += std::exp(-energies[l](n) / T);
                 X_0 += Sz * Sz * std::exp(-energies[l](n) / T);
@@ -631,21 +641,49 @@ void static_spin_susceptibility(std::vector<arma::vec>& energies, vec& chi) {
     }
 }
 
-void Main_U(int L, int N_e, double t) {
-//#pragma omp parallel for 
-    for (int k = 2; k < 40; k+=2) {
+void Cv_Umap(int L, int N_e, double t) {
+    ofstream savefile;
+    stringstream Nstr;
+    Nstr << setprecision(2) << fixed << (double)N_e / (double)L;
+    savefile.open("C_V_L=" + std::to_string(L) + "_Umap.txt");
+    for (int k = 2; k < 40; k += 1) {
         double U = (double)k / 10.0;
         double K, J_H;
         K = 4 * 0.15 * 0.15 / U;
         J_H = 0.25 * U;
+        std::vector<arma::vec> energies;
+        for (int Sz = -N_e; Sz <= N_e; Sz += 2) {
+            //HamiltonianKH Hamil(L, N_e, t, U, K, J_H, Sz);
+            std::unique_ptr<HamiltonianKH> Hamil(new HamiltonianKH(L, N_e, t, U, K, J_H, Sz));
+            Hamil->Hamiltonian();
+            Hamil->Diagonalization();
+            energies.push_back(Hamil->eigenvalues);
+        }
+        vec Cv(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
+        Heat_Capacity(energies, Cv);
+        int q = 0;
+        double T = dT;
+        while (T <= T_end) {
+            savefile << T << "\t\t" << U << "\t\t" << Cv(q) << endl; //save heat capacity to file
+            T += dT; q++;
+        }
         //Main_DOS(L, N_e, t, K, U, J_H);
-        Main_Cv(L, N_e, t, K, U, J_H);
-        /*HamiltonianKH Hamil(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1);
-        Hamil.Hamiltonian();
-        Hamil.Diagonalization();
+        //Main_Cv(L, N_e, t, K, U, J_H);
 
-        double Ef = FermiLevel(L, N_e, t, K, U, J_H);
-        Hamil.printEnergy(Ef);*/
+        out << "U = " << U << " done!" << endl;
+    }
+    savefile.close();
+}
+void Main_U(int L, int N_e, double t) {
+//#pragma omp parallel for 
+    for (int k = 2; k < 40; k+=1) {
+        double U = (double)k / 10.0;
+        double K, J_H;
+        K = 4 * 0.15 * 0.15 / U;
+        J_H = 0.25 * U;
+        
+        Main_DOS(L, N_e, t, K, U, J_H);
+        Main_Cv(L, N_e, t, K, U, J_H);
 
         out << "U = " << U << " done!" << endl;
     }
@@ -661,31 +699,33 @@ void Main_Jh(int L, int N_e, double t, double K, double U) {
 }
 void Main_Cv(int L, int N_e, double t, double K, double U, double J_H) {
     std::vector<arma::vec> energies;
-    int idx = 0;
     for (int Sz = -N_e; Sz <= N_e; Sz +=2) {
-        HamiltonianKH Hamil(L, N_e, t, U, K, J_H, Sz);
-        Hamil.Hamiltonian();
-        Hamil.Diagonalization();
-        energies.push_back(Hamil.eigenvalues);
+        //HamiltonianKH Hamil(L, N_e, t, U, K, J_H, Sz);
+        std::unique_ptr<HamiltonianKH> Hamil(new HamiltonianKH(L, N_e, t, U, K, J_H, Sz));
+        Hamil->Hamiltonian();
+        Hamil->Diagonalization();
+        energies.push_back(Hamil->eigenvalues);
         out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
     }
     vec Cv(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
-    vec chi_0(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
-    Heat_Capacity(energies, chi_0);
-    static_spin_susceptibility(energies, chi_0);
+    Heat_Capacity(energies, Cv);
     print_Cv(Cv, U, N_e, L);
+    Cv.~vec();
+    vec chi_0(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
+    static_spin_susceptibility(energies, chi_0);
     print_chi(chi_0, U, N_e, L);
-    Cv.~vec(); chi_0.~vec();
+    chi_0.~vec();
 }
 void Main_Cv_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int M, int random_steps) {
     vec Cv(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     for (int Sz = -N_e; Sz <= N_e; Sz += 2) {
-        Lanczos Hamil(L, N_e, t, U, K, J_H, Sz, M);
-        if (M > Hamil.N) {
-            Hamil.lanczos_steps = Hamil.N;
+        //Lanczos Hamil(L, N_e, t, U, K, J_H, Sz, M);
+        std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, Sz, M));
+        if (M > Hamil->N) {
+            Hamil->lanczos_steps = Hamil->N;
             out << "Lanczos steps greater than system size" << endl;
         }
-        Cv += Hamil.Heat_Capacity_Lanczos(random_steps) / double(N_e + 1.0);
+        Cv += Hamil->Heat_Capacity_Lanczos(random_steps) / double(N_e + 1.0);
         //chi_0 += Hamil.chi_0 / double(N_e + 1.0);
         //out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
     }
@@ -694,14 +734,15 @@ void Main_Cv_Lanczos(int L, int N_e, double t, double K, double U, double J_H, i
     Cv.~vec();
 }
 void Main_DOS(int L, int N_e, double t, double K, double U, double J_H) {
-    HamiltonianKH Hamil(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1);
-    Hamil.Hamiltonian();
-    Hamil.Diagonalization();
-    vector<double> omega_vec = prepare_parameterVec(Hamil.eigenvalues(0), Hamil.eigenvalues(Hamil.eigenvalues.size() - 1), domega);
-    vec DOS = Hamil.Total_Density_of_states(omega_vec) / (N_e + 1);
+    //HamiltonianKH Hamil(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1);
+    std::unique_ptr<HamiltonianKH> Hamil(new HamiltonianKH(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1));
+    Hamil->Hamiltonian();
+    Hamil->Diagonalization();
+    vector<double> omega_vec = prepare_parameterVec(Hamil->eigenvalues(0), Hamil->eigenvalues(Hamil->eigenvalues.size() - 1), domega);
+    vec DOS = Hamil->Total_Density_of_states(omega_vec) / (N_e + 1);
     double maximum = max(DOS);
     double Ef = FermiLevel(L, N_e, t, K, U, J_H);
-    Hamil.printEnergy(Ef);
+    Hamil->printEnergy(Ef);
     printDOS(DOS, U, N_e, L, omega_vec, maximum, Ef);
 }
 
@@ -761,7 +802,7 @@ void print_Cv_Lanczos(vec& Cv, double U, double N_e, int L, int M, int random_st
     Ustr << setprecision(2) << fixed << U;
     Nstr << setprecision(2) << fixed << (double)N_e / (double)L;
     //savefile.open("C_V_n=" + Nstr.str() + "_U=" + Ustr.str() + "_M=" + std::to_string(M) + "_R=" + std::to_string(random_steps) + ".txt");
-    savefile.open("Cv_Lanczos_M=" + std::to_string(M) + "_R=" + std::to_string(random_steps) + "_gKH.txt");
+    savefile.open("Cv_Lanczos_L=" + std::to_string(L) + "_gKH.txt");
     int k = 0;
     double T = dT;
     while (T <= T_end) {
@@ -816,7 +857,8 @@ ull_int binary_to_int(vector<int> vec) {
     return val;
 }
 
-ull_int binary_search(std::vector<ull_int> arr, int l_point, int r_point, ull_int element) {
+ull_int binary_search(std::vector<ull_int>& arr, int l_point, int r_point, ull_int element) {
+    //out << element << endl;
     if (r_point >= l_point) {
         int middle = l_point + (r_point - l_point) / 2;
         if (arr[middle] == element) return middle;
