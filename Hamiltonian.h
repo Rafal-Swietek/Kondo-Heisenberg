@@ -62,34 +62,34 @@ public:
 	void Diagonalization();
 
 	void generate_mapping();
-	void mapping_kernel(int& L, ull_int& start, ull_int& stop, std::vector<ull_int>& map_threaded, int& _id, int& S_z, int& no_electrons);
-    void setHamiltonianElem(ull_int k, double value, std::vector<int> temp);
-	void setHamiltonianElem_sparse(ull_int k, double value, std::vector<int> temp);
+	void mapping_kernel(int& L, ull_int& start, ull_int& stop, std::vector<ull_int>&& map_threaded, int& _id, int& S_z, int& no_electrons);
+    void setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp);
+	void setHamiltonianElem_sparse(ull_int& k, double value, std::vector<int>&& temp);
 	void printEnergy(double Ef);
 	void show_ground_state();
 
-	void print_base_vector(std::vector<int>& base_vector);
+	void print_base_vector(std::vector<int>&& base_vector);
 
 // Functions not usable by Lanczos
-	vec Total_Density_of_states(std::vector<double> omega_vec);
+	vec Total_Density_of_states(std::vector<double>&& omega_vec);
 };
 
 //----------------------------------------------------------------------------------------------
 //--------------------------------------------------TOOLS---------------------------------------
 //----------------------------------------------------------------------------------------------
-ull_int binary_search(std::vector<ull_int>& arr, int l_point, int r_point, ull_int element);
+ull_int binary_search(std::vector<ull_int>&& arr, int l_point, int r_point, ull_int element);
 
 vector<int> int_to_binary(ull_int idx, int L); //converges int to binary code of length N
-ull_int binary_to_int(vector<int> vec); //converges vector with binary code to decimal system
+ull_int binary_to_int(vector<int>&& vec); //converges vector with binary code to decimal system
 double FermiLevel(int L, int N_e, double t, double K, double U, double J_H);
 std::vector<double> prepare_parameterVec(double _min, double _max, double step);
-void printDOS(vec& resultDOS, double U, double N_e, int L, std::vector<double>& omega_vec, double maximum, double E_fermi);
-void print_Cv(vec& Cv, double U, double N_e, int L);
-void print_Cv_Lanczos(vec& Cv, double U, double N_e, int L, int M, int random_steps);
-void print_chi(vec& chi, double U, double N_e, int L);
+void printDOS(vec&& resultDOS, double U, double N_e, int L, std::vector<double>&& omega_vec, double maximum, double E_fermi);
+void print_Cv(vec&& Cv, double U, double N_e, int L);
+void print_Cv_Lanczos(vec&& Cv, double U, double N_e, int L, int M, int random_steps);
+void print_chi(vec&& chi, double U, double N_e, int L);
 
-void Heat_Capacity(std::vector<arma::vec>& energies, vec& Cv); 
-void static_spin_susceptibility(std::vector<arma::vec>& energies, vec& chi);
+void Heat_Capacity(std::vector<arma::vec>&& energies, vec&& Cv); 
+void static_spin_susceptibility(std::vector<arma::vec>&& energies, vec&& chi);
 
 void Main_U(int L, int N_e, double t);
 void Main_Jh(int L, int N_e, double t, double K, double U);
@@ -113,13 +113,13 @@ public:
 	~Lanczos();
 
 	vec Create_Random_vec();
-	void Build_Lanczos_Hamil(vec initial_vec);
+	void Build_Lanczos_Hamil(vec& initial_vec);
 	void Lanczos_GroundState();
 
 	void Lanczos_Diagonalization();
-	vec Hamil_vector_multiply(vec initial_vec);
+	void Hamil_vector_multiply(vec& initial_vec, vec& result_vec);
 
-	vec thermal_average_lanczos(vec& quantity, int& random_steps);
+	vec thermal_average_lanczos(vec&& quantity, int& random_steps);
 	vec Heat_Capacity_Lanczos(int random_steps);
 };
 

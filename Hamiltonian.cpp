@@ -2,6 +2,7 @@
 
 #define im std::complex<double>(0.0,1.0)
 #define M_PI 3.14159265358979323846
+#define memory_over_performance true
 
 double pi = M_PI;
 
@@ -29,8 +30,8 @@ HamiltonianKH::HamiltonianKH(int L, int num_of_electrons, double t, double U, do
 HamiltonianKH::HamiltonianKH() {}
 //-------------------------
 
-void HamiltonianKH::setHamiltonianElem(ull_int k, double value, std::vector<int> temp){
-    ull_int idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
+void HamiltonianKH::setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp){
+    ull_int idx = binary_search(std::move(mapping), 0, N - 1, binary_to_int(std::move(temp)));
         H(idx, k) += value;
         H(k, idx) += value;
 }
@@ -62,7 +63,7 @@ void HamiltonianKH::Hamiltonian() {
                     if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
                         temp[j] = base_vector[j] - 4; //spin filp
                         temp[next_j] = base_vector[next_j] + 4;
-                        setHamiltonianElem(k, K / 2., temp);
+                        setHamiltonianElem(k, K / 2., std::move(temp));
                     }
                     // electron hopping j+1 -> j  (j->j+1 is hermitian conjunagte)
                         //spin up
@@ -72,9 +73,9 @@ void HamiltonianKH::Hamiltonian() {
                         temp[next_j] -= 1; // anihilate spin-up electron
                         temp[j] += 1; // create spin-up electron
                         if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
-                            setHamiltonianElem(k, -t, temp);
+                            setHamiltonianElem(k, -t, std::move(temp));
                         }
-                        else  setHamiltonianElem(k, +t, temp);
+                        else  setHamiltonianElem(k, +t, std::move(temp));
                     }
                     //spin down
                     temp = base_vector;
@@ -84,9 +85,9 @@ void HamiltonianKH::Hamiltonian() {
                             temp[next_j] -= 2; // anihilate spin-down electron
                             temp[j] += 2; // create spin-down electron
                             if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
-                                setHamiltonianElem(k, -t, temp);
+                                setHamiltonianElem(k, -t, std::move(temp));
                             }
-                            else  setHamiltonianElem(k, +t, temp);
+                            else  setHamiltonianElem(k, +t, std::move(temp));
                         }
                     }
                 }
@@ -97,7 +98,7 @@ void HamiltonianKH::Hamiltonian() {
 				    temp = base_vector;
 				    if (base_vector[j] == 5) {// S_i^+ s_i^-
 					    temp[j] = 2;
-                        setHamiltonianElem(k,-J_H,temp);
+                        setHamiltonianElem(k,-J_H, std::move(temp));
                     }
 		        //Diagonal - z part
 				    if (base_vector[j] == 1 || base_vector[j] == 6)
@@ -113,13 +114,13 @@ void HamiltonianKH::Hamiltonian() {
    //out << "dim(H) = " << (sizeof(H) + H.n_elem * sizeof(double)) / std::pow(10, 9) << " gb" << "\n";
 }
 
-ull_int findElement(std::vector<ull_int>& vector, ull_int element) {
+ull_int findElement(std::vector<ull_int>&& vector, ull_int element) {
     std::vector<ull_int>::iterator it = find(vector.begin(), vector.end(), element);
     assert(it != vector.end() && "Element not present in the array");
     return (ull_int)std::distance(vector.begin(), it);
 }
-void HamiltonianKH::setHamiltonianElem_sparse(ull_int k, double value, std::vector<int> temp) {
-    ull_int idx = findElement(mapping, binary_to_int(temp)); // binary_search(mapping, 0, N - 1, binary_to_int(temp));
+void HamiltonianKH::setHamiltonianElem_sparse(ull_int& k, double value, std::vector<int>&& temp) {
+    ull_int idx =  binary_search(std::move(mapping), 0, N - 1, binary_to_int(std::move(temp)));// findElement(std::move(mapping), binary_to_int(std::move(temp))); //
     assert(idx < N && "Somehow index out of scope, wtf?? Found element not possibly present in the array");
     H_sparse(idx, k) += value;
     H_sparse(k, idx) += value;
@@ -127,14 +128,15 @@ void HamiltonianKH::setHamiltonianElem_sparse(ull_int k, double value, std::vect
 void HamiltonianKH::Hamiltonian_sparse() {
     try {
         this->H_sparse = sp_mat(N, N); //hamiltonian
-
-        int s_i, s_j; //i=j, j=j+1
-        bool PBC = 0; //allows periodic boundary conditions if =1
-        int next_j;
-//#pragma omp parallel for shared(PBC) num_threads(num_of_threads)
-        for (int k = 0; k < N; k++) {
+   
+//#pragma omp parallel for num_threads(num_of_threads)
+        for (int p = 0; p < N; p++) {
+            ull_int k = (ull_int)p;
             std::vector<int> base_vector = int_to_binary(mapping[k], L);
-            vector<int> temp(base_vector);
+            vector<int> temp(base_vector); 
+            int s_i, s_j; //i=j, j=j+1
+            bool PBC = 0; //allows periodic boundary conditions if =1
+            int next_j;
             for (int j = 0; j <= L - 1; j++) {
                 if (j < L - 1 || PBC == 1) {
                     if (PBC == 1 && j == L - 1) next_j = 0;
@@ -153,7 +155,7 @@ void HamiltonianKH::Hamiltonian_sparse() {
                     if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
                         temp[j] = base_vector[j] - 4; //spin filp
                         temp[next_j] = base_vector[next_j] + 4;
-                        setHamiltonianElem_sparse(k, K / 2., temp);
+                        setHamiltonianElem_sparse(k, K / 2., std::move(temp));
                     }
                     // electron hopping j+1 -> j  (j->j+1 is hermitian conjunagte)
                         //spin up
@@ -163,9 +165,9 @@ void HamiltonianKH::Hamiltonian_sparse() {
                         temp[next_j] -= 1; // anihilate spin-up electron
                         temp[j] += 1; // create spin-up electron
                         if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
-                            setHamiltonianElem_sparse(k, -t, temp);
+                            setHamiltonianElem_sparse(k, -t, std::move(temp));
                         }
-                        else  setHamiltonianElem_sparse(k, +t, temp);
+                        else  setHamiltonianElem_sparse(k, +t, std::move(temp));
                     }
                     //spin down
                     temp = base_vector;
@@ -175,9 +177,9 @@ void HamiltonianKH::Hamiltonian_sparse() {
                             temp[next_j] -= 2; // anihilate spin-down electron
                             temp[j] += 2; // create spin-down electron
                             if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
-                                setHamiltonianElem_sparse(k, -t, temp);
+                                setHamiltonianElem_sparse(k, -t, std::move(temp));
                             }
-                            else  setHamiltonianElem_sparse(k, +t, temp);
+                            else  setHamiltonianElem_sparse(k, +t, std::move(temp));
                         }
                     }
                 }
@@ -188,7 +190,7 @@ void HamiltonianKH::Hamiltonian_sparse() {
                 temp = base_vector;
                 if (base_vector[j] == 5) {// S_i^+ s_i^-
                     temp[j] = 2;
-                    setHamiltonianElem_sparse(k, -J_H, temp);
+                    setHamiltonianElem_sparse(k, -J_H, std::move(temp));
                 }
                 //Diagonal - z part
                 if (base_vector[j] == 1 || base_vector[j] == 6)
@@ -230,12 +232,12 @@ std::tuple<int, int, int> calculateSpinElements(int L, ull_int& j) {
 
     return std::make_tuple(bSz, fSz, N_e);
 }
-void HamiltonianKH::mapping_kernel(int& L, ull_int&start, ull_int& stop, std::vector<ull_int>& map_threaded, int& _id, int& S_z, int& no_electrons) {
+void HamiltonianKH::mapping_kernel(int& L, ull_int&start, ull_int& stop, std::vector<ull_int>&& map_threaded, int& _id, int& S_z, int& no_electrons) {
     for (ull_int j = start; j < stop; j++) {
         int bSz = 0, fSz = 0, N_e = 0;
         std::tie(bSz, fSz, N_e) = calculateSpinElements(L, j);
         if ((bSz + fSz == S_z) && N_e == no_electrons)
-            map_threaded.push_back(j);
+            map_threaded.emplace_back(j);
     }
 }
 void HamiltonianKH::generate_mapping() {
@@ -243,26 +245,26 @@ void HamiltonianKH::generate_mapping() {
     int id = 0;
     int S_z = this->Sz;
     int no_electrons = this->num_of_electrons;
-    mapping_kernel(L, start, stop, mapping, id, S_z, num_of_electrons);
+    mapping_kernel(L, start, stop, std::move(mapping), id, S_z, num_of_electrons);
     //Threaded
-    /*std::vector<vector<ull_int>> map_threaded(num_of_threads);
+   /* std::vector<vector<ull_int>> map_threaded(num_of_threads);
     std::vector<thread> threads;
     threads.reserve(num_of_threads);
-    ull_int size = 0;
     for (int t = 0; t < num_of_threads; t++) {
         start = t * (ull_int)std::pow(8, L) / num_of_threads;
         stop = ((t + 1) == num_of_threads ? (ull_int)std::pow(8, L) : (ull_int)std::pow(8, L) * (t + 1) / num_of_threads);
         map_threaded[t] = std::vector<ull_int>();
-        threads.emplace_back(&HamiltonianKH::mapping_kernel, this, ref(L), ref(start), ref(stop), ref(map_threaded[t]), ref(t), ref(S_z), ref(no_electrons));
+        threads.emplace_back(&HamiltonianKH::mapping_kernel, this, ref(L), ref(start), ref(stop), std::move(map_threaded[t]), ref(t), ref(S_z), ref(no_electrons));
         out << "Thread " << t << " joined tha party! from " << start << " to " << stop << endl;
     }
-    for (auto& t : threads) t.join(); 
-    for (auto& t : threads) t.~thread();
-    ull_int size;
-    for (int t = num_of_threads - 1; t >= 0; t--) size += map_threaded[t].size();
+    for (auto& t : threads) { t.join(); t.~thread(); }
+
+    ull_int size = 0;
+    for (auto& t : map_threaded) size += t.size();
+
     mapping = std::vector<ull_int>(size);
-    for (int t = 0; t < num_of_threads; t++){
-        mapping.insert(mapping.begin(), map_threaded[t].begin(), map_threaded[t].end());
+    for (int t = 1; t < num_of_threads; t++){
+        std::move(map_threaded[t].begin(), map_threaded[t].end(), std::back_inserter(mapping));
     }*/
     out << "Mapping generated with  " << mapping.size() << "  elements" << endl;
     //out << mapping[0] << " " << mapping[mapping.size() - 1] << endl;
@@ -283,14 +285,14 @@ void HamiltonianKH::Diagonalization() {
     //out << "dim(H) = " << H.size() * sizeof(H(0, 0)) << "\n";
 }
 
-void HamiltonianKH::print_base_vector(std::vector<int>& base_vector) {
+void HamiltonianKH::print_base_vector(std::vector<int>&& base_vector) {
     out << " |";
     for (int l = 0; l < L; l++)
         out << base_vector[l];
     out << ">" << endl;
 }
 // Calculates the density of states using one-particle greens function
-vec HamiltonianKH::Total_Density_of_states(std::vector<double> omega_vec) {
+vec HamiltonianKH::Total_Density_of_states(std::vector<double>&& omega_vec) {
 	double domega = 0.005;
 
     vec resultDOS(omega_vec.size());
@@ -370,9 +372,11 @@ vec Lanczos::Create_Random_vec() {
     }
     return random_vec / norm;
 }
-vec Lanczos::Hamil_vector_multiply(vec initial_vec) {
-    vec result_vec(N, fill::zeros);
-    for (ull_int k = 0; k < N; k++) {
+void Lanczos::Hamil_vector_multiply(vec& initial_vec, vec& result_vec) {
+    result_vec.fill(0);
+//#pragma omp parallel for num_threads(num_of_threads)
+    for (int p = 0; p < N; p++) {
+        ull_int k = (ull_int)p;
         std::vector<int> base_vector = int_to_binary(mapping[k], L);
         std::vector<int> temp(base_vector);
         int PBC = 0;
@@ -395,7 +399,7 @@ vec Lanczos::Hamil_vector_multiply(vec initial_vec) {
                 if (s_i == 0 && s_j == 1) {
                     temp[j] = base_vector[j] - 4; //spin filp
                     temp[next_j] = base_vector[next_j] + 4;
-                    idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
+                    idx = binary_search(std::move(mapping), 0, N - 1, binary_to_int(std::move(temp)));
                     result_vec(idx) += K / 2. * initial_vec(k); //   S_i^+ * S_i+1^-
                     result_vec(k) += K / 2. * initial_vec(idx); //   S_i^+ * S_i+1^-
                 }
@@ -408,7 +412,7 @@ vec Lanczos::Hamil_vector_multiply(vec initial_vec) {
                 if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
                     temp[next_j] -= 1; // anihilate spin-up electron
                     temp[j] += 1; // create spin-up electron
-                    idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
+                    idx = binary_search(std::move(mapping), 0, N - 1, binary_to_int(std::move(temp)));
                     if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
                         result_vec(idx) += -t * initial_vec(k);
                         result_vec(k) += -t * initial_vec(idx);
@@ -425,7 +429,7 @@ vec Lanczos::Hamil_vector_multiply(vec initial_vec) {
                     if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
                         temp[next_j] -= 2; // anihilate spin-down electron
                         temp[j] += 2; // create spin-down electron
-                        idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
+                        idx = binary_search(std::move(mapping), 0, N - 1, binary_to_int(std::move(temp)));
                         if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
                             result_vec(idx) += -t * initial_vec(k);
                             result_vec(k) += -t * initial_vec(idx);
@@ -444,7 +448,7 @@ vec Lanczos::Hamil_vector_multiply(vec initial_vec) {
             temp = base_vector;
             if (base_vector[j] == 5) {// S_i^+ s_i^-
                 temp[j] = 2;
-                idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
+                idx = binary_search(std::move(mapping), 0, N - 1, binary_to_int(std::move(temp)));
                 result_vec(idx) += -J_H * initial_vec(k);
                 result_vec(k) += -J_H * initial_vec(idx);
             }
@@ -455,10 +459,9 @@ vec Lanczos::Hamil_vector_multiply(vec initial_vec) {
                 result_vec(k) += 2.0 * J_H * 0.25 * initial_vec(k);
         }
     }
-    return result_vec;
 }
 
-void Lanczos::Build_Lanczos_Hamil(vec initial_vec) {
+void Lanczos::Build_Lanczos_Hamil(vec& initial_vec) {
     this->H_L = mat(lanczos_steps, lanczos_steps, fill::zeros);
 
     double beta = arma::dot(initial_vec, initial_vec);
@@ -468,7 +471,10 @@ void Lanczos::Build_Lanczos_Hamil(vec initial_vec) {
     this->randVec_inKrylovSpace = vec(lanczos_steps);
     randVec_inKrylovSpace(0) = arma::dot(initial_vec, initial_vec); // =1
 
-    vec tmp = H_sparse * initial_vec;
+    vec tmp(N, fill::zeros);
+    if (memory_over_performance == true) Hamil_vector_multiply(initial_vec, tmp); // tmp = H * Krylov_space(0)
+    else tmp = H_sparse * initial_vec;
+
     double alfa = arma::dot(initial_vec, tmp);
     tmp = tmp - alfa * initial_vec;
     //out << tmp.t();
@@ -478,7 +484,10 @@ void Lanczos::Build_Lanczos_Hamil(vec initial_vec) {
         double beta = sqrt(arma::dot(tmp, tmp));
         vec tmp2 = tmp / beta;
         randVec_inKrylovSpace(j) = dot(tmp2, initial_vec);
-        tmp = H_sparse * tmp2;
+
+        if (memory_over_performance == true) Hamil_vector_multiply(tmp2, tmp); // tmp = H * tmp2
+        else tmp = H_sparse * tmp2;
+
         alfa = arma::dot(tmp2, tmp);
         tmp = tmp - alfa * tmp2 - beta * tmp2_prev;
 
@@ -493,16 +502,19 @@ void Lanczos::Build_Lanczos_Hamil(vec initial_vec) {
     tmp2_prev.~vec();
 }
 void Lanczos::Lanczos_Diagonalization() {
-    srand(time(NULL));
-    Build_Lanczos_Hamil(Create_Random_vec());
-    eig_sym(eigenvalues, eigenvectors, H_L);
-}
-
-void Lanczos::Lanczos_GroundState() {
-
     Hamiltonian_sparse();
     srand(time(NULL));
-    vec initial_vec = Create_Random_vec();
+    auto rand = Create_Random_vec();
+    Build_Lanczos_Hamil(rand);
+    eig_sym(eigenvalues, eigenvectors, H_L);
+}
+void Lanczos::Lanczos_GroundState() {
+
+    if(memory_over_performance == false) 
+        Hamiltonian_sparse();
+
+    srand(time(NULL));
+    auto initial_vec = Create_Random_vec();
     Build_Lanczos_Hamil(initial_vec);
 
     eig_sym(eigenvalues, eigenvectors, H_L);
@@ -512,10 +524,11 @@ void Lanczos::Lanczos_GroundState() {
 
     double beta = dot(initial_vec, initial_vec);
     initial_vec = initial_vec / sqrt(beta); // normalized Krylov_space(j=0)
-    ground_state = GS(0) * initial_vec;
 
-    //vec tmp = Hamil_vector_multiply(initial_vec); // tmp = H * Krylov_space(0)
-    vec tmp = H_sparse * initial_vec;
+    vec tmp(N, fill::zeros);
+    if(memory_over_performance == true) Hamil_vector_multiply(initial_vec, tmp); // tmp = H * Krylov_space(0)
+    else tmp = H_sparse * initial_vec;
+
     double alfa = dot(initial_vec, tmp);
     tmp = tmp - alfa * initial_vec;
 
@@ -524,8 +537,8 @@ void Lanczos::Lanczos_GroundState() {
         vec tmp2 = tmp / beta;
 
         ground_state += GS(j) * tmp2;
-        tmp = H_sparse * tmp2;
-        //tmp = Hamil_vector_multiply(tmp2); // tmp = H * tmp2
+        if (memory_over_performance == true) Hamil_vector_multiply(tmp2, tmp); // tmp = H * tmp2
+        else tmp = H_sparse * tmp2;
         alfa = dot(tmp2, tmp);
         tmp = tmp - alfa * tmp2 - beta * initial_vec;
 
@@ -542,15 +555,17 @@ vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
     vec Z(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     //this->chi_0 = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
 
+    auto temperature = prepare_parameterVec(dT, T_end, dT);
     srand(time(NULL));
     Hamiltonian_sparse();
     for (int r = 0; r < random_steps; r++) {
-        vec rand_vec = Create_Random_vec();
+        auto rand_vec = Create_Random_vec();
         Build_Lanczos_Hamil(rand_vec);
         eig_sym(eigenvalues, eigenvectors, H_L);
-        double T = dT; int k = 0;
-        while (T <= T_end) {
+//#pragma omp parallel for shared(temperature) num_threads(num_of_threads)
+        for (int k = 0; k < temperature.size(); k++) {
             double overlap;
+            double T = temperature[k];
             for (int m = 0; m < lanczos_steps; m++) {
                 overlap = dot(randVec_inKrylovSpace, eigenvectors.col(m));
                 overlap *= overlap;
@@ -558,20 +573,18 @@ vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
                 E_av(k) += eigenvalues(m) * overlap * std::exp(-(eigenvalues(m) - eigenvalues(0)) / T);
                 E_av2(k) += eigenvalues(m) * eigenvalues(m) * overlap * std::exp(-(eigenvalues(m) - eigenvalues(0)) / T);
             }
-            T += dT; k++;
         }
     }
-    double T = dT; int k = 0;
-    while (T <= T_end) {
+    for (int k = 0; k < temperature.size(); k++) {
+        double T = temperature[k];
         E_av(k) = E_av(k) / Z(k) * (double)N / (double)random_steps;
         E_av2(k) = E_av2(k) / Z(k) * (double)N / (double)random_steps;
         Cv(k) = (E_av2(k) - E_av(k) * E_av(k)) / T / T / (double)L;
-        T += dT; k++;
     }
     return Cv;
 }
 
-vec Lanczos::thermal_average_lanczos(vec& quantity, int& random_steps){
+vec Lanczos::thermal_average_lanczos(vec&& quantity, int& random_steps){
     assert(quantity.n_elem > 0 && "given object is empty");
     double T = dT;
     int t = 0;
@@ -593,26 +606,28 @@ vec Lanczos::thermal_average_lanczos(vec& quantity, int& random_steps){
 //----------------------------------------------------------------------------------------------
 //----------------------------------------Main subroutines---------------------------------------
 //----------------------------------------------------------------------------------------------
-void Heat_Capacity(std::vector<arma::vec>& energies, vec& Cv) {
-    std::vector<double> temperature = prepare_parameterVec(dT, T_end, dT);
+void Heat_Capacity(std::vector<arma::vec>&& energies, vec&& Cv) {
+    auto temperature = prepare_parameterVec(dT, T_end, dT);
 #pragma omp parallel for shared(temperature) num_threads(num_of_threads)
     for (int k = 0; k < temperature.size(); k++) {
         double T = temperature[k];
         double heat_capacity = 0;
-        for (int l = 0; l < energies.size(); l++) {
-            double Sz = -((double)energies.size() - 1.0) / 2. + (double)l;
+        int l = 0;
+        for (auto E : energies) {
+            double Sz = -((double)E.size() - 1.0) / 2. + (double)l;
             double E_av = 0;
             double E2_av = 0;
             double Z = 0;
             //out << Sz << endl;
-            for (int n = 0; n < energies[l].size(); n++) {
-                E_av += energies[l](n) * std::exp(-(energies[l](n) - energies[l](0)) / T);
-                E2_av += energies[l](n) * energies[l](n) * std::exp(-(energies[l](n) - energies[l](0)) / T);
-                Z += std::exp(-(energies[l](n) - energies[l](0)) / T);
+            for (int n = 0; n < E.size(); n++) {
+                E_av += E(n) * std::exp(-(E(n) - E(0)) / T);
+                E2_av += E(n) * E(n) * std::exp(-(E(n) - E(0)) / T);
+                Z += std::exp(-(E(n) - E(0)) / T);
             }
             E_av = E_av / Z;
             E2_av = E2_av / Z;
             heat_capacity += (E2_av - E_av * E_av) / T / T;
+            l++;
         }
         int L = (energies.size() - 1) * 2 / 3; // n=1.5 filling
         Cv(k) = heat_capacity / (double)L / (double)energies.size();
@@ -620,9 +635,9 @@ void Heat_Capacity(std::vector<arma::vec>& energies, vec& Cv) {
         //out << T << " " << Cv(k) << " " << L << endl;
     }
 }
-void static_spin_susceptibility(std::vector<arma::vec>& energies, vec& chi) {
-    std::vector<double> temperature = prepare_parameterVec(dT, T_end, dT);
-//#pragma omp parallel for shared(temperature) num_threads(num_of_threads)
+void static_spin_susceptibility(std::vector<arma::vec>&& energies, vec&& chi) {
+    auto temperature = prepare_parameterVec(dT, T_end, dT);
+#pragma omp parallel for shared(temperature) num_threads(num_of_threads)
     for (int k = 0; k < temperature.size(); k++) {
         double T = temperature[k]; 
         double Z = 0;
@@ -637,7 +652,7 @@ void static_spin_susceptibility(std::vector<arma::vec>& energies, vec& chi) {
         int L = (energies.size() - 1) * 2 / 3; // n=1.5 filling
         chi(k) = X_0 / Z / T / (double)L;
 
-        out << T << " " << chi(k) << " " << L << endl;
+        //out << T << " " << chi(k) << " " << L << endl;
     }
 }
 
@@ -652,15 +667,16 @@ void Cv_Umap(int L, int N_e, double t) {
         K = 4 * 0.15 * 0.15 / U;
         J_H = 0.25 * U;
         std::vector<arma::vec> energies;
+        //std::unique_ptr<std::vector<arma::vec>> energies(new std::vector<arma::vec>);
         for (int Sz = -N_e; Sz <= N_e; Sz += 2) {
             //HamiltonianKH Hamil(L, N_e, t, U, K, J_H, Sz);
             std::unique_ptr<HamiltonianKH> Hamil(new HamiltonianKH(L, N_e, t, U, K, J_H, Sz));
             Hamil->Hamiltonian();
             Hamil->Diagonalization();
-            energies.push_back(Hamil->eigenvalues);
+            energies.emplace_back(Hamil->eigenvalues);
         }
         vec Cv(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
-        Heat_Capacity(energies, Cv);
+        Heat_Capacity(std::move(energies), std::move(Cv));
         int q = 0;
         double T = dT;
         while (T <= T_end) {
@@ -704,16 +720,16 @@ void Main_Cv(int L, int N_e, double t, double K, double U, double J_H) {
         std::unique_ptr<HamiltonianKH> Hamil(new HamiltonianKH(L, N_e, t, U, K, J_H, Sz));
         Hamil->Hamiltonian();
         Hamil->Diagonalization();
-        energies.push_back(Hamil->eigenvalues);
+        energies.emplace_back(std::move(Hamil->eigenvalues));
         out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
     }
     vec Cv(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
-    Heat_Capacity(energies, Cv);
-    print_Cv(Cv, U, N_e, L);
+    Heat_Capacity(std::move(energies),  std::move(Cv));
+    print_Cv(std::move(Cv), U, N_e, L);
     Cv.~vec();
     vec chi_0(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
-    static_spin_susceptibility(energies, chi_0);
-    print_chi(chi_0, U, N_e, L);
+    static_spin_susceptibility(std::move(energies), std::move(chi_0));
+    print_chi(std::move(chi_0), U, N_e, L);
     chi_0.~vec();
 }
 void Main_Cv_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int M, int random_steps) {
@@ -725,11 +741,12 @@ void Main_Cv_Lanczos(int L, int N_e, double t, double K, double U, double J_H, i
             Hamil->lanczos_steps = Hamil->N;
             out << "Lanczos steps greater than system size" << endl;
         }
-        Cv += Hamil->Heat_Capacity_Lanczos(random_steps) / double(N_e + 1.0);
+        auto res = Hamil->Heat_Capacity_Lanczos(random_steps) / double(N_e + 1.0);;
+        Cv += res;
         //chi_0 += Hamil.chi_0 / double(N_e + 1.0);
         //out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
     }
-    print_Cv_Lanczos(Cv, U, N_e, L, M, random_steps);
+    print_Cv_Lanczos(std::move(Cv), U, N_e, L, M, random_steps);
     //print_chi(chi_0, U, N_e, L);
     Cv.~vec();
 }
@@ -739,24 +756,24 @@ void Main_DOS(int L, int N_e, double t, double K, double U, double J_H) {
     Hamil->Hamiltonian();
     Hamil->Diagonalization();
     vector<double> omega_vec = prepare_parameterVec(Hamil->eigenvalues(0), Hamil->eigenvalues(Hamil->eigenvalues.size() - 1), domega);
-    vec DOS = Hamil->Total_Density_of_states(omega_vec) / (N_e + 1);
+    vec DOS = Hamil->Total_Density_of_states(std::move(omega_vec)) / (N_e + 1); //rvalue of DOS
     double maximum = max(DOS);
     double Ef = FermiLevel(L, N_e, t, K, U, J_H);
     Hamil->printEnergy(Ef);
-    printDOS(DOS, U, N_e, L, omega_vec, maximum, Ef);
+    printDOS(std::move(DOS), U, N_e, L, std::move(omega_vec), maximum, Ef);
 }
 
 
 // Helpful tools
 double FermiLevel(int L, int N_e, double t, double K, double U, double J_H) {
     double Ef;
-    Lanczos Object(L, N_e + 1, t, U, K, J_H, ((N_e + 1) % 2 == 0) ? 0 : 1, 300);
-    Object.Lanczos_Diagonalization();
-    Ef = Object.eigenvalues(0);
+    std::unique_ptr<Lanczos> Object(new Lanczos(L, N_e + 1, t, U, K, J_H, ((N_e + 1) % 2 == 0) ? 0 : 1, 300));
+    Object->Lanczos_Diagonalization();
+    Ef = Object->eigenvalues(0);
 
-    Lanczos Object2(L, N_e - 1, t, U, K, J_H, ((N_e - 1) % 2 == 0) ? 0 : 1, 300);
-    Object2.Lanczos_Diagonalization();
-    Ef = (Ef - Object2.eigenvalues(0)) / 2.0;
+    Object.reset(new Lanczos(L, N_e - 1, t, U, K, J_H, ((N_e - 1) % 2 == 0) ? 0 : 1, 300));
+    Object->Lanczos_Diagonalization();
+    Ef = (Ef - Object->eigenvalues(0)) / 2.0;
 
     return Ef;
 }
@@ -764,13 +781,13 @@ std::vector<double> prepare_parameterVec(double _min, double _max, double step) 
     vector<double> parameter_vec;
     double temp = _min;
     while (temp <= _max) {
-        parameter_vec.push_back(temp);
+        parameter_vec.emplace_back(temp);
         temp += step;
     }
     return parameter_vec;
 }
 
-void printDOS(vec& resultDOS, double U, double N_e, int L, std::vector<double>& omega_vec, double maximum, double E_fermi) {
+void printDOS(vec&& resultDOS, double U, double N_e, int L, std::vector<double>&& omega_vec, double maximum, double E_fermi) {
     ofstream DOSfile;
     stringstream Ustr, Nstr;
     Ustr << setprecision(1) << fixed << U;
@@ -782,7 +799,7 @@ void printDOS(vec& resultDOS, double U, double N_e, int L, std::vector<double>& 
 
     DOSfile.close();
 }
-void print_Cv(vec& Cv, double U, double N_e, int L) {
+void print_Cv(vec&& Cv, double U, double N_e, int L) {
     ofstream savefile;
     stringstream Ustr, Nstr;
     Ustr << setprecision(2) << fixed << U;
@@ -796,7 +813,7 @@ void print_Cv(vec& Cv, double U, double N_e, int L) {
     }
     savefile.close();
 }
-void print_Cv_Lanczos(vec& Cv, double U, double N_e, int L, int M, int random_steps) {
+void print_Cv_Lanczos(vec&& Cv, double U, double N_e, int L, int M, int random_steps) {
     ofstream savefile;
     stringstream Ustr, Nstr;
     Ustr << setprecision(2) << fixed << U;
@@ -811,7 +828,7 @@ void print_Cv_Lanczos(vec& Cv, double U, double N_e, int L, int M, int random_st
     }
     savefile.close();
 }
-void print_chi(vec& chi, double U, double N_e, int L) {
+void print_chi(vec&& chi, double U, double N_e, int L) {
     ofstream savefile;
     stringstream Ustr, Nstr;
     Ustr << setprecision(2) << fixed << U;
@@ -849,7 +866,7 @@ vector<int> int_to_binary(ull_int idx, int L) {
     }
     return vec;
 }
-ull_int binary_to_int(vector<int> vec) {
+ull_int binary_to_int(vector<int>&& vec) {
     int val = 0;
     for (int k = 0; k < vec.size(); k++) {
         val += vec[vec.size() - 1 - k] * std::pow(8, k);
@@ -857,13 +874,13 @@ ull_int binary_to_int(vector<int> vec) {
     return val;
 }
 
-ull_int binary_search(std::vector<ull_int>& arr, int l_point, int r_point, ull_int element) {
+ull_int binary_search(std::vector<ull_int>&& arr, int l_point, int r_point, ull_int element) {
     //out << element << endl;
     if (r_point >= l_point) {
         int middle = l_point + (r_point - l_point) / 2;
         if (arr[middle] == element) return middle;
-        else if (arr[middle] > element) return binary_search(arr, l_point, middle - 1, element);
-        else return binary_search(arr, middle + 1, r_point, element);
+        else if (arr[middle] > element) return binary_search(std::move(arr), l_point, middle - 1, element);
+        else return binary_search(std::move(arr), middle + 1, r_point, element);
     }
     assert(false && "Element not present in the array");
     return -1;
