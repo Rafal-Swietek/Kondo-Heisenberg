@@ -21,7 +21,8 @@ int main() {
     Hamil->show_ground_state();
     /*Main_Cv_Lanczos(4, 6, t, K, U, J_H, M, R);
     Main_Cv_Lanczos(6, 9, t, K, U, J_H, M, R);
-    Main_Cv_Lanczos(8, 12, t, K, U, J_H, M, R);*/
+    Main_Cv_Lanczos(8, 12, t, K, U, J_H, M, R);
+    Main_Cv_Lanczos(10, 15, t, K, U, J_H, M, R);*/
 	//------------------------------------------------------------
     out << "Time taken:" << (double)(clock() - tStart) / CLOCKS_PER_SEC << " seconds" << endl;
 	return 0;

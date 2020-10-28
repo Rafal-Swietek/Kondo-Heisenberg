@@ -1,9 +1,6 @@
 #include "Hamiltonian.h"
 
-#define im std::complex<double>(0.0,1.0)
-#define M_PI 3.14159265358979323846
-#define memory_over_performance false
-
+constexpr auto memory_over_performance = false;
 double pi = M_PI;
 
 double dT = 0.01;
@@ -498,14 +495,14 @@ void Lanczos::Build_Lanczos_Hamil(vec& initial_vec) {
         tmp2_prev = tmp2;
         //out << j << "lanczos" << endl;
     }
-    tmp.~vec();
-    tmp2_prev.~vec();
 }
 void Lanczos::Lanczos_Diagonalization() {
     Hamiltonian_sparse();
     srand(time(NULL));
     auto rand = Create_Random_vec();
     Build_Lanczos_Hamil(rand);
+    this->eigenvalues = vec(lanczos_steps);
+    this->eigenvectors = mat(lanczos_steps, lanczos_steps);
     eig_sym(eigenvalues, eigenvectors, H_L);
 }
 void Lanczos::Lanczos_GroundState() {
@@ -517,7 +514,14 @@ void Lanczos::Lanczos_GroundState() {
     auto initial_vec = Create_Random_vec();
     Build_Lanczos_Hamil(initial_vec);
 
-    eig_sym(eigenvalues, eigenvectors, H_L);
+    try {
+        eig_sym(eigenvalues, eigenvectors, H_L);
+    }
+    catch (const bad_alloc& e) {
+        std::cout << "Memory exceeded " << e.what() << "\n";
+        out << "dim(H) = " << H_L.size() * sizeof(H_L(0, 0)) << "\n";
+        assert(false);
+    }
     vec GS = eigenvectors.col(0);
 
     this->ground_state = vec(N, fill::zeros);
@@ -545,7 +549,6 @@ void Lanczos::Lanczos_GroundState() {
         initial_vec = tmp2;
         out << j << "lanczos" << endl;
     }
-    tmp.~vec();
 }
 
 vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
@@ -726,11 +729,9 @@ void Main_Cv(int L, int N_e, double t, double K, double U, double J_H) {
     vec Cv(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     Heat_Capacity(std::move(energies),  std::move(Cv));
     print_Cv(std::move(Cv), U, N_e, L);
-    Cv.~vec();
     vec chi_0(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     static_spin_susceptibility(std::move(energies), std::move(chi_0));
     print_chi(std::move(chi_0), U, N_e, L);
-    chi_0.~vec();
 }
 void Main_Cv_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int M, int random_steps) {
     vec Cv(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
@@ -748,7 +749,6 @@ void Main_Cv_Lanczos(int L, int N_e, double t, double K, double U, double J_H, i
     }
     print_Cv_Lanczos(std::move(Cv), U, N_e, L, M, random_steps);
     //print_chi(chi_0, U, N_e, L);
-    Cv.~vec();
 }
 void Main_DOS(int L, int N_e, double t, double K, double U, double J_H) {
     //HamiltonianKH Hamil(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1);

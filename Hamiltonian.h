@@ -29,6 +29,8 @@ using namespace arma;
 typedef unsigned long long int ull_int;
 typedef std::complex<double> cpx;
 
+#define im cpx(0.0,1.0)
+#define M_PI 3.14159265358979323846
 #define out std::cout << std::setprecision(16) << std::fixed
 #define num_of_threads 16
 
