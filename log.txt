@@ -1,2 +1,0 @@
-Ground state for:
-E = -8.80801156
