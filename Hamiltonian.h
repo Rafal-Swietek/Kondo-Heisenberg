@@ -35,6 +35,7 @@ typedef std::complex<double> cpx;
 #define num_of_threads 16
 #define memory_over_performance false // this parameter says if the following code has to be optimized by size (memory usage shortage) or performance
 #define show_system_size_parameters false // this parameter defines whether to print data such as system size for each object conctructor call
+#define use_reorthonormalization true // enables in lanczos procedure full reorthogonalization - needs full krylov_space access
 
 class HamiltonianKH {
 public:
@@ -76,7 +77,7 @@ public:
 	double partition_function(double T);
 	mat correlation_matrix();
 
-	void print_base_vector(std::vector<int>&& base_vector, std::ofstream& out_str);
+	void print_base_vector(std::vector<int>& base_vector, std::ofstream& out_str);
 
 // Functions not usable by Lanczos
 	vec Total_Density_of_states(std::vector<double>&& omega_vec);
