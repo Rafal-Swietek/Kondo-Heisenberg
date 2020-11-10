@@ -32,7 +32,7 @@ typedef std::complex<double> cpx;
 #define im cpx(0.0,1.0)
 #define M_PI 3.14159265358979323846
 #define out std::cout << std::setprecision(16) << std::fixed
-#define num_of_threads 4
+#define num_of_threads 16
 #define memory_over_performance false // this parameter says if the following code has to be optimized by size (memory usage shortage) or performance
 #define show_system_size_parameters false // this parameter defines whether to print data such as system size for each object conctructor call
 
@@ -66,7 +66,7 @@ public:
 	void Diagonalization();
 
 	void generate_mapping();
-	void mapping_kernel(ull_int& start, ull_int& stop, std::vector<ull_int>* map_threaded, int L, int Sz, int num_of_electrons);
+	void mapping_kernel(ull_int start, ull_int stop, std::vector<ull_int>* map_threaded, int _id);
     void setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp);
 	void setHamiltonianElem_sparse(ull_int& k, double value, std::vector<int>&& temp);
 	void printEnergy(double Ef);
@@ -110,7 +110,6 @@ public:
 
 	vec thermal_average_lanczos(vec&& quantity, int& random_steps);
 	vec Heat_Capacity_Lanczos(int random_steps);
-	vec Sq_lanczos(int random_steps, double T);
 };
 
 
@@ -119,7 +118,7 @@ public:
 //--------------------------------------------------TOOLS---------------------------------------
 //----------------------------------------------------------------------------------------------
 ull_int binary_search(std::vector<ull_int>* arr, int l_point, int r_point, ull_int element);
-vector<int> int_to_binary(ull_int idx, int L); //converges int to binary code of length N
+void int_to_binary(ull_int idx, std::vector<int>& vec); //converges int to binary code of length N
 ull_int binary_to_int(vector<int>&& vec); //converges vector with binary code to decimal system
 double FermiLevel(int L, int N_e, double t, double K, double U, double J_H);
 std::vector<double> prepare_parameterVec(double _min, double _max, double step);
@@ -135,6 +134,7 @@ void print_Sq(vec&& Sq, double U, double N_e, int L, double T);
 //Quantities averaged over spin blocks
 void Heat_Capacity(std::vector<arma::vec>&& energies, vec&& Cv);
 void static_spin_susceptibility(std::vector<arma::vec>&& energies, vec&& chi);
+vec Sq_lanczos(int random_steps, double T, std::unique_ptr<Lanczos>& obj);
 
 
 //Main routines

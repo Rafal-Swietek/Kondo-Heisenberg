@@ -6,7 +6,7 @@ int main() {
     srand(time(NULL));
 
     clock_t tStart = clock();
-    int L = 4; //chain length
+    int L = 8; //chain length
     double t = 0.5; //electron hopping = t_00
     double U = 2.1; // electron repulsion
     double K = 4 * 0.15 * 0.15 / U; // spin exchange integral*.

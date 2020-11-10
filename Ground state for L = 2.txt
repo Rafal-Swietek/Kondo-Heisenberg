@@ -1,0 +1,10 @@
+
+Ground state:	 |01>
+ with probability	 p=4.42884e-10
+
+Ground state:	 |10>
+ with probability	 p=4.42884e-10
+
+Ground state:	 |11>
+ with probability	 p=4.42884e-10
+

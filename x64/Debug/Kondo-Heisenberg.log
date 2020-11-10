@@ -1,26 +1,21 @@
 ﻿  Hamiltonian.cpp
-  main.cpp
   WARNING: use of OpenMP disabled; compiler support for OpenMP 3.1+ not detected
   NOTE: your compiler appears to have an ancient version of OpenMP
   NOTE: consider upgrading to a better compiler
-  WARNING: use of OpenMP disabled; compiler support for OpenMP 3.1+ not detected
-  NOTE: your compiler appears to have an ancient version of OpenMP
-  NOTE: consider upgrading to a better compiler
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(29,16): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(44,47): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(6,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(133,47): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(260,29): warning C4244: 'initializing': conversion from 'double' to 'ull_int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(389,91): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(30,16): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(45,47): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(135,47): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(265,29): warning C4244: 'initializing': conversion from 'double' to 'ull_int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(388,91): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(458,16): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(519,55): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(532,55): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(549,59): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(568,51): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(920,46): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(942,46): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(1097,41): warning C4244: '=': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(1239,56): warning C4244: '+=': conversion from 'double' to 'ull_int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(520,55): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(533,55): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(550,59): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(569,51): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(882,46): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(904,46): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(1102,41): warning C4244: '=': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(1242,56): warning C4244: '+=': conversion from 'double' to 'ull_int', possible loss of data
   Hamiltonian.obj : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
   Generating code
