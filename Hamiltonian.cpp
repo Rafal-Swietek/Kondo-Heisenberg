@@ -3,7 +3,6 @@
 double pi = M_PI;
 
 double T = 0.01;
-double Z_constT_global = 0;
 
 double dT = 0.001;
 double T_end = 3.0;
@@ -322,10 +321,12 @@ vec HamiltonianKH::Total_Density_of_states(std::vector<double>&& omega_vec) {
 
 vec HamiltonianKH::static_structure_factor(double T) { /// here sth wrong?., check
     vec static_structure_factor(L + 1, fill::zeros);
-    cx_vec cpx_vec, a;
-    std::vector<int> vect(L);
+    int number_of_thr = L + 1; // if - elseif - else statement
+#pragma omp parallel for num_threads(L+1)
     for (int l = 0; l <= L; l++) {
         double q = (double)l * pi / ((double)L + 1.0);
+        cx_vec cpx_vec, a;
+        std::vector<int> vect(L);
         sp_cx_mat Sq(sp_mat(N, N), sp_mat(N, N));
         for (int p = 0; p < N; p++) {
             int_to_binary(mapping->at(p), vect);
@@ -933,7 +934,7 @@ vec Sq_lanczos(int random_steps, double T, std::unique_ptr<Lanczos>& obj) {
             }
         }
         Sq(l) = real(2.0 * Sq0 / pi / (obj_copy->L + 1.0));
-        Z_constT_global = Z;
+        obj->Z_constT = Z;
     }
     return Sq;
 }
@@ -1090,15 +1091,16 @@ void Main_Cv_Lanczos(int L, int N_e, double t, double K, double U, double J_H, i
         chi_0 += Hamil->chi_0;
         Z += Hamil->partition_function;
         Sq += Sq_lanczos(random_steps, T, Hamil);
-        Z_constT += Z_constT_global;
+        Z_constT += Hamil->Z_constT;
         out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
     }
     /*std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, (N_e % 2 == 0)? 0:1, M));
-    Sq = Hamil->Sq_lanczos(random_steps, T);*/
+    Sq = Sq_lanczos(random_steps, T, Hamil);
+    Z_constT = Hamil->Z_constT;*/
     Sq = Sq / Z_constT;
     print_Sq(std::move(Sq), U, N_e, L, T);
 
-    chi_0 = chi_0 / Z;
+    chi_0 = chi_0 / Z; // elementwise division
     print_Cv_Lanczos(std::move(Cv), U, N_e, L, M, random_steps);
     print_chi(std::move(chi_0), U, N_e, L);
 }
