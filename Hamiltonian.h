@@ -28,10 +28,13 @@ using namespace arma;
 typedef unsigned long long int ull_int;
 typedef std::complex<double> cpx;
 
+// User makros
 #define im cpx(0.0,1.0)
 #define M_PI 3.14159265358979323846
 #define out std::cout << std::setprecision(16) << std::fixed
 #define num_of_threads 4
+#define memory_over_performance false // this parameter says if the following code has to be optimized by size (memory usage shortage) or performance
+#define show_system_size_parameters false // this parameter defines whether to print data such as system size for each object conctructor call
 
 class HamiltonianKH {
 public:
@@ -50,8 +53,6 @@ public:
     mat eigenvectors;
 	vec ground_state;
     vec eigenvalues;
-
-	sp_mat Sz_tot2; // square of total spin: Sz_tot^2 = sum_ij Sz^i Sz^j
 
 public:
 	HamiltonianKH(); // default Constructor
@@ -73,8 +74,9 @@ public:
 
 	vec static_structure_factor(double T);
 	double partition_function(double T);
+	mat correlation_matrix();
 
-	void print_base_vector(std::vector<int>&& base_vector);
+	void print_base_vector(std::vector<int>&& base_vector, std::ofstream& out_str);
 
 // Functions not usable by Lanczos
 	vec Total_Density_of_states(std::vector<double>&& omega_vec);
@@ -85,7 +87,7 @@ public:
 class Lanczos : public HamiltonianKH {
 public:
 	int lanczos_steps; // number of lanczos steps
-
+	double Z_constT; // partition function for given temperature;
 	mat H_L; // lanczos hamiltonian
 	vec randVec_inKrylovSpace; // overlap of random vector and eigenvectors
 	vec chi_0; // static spin susceptibility
@@ -93,6 +95,7 @@ public:
 	mat Krylov_space;
 
 	Lanczos(int L, int num_of_electrons, double t, double U, double K, double J_H, double Sz, int lanczos_steps);
+	Lanczos(std::unique_ptr<Lanczos>& obj); // copy constructor
 	Lanczos();
 	~Lanczos();
 
@@ -140,6 +143,8 @@ void Main_Jh(int L, int N_e, double t, double K, double U);
 void Main_Cv(int L, int N_e, double t, double K, double U, double J_H);
 void Main_Cv_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int M, int random_steps);
 void Main_DOS(int L, int N_e, double t, double K, double U, double J_H);
+void Main_Sq(int L, int N_e, double t, double K, double U, double J_H);
+
 void Cv_Umap(int L, int N_e, double t);
 void DOS_Umap(int L, int N_e, double t);
 void Lanczos_convergence(int L, int N_e);

@@ -1,0 +1,46 @@
+
+Ground state:	 |0010110011>
+ with probability	 p=0.00014483
+
+Ground state:	 |0011010011>
+ with probability	 p=8.80183e-05
+
+Ground state:	 |0100110011>
+ with probability	 p=0.000814742
+
+Ground state:	 |0101010011>
+ with probability	 p=6.24667e-05
+
+Ground state:	 |1000110011>
+ with probability	 p=0.000279783
+
+Ground state:	 |1010110011>
+ with probability	 p=0.000104002
+
+Ground state:	 |1100010011>
+ with probability	 p=0.000222643
+
+Ground state:	 |1100100011>
+ with probability	 p=0.00022264
+
+Ground state:	 |1100101010>
+ with probability	 p=6.24679e-05
+
+Ground state:	 |1100101100>
+ with probability	 p=8.80309e-05
+
+Ground state:	 |1100110001>
+ with probability	 p=0.000279771
+
+Ground state:	 |1100110010>
+ with probability	 p=0.000814762
+
+Ground state:	 |1100110011>
+ with probability	 p=0.00140131
+
+Ground state:	 |1100110100>
+ with probability	 p=0.000144843
+
+Ground state:	 |1100110101>
+ with probability	 p=0.000104011
+
