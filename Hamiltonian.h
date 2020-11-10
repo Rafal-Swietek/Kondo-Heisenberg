@@ -33,7 +33,7 @@ typedef std::complex<double> cpx;
 #define M_PI 3.14159265358979323846
 #define out std::cout << std::setprecision(16) << std::fixed
 #define num_of_threads 16
-#define memory_over_performance false // this parameter says if the following code has to be optimized by size (memory usage shortage) or performance
+#define memory_over_performance true // this parameter says if the following code has to be optimized by size (memory usage shortage) or performance
 #define show_system_size_parameters false // this parameter defines whether to print data such as system size for each object conctructor call
 #define use_reorthonormalization true // enables in lanczos procedure full reorthogonalization - needs full krylov_space access
 
@@ -107,6 +107,7 @@ public:
 
 	void Lanczos_GroundState();
 	void Lanczos_Diagonalization();
+	void Hamil_vector_multiply_kernel(int start, int stop, vec& initial_vec, vec& result_vec_threaded);
 	void Hamil_vector_multiply(vec& initial_vec, vec& result_vec);
 
 	vec thermal_average_lanczos(vec&& quantity, int& random_steps);
@@ -120,7 +121,7 @@ public:
 //----------------------------------------------------------------------------------------------
 ull_int binary_search(std::vector<ull_int>* arr, int l_point, int r_point, ull_int element);
 void int_to_binary(ull_int idx, std::vector<int>& vec); //converges int to binary code of length N
-ull_int binary_to_int(vector<int>&& vec); //converges vector with binary code to decimal system
+ull_int binary_to_int(vector<int>& vec); //converges vector with binary code to decimal system
 double FermiLevel(int L, int N_e, double t, double K, double U, double J_H);
 std::vector<double> prepare_parameterVec(double _min, double _max, double step);
 

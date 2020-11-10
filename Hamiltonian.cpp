@@ -35,7 +35,7 @@ void HamiltonianKH::update_parameters(double t, double U, double K, double J_H) 
 }
 
 void HamiltonianKH::setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp){
-    ull_int idx = binary_search(mapping, 0, N - 1, binary_to_int(std::move(temp)));
+    ull_int idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
         H(idx, k) += value;
         H(k, idx) += value;
 }
@@ -126,7 +126,7 @@ ull_int findElement(std::vector<ull_int>& vector, ull_int element) {
     return (ull_int)std::distance(vector.begin(), it);
 }
 void HamiltonianKH::setHamiltonianElem_sparse(ull_int& k, double value, std::vector<int>&& temp) {
-    ull_int idx = binary_search(mapping, 0, N - 1, binary_to_int(std::move(temp)));// findElement(std::move(mapping), binary_to_int(std::move(temp))); //
+    ull_int idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));// findElement(std::move(mapping), binary_to_int(std::move(temp))); //
     assert(idx < N && "Somehow index out of scope, wtf?? Found element not possibly present in the array");
     H_sparse(idx, k) += value;
     H_sparse(k, idx) += value;
@@ -476,18 +476,14 @@ vec Lanczos::Create_Random_vec() {
     }
     return random_vec / norm;
 }
-void Lanczos::Hamil_vector_multiply(vec& initial_vec, vec& result_vec) {
-    result_vec.fill(0);
+void Lanczos::Hamil_vector_multiply_kernel(int start, int stop, vec& initial_vec, vec& result_vec_threaded) {
     std::vector<int> base_vector(L);
-//#pragma omp parallel for num_threads(num_of_threads)
-    for (int p = 0; p < N; p++) {
-        ull_int k = (ull_int)p;
+    int PBC = 0;
+    int next_j;
+    ull_int idx;
+    int s_i, s_j;
+    for (int k = start; k < stop; k++) {
         int_to_binary(mapping->at(k), base_vector);
-        std::vector<int> temp(base_vector);
-        int PBC = 0;
-        int next_j;
-        ull_int idx;
-        int s_i, s_j;
         for (int j = 0; j <= L - 1; j++) {
             if (j < L - 1 || PBC == 1) {
                 if (PBC == 1 && j == L - 1) next_j = 0;
@@ -498,72 +494,122 @@ void Lanczos::Hamil_vector_multiply(vec& initial_vec, vec& result_vec) {
                 if (base_vector[next_j] < 4) s_j = 1;
                 else s_j = 0;
 
-                result_vec(k) += K * (s_i - 0.5) * (s_j - 0.5) * initial_vec(k);
-                //Kinetic spin part: S+ S-
-                temp = base_vector;
+                //localised spin diagonal part
+                result_vec_threaded(k) += K * (s_i - 0.5) * (s_j - 0.5) * initial_vec(k);
+                //Kinetic localised spin part: S+ S-
                 if (s_i == 0 && s_j == 1) {
-                    temp[j] = base_vector[j] - 4; //spin filp
-                    temp[next_j] = base_vector[next_j] + 4;
-                    idx = binary_search(mapping, 0, N - 1, binary_to_int(std::move(temp)));
-                    result_vec(idx) += K / 2. * initial_vec(k); //   S_i^+ * S_i+1^-
-                    result_vec(k) += K / 2. * initial_vec(idx); //   S_i^+ * S_i+1^-
+                    base_vector[j] -= 4; //spin filp
+                    base_vector[next_j] += 4;
+                    idx = binary_search(mapping, 0, N - 1, binary_to_int(base_vector));
+                    result_vec_threaded(k) += K / 2. * initial_vec(idx); //   S_i^+ * S_i+1^-
+                    base_vector[j] += 4; //spin filp
+                    base_vector[next_j] -= 4;
+                }
+                if (s_i == 1 && s_j == 0) {
+                    base_vector[j] += 4; //spin filp
+                     base_vector[next_j] -= 4;
+                    idx = binary_search(mapping, 0, N - 1, binary_to_int(base_vector));
+                    result_vec_threaded(k) += K / 2. * initial_vec(idx); //   S_i^+ * S_i+1^-
+                    base_vector[j] -= 4; //spin filp
+                    base_vector[next_j] += 4;
                 }
                 //---------------------
 
-                // electron hopping j+1 -> j
-                    //spin up
-                temp = base_vector;
+                // electron hopping
+                //spin up
                 //only odd numbers have up-electrons  //even numbers lack one up-electron
-                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
-                    temp[next_j] -= 1; // anihilate spin-up electron
-                    temp[j] += 1; // create spin-up electron
-                    idx = binary_search(mapping, 0, N - 1, binary_to_int(std::move(temp)));
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) { //  j+1 -> j
+                    base_vector[next_j] -= 1; // anihilate spin-up electron
+                    base_vector[j] += 1; // create spin-up electron
+                    idx = binary_search(mapping, 0, N - 1, binary_to_int(base_vector));
+                    base_vector[next_j] += 1;
+                    base_vector[j] -= 1;
                     if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
-                        result_vec(idx) += -t * initial_vec(k);
-                        result_vec(k) += -t * initial_vec(idx);
+                        result_vec_threaded(k) += -t * initial_vec(idx);
                     }
-                    else {
-                        result_vec(idx) += t * initial_vec(k);
-                        result_vec(k) += t * initial_vec(idx);
+                    else
+                        result_vec_threaded(k) += t * initial_vec(idx);
+                }
+                if (base_vector[j] % 2 == 1 && base_vector[next_j] % 2 == 0) { // j -> j+1
+                    base_vector[next_j] += 1; // anihilate spin-up electron
+                    base_vector[j] -= 1; // create spin-up electron
+                    idx = binary_search(mapping, 0, N - 1, binary_to_int(base_vector));
+                    base_vector[next_j] -= 1;
+                    base_vector[j] += 1;
+                    if (base_vector[j] % 2 == 1 && base_vector[next_j] % 4 == 2) { // sign change when up-electron hop over down-electron (if 3=du)
+                        result_vec_threaded(k) += -t * initial_vec(idx);
                     }
+                    else
+                        result_vec_threaded(k) += t * initial_vec(idx);
                 }
                 // spin down
-                temp = base_vector;
                 // the if statement contains every possible down-electron hopping: next_j->j
                 if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
                     if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
-                        temp[next_j] -= 2; // anihilate spin-down electron
-                        temp[j] += 2; // create spin-down electron
-                        idx = binary_search(mapping, 0, N - 1, binary_to_int(std::move(temp)));
+                        base_vector[next_j] -= 2; // anihilate spin-down electron
+                        base_vector[j] += 2; // create spin-down electron
+                        idx = binary_search(mapping, 0, N - 1, binary_to_int(base_vector));
+                        base_vector[next_j] += 2;
+                        base_vector[j] -= 2;
                         if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
-                            result_vec(idx) += -t * initial_vec(k);
-                            result_vec(k) += -t * initial_vec(idx);
+                            result_vec_threaded(k) += -t * initial_vec(idx);
                         }
-                        else {
-                            result_vec(idx) += t * initial_vec(k);
-                            result_vec(k) += t * initial_vec(idx);
+                        else
+                            result_vec_threaded(k) += t * initial_vec(idx);
+                    }
+                }
+                // the if statement contains every possible down-electron hopping: j->next_j
+                if (base_vector[j] % 4 == 2 || base_vector[j] % 4 == 3) {
+                    if (base_vector[next_j] % 4 == 0 || base_vector[next_j] % 4 == 1) {
+                        base_vector[j] -= 2; // anihilate spin-down electron
+                        base_vector[next_j] += 2; // create spin-down electron
+                        idx = binary_search(mapping, 0, N - 1, binary_to_int(base_vector));
+                        base_vector[next_j] -= 2;
+                        base_vector[j] += 2;
+                        if ((base_vector[j] % 4 == 3 && base_vector[next_j] % 4 == 1) || ((base_vector[j] % 4 == 3 && base_vector[next_j] % 4 == 1)) || ((base_vector[j] % 4 == 3 && base_vector[next_j] % 4 == 0))) {
+                            result_vec_threaded(k) += -t * initial_vec(idx);
                         }
+                        else
+                            result_vec_threaded(k) += t * initial_vec(idx);
                     }
                 }
             }
+            // electron-localised spin interaction ( interorbital electronic spin interaction)
+            if (base_vector[j] == 5) {// S_i^+ s_i^-
+                base_vector[j] = 2;
+                idx = binary_search(mapping, 0, N - 1, binary_to_int(base_vector));
+                base_vector[j] = 5;
+                result_vec_threaded(k) += -J_H * initial_vec(idx);
+            }
+            if (base_vector[j] == 2) {// S_i^+ s_i^-
+                base_vector[j] = 5;
+                idx = binary_search(mapping, 0, N - 1, binary_to_int(base_vector));
+                base_vector[j] = 2;
+                result_vec_threaded(k) += -J_H * initial_vec(idx);
+            }
             // electron repulsion
             if (base_vector[j] == 7 || base_vector[j] == 3)
-                result_vec(k) += U * initial_vec(k);
-            // electron-localised spin interaction ( interorbital electronic spin interaction)
-            temp = base_vector;
-            if (base_vector[j] == 5) {// S_i^+ s_i^-
-                temp[j] = 2;
-                idx = binary_search(mapping, 0, N - 1, binary_to_int(std::move(temp)));
-                result_vec(idx) += -J_H * initial_vec(k);
-                result_vec(k) += -J_H * initial_vec(idx);
-            }
+                result_vec_threaded(k) += U * initial_vec(k);
             //Diagonal - z part
             if (base_vector[j] == 1 || base_vector[j] == 6)
-                result_vec(k) -= 2.0 * J_H * 0.25 * initial_vec(k);
+                result_vec_threaded(k) -= 2.0 * J_H * 0.25 * initial_vec(k);
             if (base_vector[j] == 2 || base_vector[j] == 5)
-                result_vec(k) += 2.0 * J_H * 0.25 * initial_vec(k);
+                result_vec_threaded(k) += 2.0 * J_H * 0.25 * initial_vec(k);
         }
     }
+}
+void Lanczos::Hamil_vector_multiply(vec& initial_vec, vec& result_vec) {
+    result_vec.zeros();
+    std::vector<arma::vec> result_threaded(num_of_threads);
+    std::vector<std::thread> threads;
+    //Hamil_vector_multiply_kernel(0, N, initial_vec, result_vec);
+    threads.reserve(num_of_threads);
+    for (int t = 0; t < num_of_threads; t++) {
+        int start = t * N / num_of_threads;
+        int stop = ((t + 1) == num_of_threads ? N : N * (t + 1) / num_of_threads);
+        result_threaded[t] = arma::vec(stop - start, fill::zeros);
+        threads.emplace_back(&Lanczos::Hamil_vector_multiply_kernel, this, start, stop, ref(initial_vec), ref(result_vec));
+    }for (auto& t : threads) t.join();
 }
 void Lanczos::Lanczos_convergence(vec& initial_vec) {
     this->Krylov_space = mat(N, 1);
@@ -744,7 +790,6 @@ void Lanczos::Lanczos_GroundState() {
 
     auto initial_vec = Create_Random_vec();
     Build_Lanczos_Hamil(initial_vec);
-
     try {
         eig_sym(eigenvalues, eigenvectors, H_L);
     }
@@ -753,6 +798,7 @@ void Lanczos::Lanczos_GroundState() {
         out << "dim(H) = " << H_L.size() * sizeof(H_L(0, 0)) << "\n";
         assert(false);
     }
+    out << eigenvalues(0) << endl << endl;
     vec GS = eigenvectors.col(0);
 
     this->ground_state = vec(N, fill::zeros);
@@ -897,7 +943,8 @@ void static_spin_susceptibility(std::vector<arma::vec>&& energies, vec&& chi) {
 }
 vec Sq_lanczos(int random_steps, double T, std::unique_ptr<Lanczos>& obj) {
     vec Sq(obj->L + 1, fill::zeros);
-    obj->Hamiltonian_sparse();
+    if(memory_over_performance)
+        obj->Hamiltonian_sparse();
     int number_of_thr = (obj->L > 10) ? 1 : ((obj->L < 10) ? obj->L + 1 : 2); // if - elseif - else statement
 #pragma omp parallel for num_threads(number_of_thr)
     for (int l = 0; l <= obj->L; l++) {
@@ -1002,14 +1049,14 @@ void DOS_Umap(int L, int N_e, double t) {
 
 void Main_U(int L, int N_e, double t) {
 //#pragma omp parallel for 
-    for (int k = 2; k <= 50; k += 2) {
+    for (int k = 1; k <= 50; k += 1) {
         double U = (double)k / 10.0;
         double K, J_H;
         K = 4 * 0.15 * 0.15 / U;
         J_H = 0.25 * U;
         //K = 0; J_H = 0;
         Main_DOS(L, N_e, t, K, U, J_H);
-        //Main_Cv(L, N_e, t, K, U, J_H);
+        Main_Cv(L, N_e, t, K, U, J_H);
 
         out << "U = " << U << " done!" << endl;
     }
@@ -1034,7 +1081,7 @@ void Main_Cv(int L, int N_e, double t, double K, double U, double J_H) {
         Sq += Hamil->static_structure_factor(T);
         Z += Hamil->partition_function(T);
         energies.emplace_back(std::move(Hamil->eigenvalues));
-        out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
+        //out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
     }
     Sq = Sq / Z;
     print_Sq(std::move(Sq), U, N_e, L, T);
@@ -1092,7 +1139,7 @@ void Main_Cv_Lanczos(int L, int N_e, double t, double K, double U, double J_H, i
         Z += Hamil->partition_function;
         Sq += Sq_lanczos(random_steps, T, Hamil);
         Z_constT += Hamil->Z_constT;
-        out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
+        //out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
     }
     /*std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, (N_e % 2 == 0)? 0:1, M));
     Sq = Sq_lanczos(random_steps, T, Hamil);
@@ -1223,7 +1270,7 @@ void int_to_binary(ull_int idx, std::vector<int> & vec) {
         temp = static_cast<ull_int>((double)temp / 8.);
     }
 }
-ull_int binary_to_int(vector<int>&& vec) {
+ull_int binary_to_int(vector<int>& vec) {
     ull_int val = 0;
     for (int k = 0; k < vec.size(); k++) {
         val += vec[vec.size() - 1 - k] * std::pow(8, k);
