@@ -33,7 +33,7 @@ typedef std::complex<double> cpx;
 #define M_PI 3.14159265358979323846
 #define out std::cout << std::setprecision(16) << std::fixed
 #define num_of_threads 16
-#define memory_over_performance true // this parameter says if the following code has to be optimized by size (memory usage shortage) or performance
+#define memory_over_performance true // optimized by size --false-- (memory usage shortage) or performance --true--
 #define show_system_size_parameters false // this parameter defines whether to print data such as system size for each object conctructor call
 #define use_reorthonormalization true // enables in lanczos procedure full reorthogonalization - needs full krylov_space access
 
@@ -94,6 +94,10 @@ public:
 	vec chi_0; // static spin susceptibility
 	vec partition_function; // partition function
 	mat Krylov_space;
+
+	vec Cv_2; // Cv squared
+	vec chi_0_2; // chi_0 squared
+	vec Sq_2; // sq squared
 
 	Lanczos(int L, int num_of_electrons, double t, double U, double K, double J_H, double Sz, int lanczos_steps);
 	Lanczos(std::unique_ptr<Lanczos>& obj); // copy constructor

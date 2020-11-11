@@ -467,15 +467,6 @@ Lanczos::Lanczos(std::unique_ptr<Lanczos>& obj) {
 }
 Lanczos::~Lanczos() {}
 
-vec Lanczos::Create_Random_vec() {
-    vec random_vec(N, fill::zeros);
-    double norm = 0;
-    for (ull_int j = 0; j < N; j++) {
-        random_vec(j) = static_cast<double>(rand()) / (RAND_MAX + 0.0) - 0.5;
-        norm += random_vec(j) * random_vec(j);
-    }
-    return random_vec / norm;
-}
 void Lanczos::Hamil_vector_multiply_kernel(int start, int stop, vec& initial_vec, vec& result_vec_threaded) {
     std::vector<int> base_vector(L);
     int PBC = 0;
@@ -507,7 +498,7 @@ void Lanczos::Hamil_vector_multiply_kernel(int start, int stop, vec& initial_vec
                 }
                 if (s_i == 1 && s_j == 0) {
                     base_vector[j] += 4; //spin filp
-                     base_vector[next_j] -= 4;
+                    base_vector[next_j] -= 4;
                     idx = binary_search(mapping, 0, N - 1, binary_to_int(base_vector));
                     result_vec_threaded(k) += K / 2. * initial_vec(idx); //   S_i^+ * S_i+1^-
                     base_vector[j] -= 4; //spin filp
@@ -611,74 +602,16 @@ void Lanczos::Hamil_vector_multiply(vec& initial_vec, vec& result_vec) {
         threads.emplace_back(&Lanczos::Hamil_vector_multiply_kernel, this, start, stop, ref(initial_vec), ref(result_vec));
     }for (auto& t : threads) t.join();
 }
-void Lanczos::Lanczos_convergence(vec& initial_vec) {
-    this->Krylov_space = mat(N, 1);
-    this->H_L = mat(1, 1, fill::zeros);
-    vec e_prev(5, fill::zeros);
-    ofstream convergence("Lanczos convergence.txt");
-    ofstream energy("Energy Lanczos.txt");
-    convergence << std::setprecision(20) << std::fixed;
 
-    Krylov_space.col(0) = initial_vec;
-
-    double beta = dot(Krylov_space.col(0), Krylov_space.col(0));
-    Krylov_space.col(0) = Krylov_space.col(0) / sqrt(beta); //normalized fi_0
-    vec tmp(N, fill::zeros);
-    if (memory_over_performance) Hamil_vector_multiply(initial_vec, tmp); // tmp = H * Krylov_space(0)
-    else tmp = H_sparse * Krylov_space.col(0);
-
-    double alfa = arma::dot(Krylov_space.col(0), tmp);
-    tmp = tmp - alfa * Krylov_space.col(0);
-    H_L(0, 0) = alfa;
-    for (int j = 1; j < lanczos_steps; j++) {
-        Krylov_space.resize(N, j + 1);
-        H_L.resize(j + 1, j + 1);
-
-        beta = sqrt(dot(tmp, tmp));
-        Krylov_space.col(j) = tmp / beta;
-        vec tmp2 = Krylov_space.col(j);
-        if (memory_over_performance) Hamil_vector_multiply(tmp2, tmp); // tmp = H * tmp2
-        else tmp = H_sparse * tmp2;
-
-        alfa = arma::dot(Krylov_space.col(j), tmp);
-        //tmp = tmp - alfa * Krylov_space.col(j) - beta * Krylov_space.col(j - 1);
-        vec temporary(N, fill::zeros);
-        for (int k = 0; k <= j; k++)
-            temporary += dot(tmp, Krylov_space.col(k)) * Krylov_space.col(k);
-        tmp = tmp - temporary;
-        temporary.zeros();
-        for (int k = 0; k <= j; k++)
-            temporary += dot(tmp, Krylov_space.col(k)) * Krylov_space.col(k);
-        tmp = tmp - temporary;
-
-        H_L(j, j) = alfa;
-        H_L(j, j - 1) = beta;
-        H_L(j - 1, j) = beta;
-        eig_sym(eigenvalues, eigenvectors, H_L);
-
-        for (int k = 0; k < j; k++) {
-            energy << j << "\t" << eigenvalues(k) << endl;
-        }
-        if (j >= 5) {
-            vec e(e_prev.size());
-            e(0) = eigenvalues(0);
-            e(1) = eigenvalues(1);
-            e(2) = eigenvalues(2);
-            e(3) = eigenvalues(3);
-            e(4) = eigenvalues(4);
-            convergence << j << "\t";
-            for (int k = 0; k < e.size(); k++) {
-                convergence << fabs((e_prev(k) - e(k)) / e(k)) << "\t";
-            }
-            convergence << endl;
-            e_prev = e;
-        }
-        out << j << endl;
+vec Lanczos::Create_Random_vec() {
+    vec random_vec(N, fill::zeros);
+    double norm = 0;
+    for (ull_int j = 0; j < N; j++) {
+        random_vec(j) = static_cast<double>(rand()) / (RAND_MAX + 0.0) - 0.5;
+        norm += random_vec(j) * random_vec(j);
     }
-    energy.close();
-    convergence.close();
+    return random_vec / norm;
 }
-
 void Lanczos::Build_Lanczos_Hamil_wKrylov(vec& initial_vec) {
     this->Krylov_space = mat(N, 1);
     this->H_L = mat(1, 1, fill::zeros);
@@ -764,9 +697,10 @@ void Lanczos::Build_Lanczos_Hamil(vec& initial_vec) {
         H_L(j - 1, j) = beta;
 
         tmp2_prev = tmp2;
-        //out << j << "lanczos" << endl;
+        out << j << "lanczos" << endl;
     }
 }
+
 void Lanczos::Lanczos_Diagonalization() {
     //Hamiltonian_sparse();
     //vec rand = randu<vec>(N);
@@ -824,8 +758,75 @@ void Lanczos::Lanczos_GroundState() {
         tmp = tmp - alfa * tmp2 - beta * initial_vec;
 
         initial_vec = tmp2;
-        //out << j << "lanczos" << endl;
+        out << j << "lanczos" << endl;
     }
+}
+void Lanczos::Lanczos_convergence(vec& initial_vec) {
+    this->Krylov_space = mat(N, 1);
+    this->H_L = mat(1, 1, fill::zeros);
+    vec e_prev(5, fill::zeros);
+    ofstream convergence("Lanczos convergence.txt");
+    ofstream energy("Energy Lanczos.txt");
+    convergence << std::setprecision(20) << std::fixed;
+
+    Krylov_space.col(0) = initial_vec;
+
+    double beta = dot(Krylov_space.col(0), Krylov_space.col(0));
+    Krylov_space.col(0) = Krylov_space.col(0) / sqrt(beta); //normalized fi_0
+    vec tmp(N, fill::zeros);
+    if (memory_over_performance) Hamil_vector_multiply(initial_vec, tmp); // tmp = H * Krylov_space(0)
+    else tmp = H_sparse * Krylov_space.col(0);
+
+    double alfa = arma::dot(Krylov_space.col(0), tmp);
+    tmp = tmp - alfa * Krylov_space.col(0);
+    H_L(0, 0) = alfa;
+    for (int j = 1; j < lanczos_steps; j++) {
+        Krylov_space.resize(N, j + 1);
+        H_L.resize(j + 1, j + 1);
+
+        beta = sqrt(dot(tmp, tmp));
+        Krylov_space.col(j) = tmp / beta;
+        vec tmp2 = Krylov_space.col(j);
+        if (memory_over_performance) Hamil_vector_multiply(tmp2, tmp); // tmp = H * tmp2
+        else tmp = H_sparse * tmp2;
+
+        alfa = arma::dot(Krylov_space.col(j), tmp);
+        //tmp = tmp - alfa * Krylov_space.col(j) - beta * Krylov_space.col(j - 1);
+        vec temporary(N, fill::zeros);
+        for (int k = 0; k <= j; k++)
+            temporary += dot(tmp, Krylov_space.col(k)) * Krylov_space.col(k);
+        tmp = tmp - temporary;
+        temporary.zeros();
+        for (int k = 0; k <= j; k++)
+            temporary += dot(tmp, Krylov_space.col(k)) * Krylov_space.col(k);
+        tmp = tmp - temporary;
+
+        H_L(j, j) = alfa;
+        H_L(j, j - 1) = beta;
+        H_L(j - 1, j) = beta;
+        eig_sym(eigenvalues, eigenvectors, H_L);
+
+        for (int k = 0; k < j; k++) {
+            energy << j << "\t" << eigenvalues(k) << endl;
+        }
+        if (j >= 5) {
+            vec e(e_prev.size());
+            e(0) = eigenvalues(0);
+            e(1) = eigenvalues(1);
+            e(2) = eigenvalues(2);
+            e(3) = eigenvalues(3);
+            e(4) = eigenvalues(4);
+            convergence << j << "\t";
+            for (int k = 0; k < e.size(); k++) {
+                convergence << fabs((e_prev(k) - e(k)) / e(k)) << "\t";
+            }
+            convergence << endl;
+            e_prev = e;
+        }
+        out << j << endl;
+    }
+    energy.close();
+    convergence.close();
 }
 
 vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
@@ -835,10 +836,13 @@ vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
     vec Z(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     this->chi_0 = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     this->partition_function = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
+    this->Cv_2 = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
+    this->chi_0_2 = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     //this->chi_0 = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
 
     auto temperature = prepare_parameterVec(dT, T_end, dT);
-    Hamiltonian_sparse();
+    if(!memory_over_performance)
+        Hamiltonian_sparse();
     for (int r = 0; r < random_steps; r++) {
         auto rand_vec = Create_Random_vec();
         Build_Lanczos_Hamil(rand_vec);
@@ -855,6 +859,7 @@ vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
                 E_av2(k) += eigenvalues(m) * eigenvalues(m) * overlap * std::exp(-eigenvalues(m) / T);
                 partition_function(k) += Z(k);
                 chi_0(k) += Sz * Sz * overlap * std::exp(-eigenvalues(m) / T) * (double)N / (double)random_steps / T / (double)L;
+                chi_0_2(k) += Sz * Sz * Sz * Sz * overlap * std::exp(-eigenvalues(m) / T) * (double)N / (double)random_steps / T / (double)L;
             }
         }
     }
@@ -943,6 +948,7 @@ void static_spin_susceptibility(std::vector<arma::vec>&& energies, vec&& chi) {
 }
 vec Sq_lanczos(int random_steps, double T, std::unique_ptr<Lanczos>& obj) {
     vec Sq(obj->L + 1, fill::zeros);
+    vec Sq2(obj->L + 1, fill::zeros);
     if(memory_over_performance)
         obj->Hamiltonian_sparse();
     int number_of_thr = (obj->L > 10) ? 1 : ((obj->L < 10) ? obj->L + 1 : 2); // if - elseif - else statement
@@ -965,7 +971,8 @@ vec Sq_lanczos(int random_steps, double T, std::unique_ptr<Lanczos>& obj) {
         }
         double Sq0 = 0, Z = 0;
         std::unique_ptr<Lanczos> obj_copy(new Lanczos(obj));
-        obj_copy->H_sparse = obj->H_sparse;
+        if (memory_over_performance)
+            obj_copy->H_sparse = obj->H_sparse;
         for (int r = 0; r < random_steps; r++) {
             auto rand_vec = obj_copy->Create_Random_vec();
             obj_copy->Build_Lanczos_Hamil_wKrylov(rand_vec);
@@ -978,6 +985,8 @@ vec Sq_lanczos(int random_steps, double T, std::unique_ptr<Lanczos>& obj) {
                 Z += (double)obj_copy->N / (double)random_steps * overlap * overlap * std::exp(-obj_copy->eigenvalues(m) / T);
                 overlap = real(overlap * cdot(cx_vec(obj_copy->eigenvectors.col(m), vec(obj_copy->N, fill::zeros)), temp));
                 Sq0 += (double)obj_copy->N / (double)random_steps * overlap * std::exp(-obj_copy->eigenvalues(m) / T);
+                overlap = real(dot(rand_vec, obj_copy->eigenvectors.col(m)) * cdot(cx_vec(obj_copy->eigenvectors.col(m), vec(obj_copy->N, fill::zeros)), Sq_mat * Sq_mat.t() * temp));
+                Sq2(l) += (double)obj_copy->N / (double)random_steps * overlap * std::exp(-obj_copy->eigenvalues(m) / T);
             }
         }
         Sq(l) = real(2.0 * Sq0 / pi / (obj_copy->L + 1.0));
@@ -1137,15 +1146,15 @@ void Main_Cv_Lanczos(int L, int N_e, double t, double K, double U, double J_H, i
         Cv += Hamil->Heat_Capacity_Lanczos(random_steps) / double(N_e + 1.0);
         chi_0 += Hamil->chi_0;
         Z += Hamil->partition_function;
-        Sq += Sq_lanczos(random_steps, T, Hamil);
-        Z_constT += Hamil->Z_constT;
+        //Sq += Sq_lanczos(random_steps, T, Hamil);
+        //Z_constT += Hamil->Z_constT;
         //out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
     }
     /*std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, (N_e % 2 == 0)? 0:1, M));
     Sq = Sq_lanczos(random_steps, T, Hamil);
     Z_constT = Hamil->Z_constT;*/
-    Sq = Sq / Z_constT;
-    print_Sq(std::move(Sq), U, N_e, L, T);
+    //Sq = Sq / Z_constT;
+    //print_Sq(std::move(Sq), U, N_e, L, T);
 
     chi_0 = chi_0 / Z; // elementwise division
     print_Cv_Lanczos(std::move(Cv), U, N_e, L, M, random_steps);
