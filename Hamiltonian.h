@@ -33,7 +33,7 @@ typedef std::complex<double> cpx;
 #define M_PI 3.14159265358979323846
 #define out std::cout << std::setprecision(16) << std::fixed
 #define num_of_threads 16
-#define memory_over_performance true // optimized by size --false-- (memory usage shortage) or performance --true--
+#define memory_over_performance false // optimized by size --true-- (memory usage shortage) or performance --false--
 #define show_system_size_parameters false // this parameter defines whether to print data such as system size for each object conctructor call
 #define use_reorthonormalization true // enables in lanczos procedure full reorthogonalization - needs full krylov_space access
 
@@ -91,13 +91,11 @@ public:
 	double Z_constT; // partition function for given temperature;
 	mat H_L; // lanczos hamiltonian
 	vec randVec_inKrylovSpace; // overlap of random vector and eigenvectors
-	vec chi_0; // static spin susceptibility
 	vec partition_function; // partition function
 	mat Krylov_space;
 
 	vec Cv_2; // Cv squared
 	vec chi_0_2; // chi_0 squared
-	vec Sq_2; // sq squared
 
 	Lanczos(int L, int num_of_electrons, double t, double U, double K, double J_H, double Sz, int lanczos_steps);
 	Lanczos(std::unique_ptr<Lanczos>& obj); // copy constructor
@@ -111,11 +109,13 @@ public:
 
 	void Lanczos_GroundState();
 	void Lanczos_Diagonalization();
-	void Hamil_vector_multiply_kernel(int start, int stop, vec& initial_vec, vec& result_vec_threaded);
+	void Hamil_vector_multiply_kernel(ull_int start, ull_int stop, vec& initial_vec, vec& result_vec_threaded);
 	void Hamil_vector_multiply(vec& initial_vec, vec& result_vec);
+	vec LDOS(int site, double T, std::vector<double>&& omega_vec);
 
 	vec thermal_average_lanczos(vec&& quantity, int& random_steps);
 	vec Heat_Capacity_Lanczos(int random_steps);
+	vec static_spin_susceptibility(int random_steps);
 };
 
 
@@ -131,23 +131,22 @@ std::vector<double> prepare_parameterVec(double _min, double _max, double step);
 
 //Printing data
 void printDOS(vec&& resultDOS, double U, double N_e, int L, std::vector<double>&& omega_vec, double maximum, double E_fermi);
-void print_Cv(vec&& Cv, double U, double N_e, int L);
-void print_Cv_Lanczos(vec&& Cv, double U, double N_e, int L, int M, int random_steps);
-void print_chi(vec&& chi, double U, double N_e, int L);
-void print_Sq(vec&& Sq, double U, double N_e, int L, double T);
+void print_Cv(vec&& Cv, vec&& Cv_stand_dev, double U, double N_e, int L);
+void print_chi(vec&& chi, vec&& chi_stand_dev, double U, double N_e, int L);
+void print_Sq(vec&& Sq, vec&& Sq_stand_dev, double U, double N_e, int L, double T);
 
 
 //Quantities averaged over spin blocks
-void Heat_Capacity(std::vector<arma::vec>&& energies, vec&& Cv);
-void static_spin_susceptibility(std::vector<arma::vec>&& energies, vec&& chi);
-vec Sq_lanczos(int random_steps, double T, std::unique_ptr<Lanczos>& obj);
+void Heat_Capacity(std::vector<arma::vec>&& energies, vec& Cv);
+void static_spin_susceptibility(std::vector<arma::vec>&& energies, vec& chi);
+vec Sq_lanczos(int random_steps, double T, std::unique_ptr<Lanczos>& obj, arma::vec& Sq2);
 
 
 //Main routines
 void Main_U(int L, int N_e, double t);
 void Main_Jh(int L, int N_e, double t, double K, double U);
 void Main_Cv(int L, int N_e, double t, double K, double U, double J_H);
-void Main_Cv_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int M, int random_steps);
+void Main_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int M, int random_steps);
 void Main_DOS(int L, int N_e, double t, double K, double U, double J_H);
 void Main_Sq(int L, int N_e, double t, double K, double U, double J_H);
 

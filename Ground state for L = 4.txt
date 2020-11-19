@@ -1,13 +1,13 @@
 
 Ground state:	 |0011>
- with probability	 p=0.0822017
+ with probability	 p=0.0812177
 
 Ground state:	 |0101>
- with probability	 p=0.00783171
+ with probability	 p=0.00751292
 
 Ground state:	 |1010>
- with probability	 p=0.00735622
+ with probability	 p=0.00693691
 
 Ground state:	 |1100>
- with probability	 p=0.0806959
+ with probability	 p=0.0805229
 
