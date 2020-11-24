@@ -4,7 +4,7 @@ double pi = M_PI;
 
 double T = 0.01;
 
-double dT = 0.005;
+double dT = 0.001;
 double T_end = 3.0;
 double domega = 0.005;
 double eta = 0.02;
@@ -846,7 +846,7 @@ vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
         auto rand_vec = Create_Random_vec();
         Build_Lanczos_Hamil(rand_vec);
         eig_sym(eigenvalues, eigenvectors, H_L);
-        E_av.zeros(); E_av2.zeros(); Z.zeros();
+        //E_av.zeros(); E_av2.zeros(); Z.zeros();
 #pragma omp parallel for shared(temperature) num_threads(num_of_threads)
         for (int k = 0; k < temperature.size(); k++) {
             double overlap;
@@ -855,22 +855,23 @@ vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
                 overlap = dot(randVec_inKrylovSpace, eigenvectors.col(m));
                 overlap *= overlap;
                 Z(k) += (double)N / (double)random_steps * overlap * std::exp(-eigenvalues(m) / T);
-                E_av(k) += eigenvalues(m) * overlap * std::exp(-eigenvalues(m)/ T);
+                E_av(k) += eigenvalues(m) * overlap * std::exp(-eigenvalues(m) / T);
                 E_av2(k) += eigenvalues(m) * eigenvalues(m) * overlap * std::exp(-eigenvalues(m) / T);
                 partition_function(k) += Z(k);
             }
         }
-        E_av = E_av / Z * (double)N / (double)random_steps;
-        E_av2 = E_av2 / Z * (double)N / (double)random_steps;
-        vec heat_cap = (E_av2 - arma::square(E_av)) / (double)L;
-#pragma omp parallel for shared(temperature) num_threads(num_of_threads)
-        for (int k = 0; k < temperature.size(); k++) {
-            double T = temperature[k];
-            heat_cap(k) = heat_cap(k) / T / T;
-        }
-        Cv += heat_cap / random_steps;
-        Cv_2 += arma::square(heat_cap) / random_steps;
     }
+    E_av = E_av / Z * (double)N / (double)random_steps;
+    E_av2 = E_av2 / Z * (double)N / (double)random_steps;
+    //vec heat_cap = (E_av2 - arma::square(E_av)) / (double)L;
+#pragma omp parallel for shared(temperature) num_threads(num_of_threads)
+    for (int k = 0; k < temperature.size(); k++) {
+        double T = temperature[k];
+        Cv(k) = (E_av2(k) - E_av(k) * E_av(k)) / T / T / (double)L;
+        //heat_cap(k) = heat_cap(k) / T / T;
+    }
+    //Cv += heat_cap / random_steps;
+    //Cv_2 += arma::square(heat_cap) / random_steps;
     return Cv;
 }
 vec Lanczos::static_spin_susceptibility(int random_steps){
@@ -922,7 +923,48 @@ vec Lanczos::thermal_average_lanczos(vec&& quantity, int& random_steps){
     }
     return result;
 }
-
+vec Lanczos::Sq_lanczos(int random_steps, double T) {
+    vec Sq(L + 1, fill::zeros);
+    if (!memory_over_performance)
+        Hamiltonian_sparse();
+    for (int l = 0; l <= L; l++) {
+        vector<int> vect(L);
+        double q = (double)l * pi / ((double)L + 1.0);
+        sp_cx_mat Sq_mat(sp_mat(N, N), sp_mat(N, N));
+        for (int p = 0; p < N; p++) {
+            int_to_binary(mapping->at(p), vect);
+            Sq_mat(p, p) = 0;
+            for (int m = 0; m < L; m++) {
+                double Szm = 0;
+                if (vect[m] < 4) Szm += 0.5;
+                else Szm -= 0.5;
+                if (vect[m] % 4 == 1) Szm += 0.5;
+                else if (vect[m] % 4 == 2) Szm -= 0.5;
+                Sq_mat(p, p) += std::exp(1i * q * (m + 0.0)) * Szm;
+            }
+        }
+        double Sq0 = 0, Z = 0, Sq_squared = 0;
+        for (int r = 0; r < random_steps; r++) {
+            auto rand_vec = Create_Random_vec();
+            Build_Lanczos_Hamil_wKrylov(rand_vec);
+            mat V;
+            eig_sym(eigenvalues, V, H_L);
+            eigenvectors = Krylov_space * V;
+            cx_vec temp = Sq_mat * Sq_mat.t() * cx_vec(rand_vec, vec(N, fill::zeros));
+            double Sq_tmp = 0;
+            for (int m = 0; m < lanczos_steps; m++) {
+                double overlap = dot(rand_vec, eigenvectors.col(m));
+                Z += (double)N / (double)random_steps * overlap * overlap * std::exp(-eigenvalues(m) / T);
+                overlap = real(overlap * cdot(cx_vec(eigenvectors.col(m), vec(N, fill::zeros)), temp));
+                Sq_tmp += overlap * std::exp(-eigenvalues(m) / T);
+            }
+            Sq0 += (double)N / (double)random_steps * 2.0 * Sq_tmp / pi / (L + 1.0);
+        }
+        Sq(l) = Sq0;
+        Z_constT = Z;
+    }
+    return Sq;
+}
 
 vec Lanczos::LDOS(int site, double T, std::vector<double>&& omega_vec) {
     vec LDOS(omega_vec.size(), fill::zeros);
@@ -983,57 +1025,7 @@ void static_spin_susceptibility(std::vector<arma::vec>&& energies, vec& chi) {
         chi(k) = X_0 / Z / T / (double)L;
     }
 }
-vec Sq_lanczos(int random_steps, double T, std::unique_ptr<Lanczos>& obj, arma::vec& Sq2) {
-    vec Sq(obj->L + 1, fill::zeros);
-    if(!memory_over_performance)
-        obj->Hamiltonian_sparse();
-    int number_of_thr = (obj->L > 10) ? 1 : ((obj->L < 10) ? obj->L + 1 : 2); // if - elseif - else statement
-    if (memory_over_performance)
-        number_of_thr = 1;
-#pragma omp parallel for num_threads(number_of_thr)
-    for (int l = 0; l <= obj->L; l++) {
-        vector<int> vect(obj->L);
-        double q = (double)l * pi / ((double)obj->L + 1.0);
-        sp_cx_mat Sq_mat(sp_mat(obj->N, obj->N), sp_mat(obj->N, obj->N));
-        for (int p = 0; p < obj->N; p++) {
-            int_to_binary(obj->mapping->at(p), vect);
-            Sq_mat(p, p) = 0;
-            for (int m = 0; m < obj->L; m++) {
-                double Szm = 0;
-                if (vect[m] < 4) Szm += 0.5;
-                else Szm -= 0.5;
-                if (vect[m] % 4 == 1) Szm += 0.5;
-                else if (vect[m] % 4 == 2) Szm -= 0.5;
-                Sq_mat(p, p) += std::exp(1i * q * (m + 0.0)) * Szm;
-            }
-        }
-        double Sq0 = 0, Z = 0, Sq_squared = 0;
-        std::unique_ptr<Lanczos> obj_copy(new Lanczos(obj));
-        if (!memory_over_performance)
-            obj_copy->H_sparse = obj->H_sparse;
-        for (int r = 0; r < random_steps; r++) {
-            auto rand_vec = obj_copy->Create_Random_vec();
-            obj_copy->Build_Lanczos_Hamil_wKrylov(rand_vec);
-            mat V;
-            eig_sym(obj_copy->eigenvalues, V, obj_copy->H_L);
-            obj_copy->eigenvectors = obj_copy->Krylov_space * V;
-            cx_vec temp = Sq_mat * Sq_mat.t() * cx_vec(rand_vec, vec(obj->N, fill::zeros));
-            double Sq_tmp = 0;
-            for (int m = 0; m < obj_copy->lanczos_steps; m++) {
-                double overlap = dot(rand_vec, obj_copy->eigenvectors.col(m));
-                Z += (double)obj_copy->N / (double)random_steps * overlap * overlap * std::exp(-obj_copy->eigenvalues(m) / T);
-                overlap = real(overlap * cdot(cx_vec(obj_copy->eigenvectors.col(m), vec(obj_copy->N, fill::zeros)), temp));
-                Sq_tmp += overlap * std::exp(-obj_copy->eigenvalues(m) / T);
-            }
-            Sq0 += (double)obj_copy->N / (double)random_steps * 2.0 * Sq_tmp / pi / (obj_copy->L + 1.0);
-            Sq_squared += (double)obj_copy->N / (double)random_steps * 2.0 * Sq_tmp * Sq_tmp / pi / (obj_copy->L + 1.0);
-        }
-        Sq(l) = Sq0;
-        Sq2(l) += Sq_squared;
-        obj->Z_constT = Z;
-    }
-    return Sq;
-}
+
 
 void Cv_Umap(int L, int N_e, double t) {
     ofstream savefile;
@@ -1097,15 +1089,16 @@ void DOS_Umap(int L, int N_e, double t) {
 }
 
 void Main_U(int L, int N_e, double t) {
-//#pragma omp parallel for 
-    for (int k = 1; k <= 50; k += 1) {
+#pragma omp parallel for 
+    for (int k = 1; k <= 30; k += 2) {
         double U = (double)k / 10.0;
         double K, J_H;
         K = 4 * 0.15 * 0.15 / U;
         J_H = 0.25 * U;
         //K = 0; J_H = 0;
         //Main_DOS(L, N_e, t, K, U, J_H);
-        Main_Cv(L, N_e, t, K, U, J_H);
+        //Main_Cv(L, N_e, t, K, U, J_H);
+        Main_Lanczos(L, N_e, t, K, U, J_H, (L == 4) ? 100 : 150, 20);
 
         out << "U = " << U << " done!" << endl;
     }
@@ -1176,11 +1169,14 @@ void Main_DOS(int L, int N_e, double t, double K, double U, double J_H) {
 }
 void Main_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int M, int random_steps) {
     vec Cv(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
-    vec chi_0(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     vec Cv_2(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
+    vec Cv_R = Cv;
+    vec chi_0(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     vec chi_0_2(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
+    vec chi_R = chi_0;
     vec Sq(L + 1, fill::zeros);
     vec Sq2(L + 1, fill::zeros);
+    vec Sq_R = Sq;
     vec Z(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
 
     vec Sq_stand_dev(L + 1, fill::zeros);
@@ -1188,31 +1184,31 @@ void Main_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int 
     vec Cv_stand_dev(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     double Z_constT = 0;
     int N = 0;
-    for (int Sz = -N_e; Sz <= N_e; Sz += 2) {
-        //Lanczos Hamil(L, N_e, t, U, K, J_H, Sz, M);
-        std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, Sz, M));
-        if (M > Hamil->N) {
-            Hamil->lanczos_steps = Hamil->N;
-            //out << "Lanczos steps greater than system size" << endl;
+    int R = (calculate_stand_dev) ? 20 : 1;
+    for (int r = 0; r < R; r++) {
+        Cv_R.zeros(); Sq_R.zeros();  chi_R.zeros(); Z_constT = 0;
+        for (int Sz = -N_e; Sz <= N_e; Sz += 2) {
+            std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, Sz, M));
+            if (M > Hamil->N) {
+                Hamil->lanczos_steps = Hamil->N;
+            }
+            Cv_R += Hamil->Heat_Capacity_Lanczos(random_steps) / double(N_e + 1.0);
+            chi_R += Hamil->static_spin_susceptibility(random_steps);
+            Z += Hamil->partition_function;
+            Sq_R += Hamil->Sq_lanczos(random_steps, T);
+            Z_constT += Hamil->Z_constT;
+            //out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
+            N += Hamil->N;
         }
-        Cv += Hamil->Heat_Capacity_Lanczos(random_steps) / double(N_e + 1.0);
-        Cv_2 += Hamil->Cv_2;
-        chi_0 += Hamil->static_spin_susceptibility(random_steps);
-        chi_0_2 += Hamil->chi_0_2;
-        Z += Hamil->partition_function;
-        Sq += Sq_lanczos(random_steps, T, Hamil, Sq2);
-        Z_constT += Hamil->Z_constT;
-        out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
-        N += Hamil->N;
+        Sq_R = Sq_R / Z_constT; chi_R = chi_R / Z;
+        Sq += Sq_R / (double)R; Sq2 += arma::square(Sq_R) / (double)R;
+        chi_0 += chi_R / (double)R; chi_0_2 += arma::square(chi_R) / (double)R;
+        Cv += Cv_R / (double)R; Cv_2 += arma::square(Cv_R) / (double)R;
+        //out << "r = " << r << endl;
     }
-    //out << N << "  vs  " << std::pow(8, L) << endl;
-    Sq = Sq / Z_constT;
-    Sq2 = Sq2 / Z_constT / Z_constT;
-    //out << Sq2;
-    Sq_stand_dev = arma::sqrt(abs(Sq2 - square(Sq)));
+    Sq_stand_dev = arma::sqrt(Sq2 - square(Sq));
     print_Sq(std::move(Sq), std::move(Sq_stand_dev), U, N_e, L, T);
 
-    chi_0 = chi_0 / Z; // elementwise division
     Cv_stand_dev = arma::sqrt(Cv_2 - square(Cv));
     print_Cv(std::move(Cv), std::move(Cv_stand_dev), U, N_e, L);
 
@@ -1297,10 +1293,11 @@ void print_Sq(vec&& Sq, vec&& Sq_stand_dev, double U, double N_e, int L, double 
     Nstr << setprecision(2) << fixed << (double)N_e / (double)L;
     savefile.open("Sq_L=" + std::to_string(L) + "_U=" + Ustr.str() + "_T=" + std::to_string(T) + ".txt");
     savefile << std::setprecision(8) << fixed;
+    //out << "Sq : " << endl;
     for (int l = 0; l <= L; l++) {
         double q = (double)l * pi / ((double)L + 1.0);
         savefile << q << "\t\t" << Sq(l) << "\t\t" << Sq_stand_dev(l) << endl;
-        //out << q / pi << "\t" << Sq(l) << "\t\t" << Sq_stand_dev(l) << endl;
+        out << q / pi << "\t" << Sq(l) << "\t\t" << Sq_stand_dev(l) << endl;
     }
     savefile.close();
 }

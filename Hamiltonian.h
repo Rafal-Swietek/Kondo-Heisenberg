@@ -32,10 +32,11 @@ typedef std::complex<double> cpx;
 #define im cpx(0.0,1.0)
 #define M_PI 3.14159265358979323846
 #define out std::cout << std::setprecision(16) << std::fixed
-#define num_of_threads 16
+#define num_of_threads 1
 #define memory_over_performance false // optimized by size --true-- (memory usage shortage) or performance --false--
 #define show_system_size_parameters false // this parameter defines whether to print data such as system size for each object conctructor call
 #define use_reorthonormalization true // enables in lanczos procedure full reorthogonalization - needs full krylov_space access
+#define calculate_stand_dev true // enables the calculation of the standard deviation in the FTLM randomized method
 
 class HamiltonianKH {
 public:
@@ -116,6 +117,7 @@ public:
 	vec thermal_average_lanczos(vec&& quantity, int& random_steps);
 	vec Heat_Capacity_Lanczos(int random_steps);
 	vec static_spin_susceptibility(int random_steps);
+	vec Sq_lanczos(int random_steps, double T);
 };
 
 
@@ -139,7 +141,6 @@ void print_Sq(vec&& Sq, vec&& Sq_stand_dev, double U, double N_e, int L, double 
 //Quantities averaged over spin blocks
 void Heat_Capacity(std::vector<arma::vec>&& energies, vec& Cv);
 void static_spin_susceptibility(std::vector<arma::vec>&& energies, vec& chi);
-vec Sq_lanczos(int random_steps, double T, std::unique_ptr<Lanczos>& obj, arma::vec& Sq2);
 
 
 //Main routines
