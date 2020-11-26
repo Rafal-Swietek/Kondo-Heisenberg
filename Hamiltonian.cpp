@@ -4,7 +4,7 @@ double pi = M_PI;
 
 double T = 0.01;
 
-double dT = 0.001;
+double dT = 0.005;
 double T_end = 3.0;
 double domega = 0.005;
 double eta = 0.02;
@@ -22,7 +22,7 @@ HamiltonianKH::HamiltonianKH(int L, int num_of_electrons, double t, double U, do
 	this->J_H = J_H;
     this->Sz = Sz;
 
-	this->mapping = new vector<ull_int>();
+    this->mapping = std::unique_ptr<std::vector < ull_int >>(new std::vector<ull_int>());
 	generate_mapping();
 	this->N = mapping->size();
     Hamiltonian();
@@ -30,8 +30,12 @@ HamiltonianKH::HamiltonianKH(int L, int num_of_electrons, double t, double U, do
 HamiltonianKH::HamiltonianKH() {}
 //-------------------------
 
-void HamiltonianKH::update_parameters(double t, double U, double K, double J_H) {
+void HamiltonianKH::update_parameters(double t, double U, double K, double J_H, double Sz) {
     this->t = t; this->U = U, this->K = K; this->J_H = J_H;
+    this->Sz = Sz;
+    this->mapping.reset(new vector<ull_int>());
+    generate_mapping();
+    this->N = mapping->size();
 }
 
 void HamiltonianKH::setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp){
@@ -241,7 +245,7 @@ std::tuple<int, int, int> calculateSpinElements(int L, ull_int& j, std::vector<i
 
     return std::make_tuple(bSz, fSz, N_e);
 }
-void HamiltonianKH::mapping_kernel(ull_int start, ull_int stop, std::vector<ull_int>* map_threaded, int _id) {
+void HamiltonianKH::mapping_kernel(ull_int start, ull_int stop, std::unique_ptr<std::vector<ull_int>>& map_threaded, int _id) {
     int n = 1;
     //out << "A new thread joined tha party! from " << start << " to " << stop << endl;
     std::vector<int> temp(L);
@@ -260,14 +264,14 @@ void HamiltonianKH::generate_mapping() {
     ull_int start = 0, stop = (ull_int)std::pow(8, L);
     //mapping_kernel(start, stop, mapping, L, Sz, num_of_electrons);
     //Threaded
-    std::vector<std::vector<ull_int>*> map_threaded(num_of_threads);
+    std::vector<std::unique_ptr<std::vector<ull_int>>> map_threaded(num_of_threads);
     std::vector<std::thread> threads;
     threads.reserve(num_of_threads);
     for (int t = 0; t < num_of_threads; t++) {
         start = t * (ull_int)std::pow(8, L) / num_of_threads;
         stop = ((t + 1) == num_of_threads ? (ull_int)std::pow(8, L) : (ull_int)std::pow(8, L) * (t + 1) / num_of_threads);
-        map_threaded[t] = new std::vector<ull_int>();
-        threads.emplace_back(&HamiltonianKH::mapping_kernel, this, start, stop, map_threaded[t], t);
+        map_threaded[t] = std::unique_ptr<std::vector<ull_int>>(new std::vector<ull_int>());
+        threads.emplace_back(&HamiltonianKH::mapping_kernel, this, start, stop, ref(map_threaded[t]), t);
     }
     for (auto& t : threads) t.join();
 
@@ -444,7 +448,7 @@ Lanczos::Lanczos(int L, int num_of_electrons, double t, double U, double K, doub
     this->Sz = Sz;
     this->lanczos_steps = lanczos_steps;
 
-    this->mapping = new vector<ull_int>();
+    this->mapping = std::unique_ptr<std::vector < ull_int >>(new std::vector<ull_int>());
     generate_mapping();
     this->N = mapping->size(); 
     if(show_system_size_parameters) 
@@ -460,7 +464,7 @@ Lanczos::Lanczos(std::unique_ptr<Lanczos>& obj) {
     this->Sz = obj->Sz;
     this->lanczos_steps = obj->lanczos_steps;
 
-    this->mapping = obj->mapping;
+    this->mapping = std::move(obj->mapping);
     this->N = this->mapping->size();
     if (show_system_size_parameters == true)
         out << "dim = " << N << endl;
@@ -837,7 +841,6 @@ vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
     this->partition_function = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
 
     vec Cv(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
-    this->Cv_2 = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
 
     auto temperature = prepare_parameterVec(dT, T_end, dT);
     if(!memory_over_performance)
@@ -878,7 +881,6 @@ vec Lanczos::static_spin_susceptibility(int random_steps){
     this->partition_function = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
 
     vec chi_0(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
-    this->chi_0_2 = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
 
     auto temperature = prepare_parameterVec(dT, T_end, dT);
     if (!memory_over_performance)
@@ -900,7 +902,6 @@ vec Lanczos::static_spin_susceptibility(int random_steps){
             }
         }
         chi_0 += chi_tmp;
-        chi_0_2 += chi_tmp % chi_tmp;
     }
     return chi_0;
 }
@@ -1183,28 +1184,27 @@ void Main_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int 
     vec chi0_stand_dev(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     vec Cv_stand_dev(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     double Z_constT = 0;
-    int N = 0;
-    int R = (calculate_stand_dev) ? 20 : 1;
+    std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, -N_e, M));
+    int R = (calculate_stand_dev) ? 25 : 1;
     for (int r = 0; r < R; r++) {
         Cv_R.zeros(); Sq_R.zeros();  chi_R.zeros(); Z_constT = 0;
         for (int Sz = -N_e; Sz <= N_e; Sz += 2) {
-            std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, Sz, M));
-            if (M > Hamil->N) {
-                Hamil->lanczos_steps = Hamil->N;
-            }
+            Hamil->update_parameters(t, U, K, J_H, Sz);
+            if (M > Hamil->N)  Hamil->lanczos_steps = Hamil->N;
+            else Hamil->lanczos_steps = M;
+
             Cv_R += Hamil->Heat_Capacity_Lanczos(random_steps) / double(N_e + 1.0);
             chi_R += Hamil->static_spin_susceptibility(random_steps);
             Z += Hamil->partition_function;
             Sq_R += Hamil->Sq_lanczos(random_steps, T);
             Z_constT += Hamil->Z_constT;
             //out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
-            N += Hamil->N;
         }
         Sq_R = Sq_R / Z_constT; chi_R = chi_R / Z;
         Sq += Sq_R / (double)R; Sq2 += arma::square(Sq_R) / (double)R;
         chi_0 += chi_R / (double)R; chi_0_2 += arma::square(chi_R) / (double)R;
         Cv += Cv_R / (double)R; Cv_2 += arma::square(Cv_R) / (double)R;
-        //out << "r = " << r << endl;
+        out << "r = " << r << endl;
     }
     Sq_stand_dev = arma::sqrt(Sq2 - square(Sq));
     print_Sq(std::move(Sq), std::move(Sq_stand_dev), U, N_e, L, T);
@@ -1332,7 +1332,7 @@ ull_int binary_to_int(vector<int>& vec) {
     return val;
 }
 
-ull_int binary_search(std::vector<ull_int>* arr, int l_point, int r_point, ull_int element) {
+ull_int binary_search(std::unique_ptr<std::vector<ull_int>>& arr, int l_point, int r_point, ull_int element) {
     //out << element << endl;
     if (r_point >= l_point) {
         int middle = l_point + (r_point - l_point) / 2;

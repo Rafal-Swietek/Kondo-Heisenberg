@@ -24,8 +24,8 @@ int main() {
     //out << endl << " Lanczos:\n q \t\t S(q) " << endl;
     //Main_Lanczos(L, 0, 0, 1, 0, 0, M, R);
     //Main_Cv(L, 0, 0, 1, 0, 0);
-    //Main_Lanczos(L, N_e, t, K, U, J_H, M, R);
-    Main_U(L, N_e, t);
+    Main_Lanczos(L, N_e, t, K, U, J_H, M, R);
+    //Main_U(L, N_e, t);
   
     /*std::unique_ptr<HamiltonianKH> Hamil2(new HamiltonianKH(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1));
     Hamil2->Diagonalization();

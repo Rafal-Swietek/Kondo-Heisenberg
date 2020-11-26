@@ -32,7 +32,7 @@ typedef std::complex<double> cpx;
 #define im cpx(0.0,1.0)
 #define M_PI 3.14159265358979323846
 #define out std::cout << std::setprecision(16) << std::fixed
-#define num_of_threads 1
+#define num_of_threads 16
 #define memory_over_performance false // optimized by size --true-- (memory usage shortage) or performance --false--
 #define show_system_size_parameters false // this parameter defines whether to print data such as system size for each object conctructor call
 #define use_reorthonormalization true // enables in lanczos procedure full reorthogonalization - needs full krylov_space access
@@ -48,7 +48,7 @@ public:
 	int Sz; // total spin for spin-sector selection
 	int num_of_electrons; //number of electrons
 
-	std::vector<ull_int>* mapping; //generates the mapping of the base_vector number to the number in the block
+	std::unique_ptr<std::vector<ull_int>> mapping; //generates the mapping of the base_vector number to the number in the block
 	ull_int N; //number of states
     mat H;
 	sp_mat H_sparse;
@@ -61,14 +61,14 @@ public:
 	HamiltonianKH(int L, int num_of_electrons, double t, double U, double K, double J_H, double Sz); //Constructor for subblock Hamiltonian
 	~HamiltonianKH();
 
-	void update_parameters(double t, double U, double K, double J_H);
+	void update_parameters(double t, double U, double K, double J_H, double Sz);
 
 	void Hamiltonian();
 	void Hamiltonian_sparse();
 	void Diagonalization();
 
 	void generate_mapping();
-	void mapping_kernel(ull_int start, ull_int stop, std::vector<ull_int>* map_threaded, int _id);
+	void mapping_kernel(ull_int start, ull_int stop, std::unique_ptr<std::vector<ull_int>>& map_threaded, int _id);
     void setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp);
 	void setHamiltonianElem_sparse(ull_int& k, double value, std::vector<int>&& temp);
 	void printEnergy(double Ef);
@@ -94,9 +94,6 @@ public:
 	vec randVec_inKrylovSpace; // overlap of random vector and eigenvectors
 	vec partition_function; // partition function
 	mat Krylov_space;
-
-	vec Cv_2; // Cv squared
-	vec chi_0_2; // chi_0 squared
 
 	Lanczos(int L, int num_of_electrons, double t, double U, double K, double J_H, double Sz, int lanczos_steps);
 	Lanczos(std::unique_ptr<Lanczos>& obj); // copy constructor
@@ -125,7 +122,7 @@ public:
 //----------------------------------------------------------------------------------------------
 //--------------------------------------------------TOOLS---------------------------------------
 //----------------------------------------------------------------------------------------------
-ull_int binary_search(std::vector<ull_int>* arr, int l_point, int r_point, ull_int element);
+ull_int binary_search(std::unique_ptr<std::vector<ull_int>>& arr, int l_point, int r_point, ull_int element);
 void int_to_binary(ull_int idx, std::vector<int>& vec); //converges int to binary code of length N
 ull_int binary_to_int(vector<int>& vec); //converges vector with binary code to decimal system
 double FermiLevel(int L, int N_e, double t, double K, double U, double J_H);

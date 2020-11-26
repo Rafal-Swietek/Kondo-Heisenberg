@@ -1,46 +1,46 @@
 
 Ground state:	 |0010110011>
- with probability	 p=0.000144788
+ with probability	 p=0.000144281
 
 Ground state:	 |0011010011>
- with probability	 p=8.80478e-05
+ with probability	 p=8.79519e-05
 
 Ground state:	 |0100110011>
- with probability	 p=0.000814664
+ with probability	 p=0.000810723
 
 Ground state:	 |0101010011>
- with probability	 p=6.2387e-05
+ with probability	 p=6.23568e-05
 
 Ground state:	 |1000110011>
- with probability	 p=0.000279593
+ with probability	 p=0.000278555
 
 Ground state:	 |1010110011>
- with probability	 p=0.000103818
+ with probability	 p=0.000103768
 
 Ground state:	 |1100010011>
- with probability	 p=0.00022104
+ with probability	 p=0.000222592
 
 Ground state:	 |1100100011>
- with probability	 p=0.000220885
+ with probability	 p=0.000221771
 
 Ground state:	 |1100101010>
- with probability	 p=6.23152e-05
+ with probability	 p=6.23249e-05
 
 Ground state:	 |1100101100>
- with probability	 p=8.78542e-05
+ with probability	 p=8.80096e-05
 
 Ground state:	 |1100110001>
- with probability	 p=0.000279309
+ with probability	 p=0.000278357
 
 Ground state:	 |1100110010>
- with probability	 p=0.000812988
+ with probability	 p=0.000811177
 
 Ground state:	 |1100110011>
- with probability	 p=0.00139758
+ with probability	 p=0.00139537
 
 Ground state:	 |1100110100>
- with probability	 p=0.000144546
+ with probability	 p=0.00014455
 
 Ground state:	 |1100110101>
- with probability	 p=0.000103793
+ with probability	 p=0.000103781
 
