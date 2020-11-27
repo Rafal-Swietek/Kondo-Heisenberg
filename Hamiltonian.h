@@ -7,9 +7,9 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <complex>
 #include <cmath>
 #include <algorithm>
-#include <complex>
 // armadillo flags:
 #define ARMA_64BIT_WORD // enabling 64 integers in armadillo obbjects
 #define ARMA_BLAS_LONG_LONG // using long long inside LAPACK call
@@ -33,8 +33,8 @@ typedef std::complex<double> cpx;
 #define M_PI 3.14159265358979323846
 #define out std::cout << std::setprecision(16) << std::fixed
 #define num_of_threads 16
-#define memory_over_performance false // optimized by size --true-- (memory usage shortage) or performance --false--
-#define show_system_size_parameters false // this parameter defines whether to print data such as system size for each object conctructor call
+#define memory_over_performance true // optimized by size --true-- (memory usage shortage) or performance --false--
+#define show_system_size_parameters true // this parameter defines whether to print data such as system size for each object conctructor call
 #define use_reorthonormalization true // enables in lanczos procedure full reorthogonalization - needs full krylov_space access
 #define calculate_stand_dev true // enables the calculation of the standard deviation in the FTLM randomized method
 

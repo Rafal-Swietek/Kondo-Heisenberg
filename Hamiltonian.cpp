@@ -341,7 +341,7 @@ vec HamiltonianKH::static_structure_factor(double T) { /// here sth wrong?., che
                 else Szm -= 0.5;
                 if (vect[m] % 4 == 1) Szm += 0.5;
                 else if (vect[m] % 4 == 2) Szm -= 0.5;
-                Sq(p, p) += std::exp(1i * q * (m + 0.0)) * Szm;
+                Sq(p, p) += std::exp(cpx(1i * q * (m + 0.0))) * Szm;
             }
         }
         cpx Sq0 = 0;
@@ -701,7 +701,7 @@ void Lanczos::Build_Lanczos_Hamil(vec& initial_vec) {
         H_L(j - 1, j) = beta;
 
         tmp2_prev = tmp2;
-        //out << j << "lanczos" << endl;
+        out << j << "lanczos" << endl;
     }
 }
 
@@ -763,7 +763,7 @@ void Lanczos::Lanczos_GroundState() {
         tmp = tmp - alfa * tmp2 - beta * initial_vec;
 
         initial_vec = tmp2;
-        //out << j << "lanczos" << endl;
+        out << j << "lanczos" << endl;
     }
 }
 void Lanczos::Lanczos_convergence(vec& initial_vec) {
@@ -941,7 +941,7 @@ vec Lanczos::Sq_lanczos(int random_steps, double T) {
                 else Szm -= 0.5;
                 if (vect[m] % 4 == 1) Szm += 0.5;
                 else if (vect[m] % 4 == 2) Szm -= 0.5;
-                Sq_mat(p, p) += std::exp(1i * q * (m + 0.0)) * Szm;
+                Sq_mat(p, p) += std::exp(cpx(1i * q * (m + 0.0))) * Szm;
             }
         }
         double Sq0 = 0, Z = 0, Sq_squared = 0;
