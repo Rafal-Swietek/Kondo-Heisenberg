@@ -276,7 +276,7 @@ void HamiltonianKH::generate_mapping() {
     for (auto& t : threads) t.join();
 
     for (auto & t : map_threaded)
-        mapping->insert(mapping->end(), t->begin(), t->end());
+        mapping->insert(mapping->end(), std::make_move_iterator(t->begin()), std::make_move_iterator(t->end()));
     //sort(mapping->begin(), mapping->end());
     if (show_system_size_parameters) {
         out << "Mapping generated with  " << mapping->size() << "  elements" << endl;
@@ -391,7 +391,7 @@ void HamiltonianKH::show_ground_state() {
         GS(val) += ground_state(k) * ground_state(k);
     }
     //GS = arma::abs(GS);
-    //GS = GS / dot(GS, GS); //normalizing to be sure
+    GS = GS / dot(GS, GS); //normalizing to be sure
     GSfile << endl;
     double maximum = arma::max(GS);
     std::vector<int> vec(L);
@@ -1169,6 +1169,7 @@ void Main_DOS(int L, int N_e, double t, double K, double U, double J_H) {
     printDOS(std::move(DOS), U, N_e, L, std::move(omega_vec), maximum, Ef);
 }
 void Main_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int M, int random_steps) {
+    auto temperature = prepare_parameterVec(dT, T_end, dT);
     vec Cv(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     vec Cv_2(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     vec Cv_R = Cv;
@@ -1185,7 +1186,7 @@ void Main_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int 
     vec Cv_stand_dev(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     double Z_constT = 0;
     std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, -N_e, M));
-    int R = (calculate_stand_dev) ? 25 : 1;
+    int R = (calculate_stand_dev) ? 200 : 1;
     for (int r = 0; r < R; r++) {
         Cv_R.zeros(); Sq_R.zeros();  chi_R.zeros(); Z_constT = 0;
         for (int Sz = -N_e; Sz <= N_e; Sz += 2) {
@@ -1205,6 +1206,11 @@ void Main_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int 
         chi_0 += chi_R / (double)R; chi_0_2 += arma::square(chi_R) / (double)R;
         Cv += Cv_R / (double)R; Cv_2 += arma::square(Cv_R) / (double)R;
         out << "r = " << r << endl;
+        if (r % 5 == 0) {
+            std::ofstream fileR("Cv_R=" + std::to_string(r) + ".txt");
+            fileR << (Cv * (double)R / (double)r);
+            fileR.close();
+        }
     }
     Sq_stand_dev = arma::sqrt(Sq2 - square(Sq));
     print_Sq(std::move(Sq), std::move(Sq_stand_dev), U, N_e, L, T);
