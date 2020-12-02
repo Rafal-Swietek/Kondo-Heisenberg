@@ -4,7 +4,7 @@ double pi = M_PI;
 
 double T = 0.01;
 
-double dT = 0.005;
+double dT = 0.001;
 double T_end = 3.0;
 double domega = 0.005;
 double eta = 0.02;
@@ -22,7 +22,8 @@ HamiltonianKH::HamiltonianKH(int L, int num_of_electrons, double t, double U, do
 	this->J_H = J_H;
     this->Sz = Sz;
 
-    this->mapping = std::unique_ptr<std::vector < ull_int >>(new std::vector<ull_int>());
+    //this->mapping = std::unique_ptr<std::vector < ull_int >>(new std::vector<ull_int>());
+    this->mapping = new std::vector<ull_int>();
 	generate_mapping();
 	this->N = mapping->size();
     Hamiltonian();
@@ -33,7 +34,9 @@ HamiltonianKH::HamiltonianKH() {}
 void HamiltonianKH::update_parameters(double t, double U, double K, double J_H, double Sz) {
     this->t = t; this->U = U, this->K = K; this->J_H = J_H;
     this->Sz = Sz;
-    this->mapping.reset(new vector<ull_int>());
+    //this->mapping.reset(new vector<ull_int>());
+    delete mapping;
+    this->mapping = new std::vector<ull_int>();
     generate_mapping();
     this->N = mapping->size();
 }
@@ -245,7 +248,7 @@ std::tuple<int, int, int> calculateSpinElements(int L, ull_int& j, std::vector<i
 
     return std::make_tuple(bSz, fSz, N_e);
 }
-void HamiltonianKH::mapping_kernel(ull_int start, ull_int stop, std::unique_ptr<std::vector<ull_int>>& map_threaded, int _id) {
+void HamiltonianKH::mapping_kernel(ull_int start, ull_int stop, std::vector<ull_int>* map_threaded, int _id) {
     int n = 1;
     //out << "A new thread joined tha party! from " << start << " to " << stop << endl;
     std::vector<int> temp(L);
@@ -254,23 +257,21 @@ void HamiltonianKH::mapping_kernel(ull_int start, ull_int stop, std::unique_ptr<
         std::tie(bSz, fSz, N_e) = calculateSpinElements(this->L, j, temp);
         if ((bSz + fSz == this->Sz) && N_e == this->num_of_electrons) 
              map_threaded->push_back(j);
-        if (show_system_size_parameters && (j - start) % ull_int((stop - start) * n / 4) == 0 && j > 0) { 
-            out << n << "-th quarter of " << _id << endl; 
-            n++; 
-        }
     }
 }
 void HamiltonianKH::generate_mapping() {
     ull_int start = 0, stop = (ull_int)std::pow(8, L);
     //mapping_kernel(start, stop, mapping, L, Sz, num_of_electrons);
     //Threaded
-    std::vector<std::unique_ptr<std::vector<ull_int>>> map_threaded(num_of_threads);
+    //std::vector<std::unique_ptr<std::vector<ull_int>>> map_threaded(num_of_threads);
+    std::vector<std::vector<ull_int>*> map_threaded(num_of_threads);
     std::vector<std::thread> threads;
     threads.reserve(num_of_threads);
     for (int t = 0; t < num_of_threads; t++) {
         start = t * (ull_int)std::pow(8, L) / num_of_threads;
         stop = ((t + 1) == num_of_threads ? (ull_int)std::pow(8, L) : (ull_int)std::pow(8, L) * (t + 1) / num_of_threads);
-        map_threaded[t] = std::unique_ptr<std::vector<ull_int>>(new std::vector<ull_int>());
+        //map_threaded[t] = std::unique_ptr<std::vector<ull_int>>(new std::vector<ull_int>());
+        map_threaded[t] = new std::vector<ull_int>();
         threads.emplace_back(&HamiltonianKH::mapping_kernel, this, start, stop, ref(map_threaded[t]), t);
     }
     for (auto& t : threads) t.join();
@@ -448,7 +449,8 @@ Lanczos::Lanczos(int L, int num_of_electrons, double t, double U, double K, doub
     this->Sz = Sz;
     this->lanczos_steps = lanczos_steps;
 
-    this->mapping = std::unique_ptr<std::vector < ull_int >>(new std::vector<ull_int>());
+    //this->mapping = std::unique_ptr<std::vector < ull_int >>(new std::vector<ull_int>());
+    this->mapping = new std::vector<ull_int>();
     generate_mapping();
     this->N = mapping->size(); 
     if(show_system_size_parameters) 
@@ -701,7 +703,7 @@ void Lanczos::Build_Lanczos_Hamil(vec& initial_vec) {
         H_L(j - 1, j) = beta;
 
         tmp2_prev = tmp2;
-        out << j << "lanczos" << endl;
+        //out << j << "lanczos" << endl;
     }
 }
 
@@ -763,7 +765,7 @@ void Lanczos::Lanczos_GroundState() {
         tmp = tmp - alfa * tmp2 - beta * initial_vec;
 
         initial_vec = tmp2;
-        out << j << "lanczos" << endl;
+        if(show_system_size_parameters) out << j << "lanczos" << endl;
     }
 }
 void Lanczos::Lanczos_convergence(vec& initial_vec) {
@@ -889,7 +891,7 @@ vec Lanczos::static_spin_susceptibility(int random_steps){
         auto rand_vec = Create_Random_vec();
         Build_Lanczos_Hamil(rand_vec);
         eig_sym(eigenvalues, eigenvectors, H_L);
-        vec chi_tmp(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
+        //vec chi_tmp(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
 #pragma omp parallel for shared(temperature) num_threads(num_of_threads)
         for (int k = 0; k < temperature.size(); k++) {
             double overlap;
@@ -898,10 +900,10 @@ vec Lanczos::static_spin_susceptibility(int random_steps){
                 overlap = dot(randVec_inKrylovSpace, eigenvectors.col(m));
                 overlap *= overlap;
                 partition_function(k) += (double)N / (double)random_steps * overlap * std::exp(-eigenvalues(m) / T);
-                chi_tmp(k) += Sz * Sz * overlap * std::exp(-eigenvalues(m) / T) * (double)N / (double)random_steps / T / (double)L;
+                chi_0(k) += Sz * Sz * overlap * std::exp(-eigenvalues(m) / T) * (double)N / (double)random_steps / T / (double)L;
             }
         }
-        chi_0 += chi_tmp;
+        //chi_0 += chi_tmp;
     }
     return chi_0;
 }
@@ -928,29 +930,31 @@ vec Lanczos::Sq_lanczos(int random_steps, double T) {
     vec Sq(L + 1, fill::zeros);
     if (!memory_over_performance)
         Hamiltonian_sparse();
-    for (int l = 0; l <= L; l++) {
-        vector<int> vect(L);
-        double q = (double)l * pi / ((double)L + 1.0);
-        sp_cx_mat Sq_mat(sp_mat(N, N), sp_mat(N, N));
-        for (int p = 0; p < N; p++) {
-            int_to_binary(mapping->at(p), vect);
-            Sq_mat(p, p) = 0;
-            for (int m = 0; m < L; m++) {
-                double Szm = 0;
-                if (vect[m] < 4) Szm += 0.5;
-                else Szm -= 0.5;
-                if (vect[m] % 4 == 1) Szm += 0.5;
-                else if (vect[m] % 4 == 2) Szm -= 0.5;
-                Sq_mat(p, p) += std::exp(cpx(1i * q * (m + 0.0))) * Szm;
+    double Z = 0;
+    this->Z_constT = 0;
+    vector<int> vect(L);
+    for (int r = 0; r < random_steps; r++) {
+        auto rand_vec = Create_Random_vec();
+        Build_Lanczos_Hamil_wKrylov(rand_vec);
+        mat V;
+        eig_sym(eigenvalues, V, H_L);
+        eigenvectors = Krylov_space * V;
+        for (int l = 0; l <= L; l++) {
+            double q = (double)l * pi / ((double)L + 1.0);
+            sp_cx_mat Sq_mat(sp_mat(N, N), sp_mat(N, N));
+#pragma omp parallel for num_threads(num_of_threads)
+            for (int p = 0; p < N; p++) {
+                int_to_binary(mapping->at(p), vect);
+                Sq_mat(p, p) = 0;
+                for (int m = 0; m < L; m++) {
+                    double Szm = 0;
+                    if (vect[m] < 4) Szm += 0.5;
+                    else Szm -= 0.5;
+                    if (vect[m] % 4 == 1) Szm += 0.5;
+                    else if (vect[m] % 4 == 2) Szm -= 0.5;
+                    Sq_mat(p, p) += std::exp(cpx(1i * q * (m + 0.0))) * Szm;
+                }
             }
-        }
-        double Sq0 = 0, Z = 0, Sq_squared = 0;
-        for (int r = 0; r < random_steps; r++) {
-            auto rand_vec = Create_Random_vec();
-            Build_Lanczos_Hamil_wKrylov(rand_vec);
-            mat V;
-            eig_sym(eigenvalues, V, H_L);
-            eigenvectors = Krylov_space * V;
             cx_vec temp = Sq_mat * Sq_mat.t() * cx_vec(rand_vec, vec(N, fill::zeros));
             double Sq_tmp = 0;
             for (int m = 0; m < lanczos_steps; m++) {
@@ -959,11 +963,10 @@ vec Lanczos::Sq_lanczos(int random_steps, double T) {
                 overlap = real(overlap * cdot(cx_vec(eigenvectors.col(m), vec(N, fill::zeros)), temp));
                 Sq_tmp += overlap * std::exp(-eigenvalues(m) / T);
             }
-            Sq0 += (double)N / (double)random_steps * 2.0 * Sq_tmp / pi / (L + 1.0);
+            Sq(l) += (double)N / (double)random_steps * 2.0 * Sq_tmp / pi / (L + 1.0);
         }
-        Sq(l) = Sq0;
-        Z_constT = Z;
     }
+    Z_constT = Z / (L + 1.0);
     return Sq;
 }
 
@@ -1186,9 +1189,10 @@ void Main_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int 
     vec Cv_stand_dev(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
     double Z_constT = 0;
     std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, -N_e, M));
-    int R = (calculate_stand_dev) ? 200 : 1;
+    int R = (calculate_stand_dev) ? 50 : 1; // for bigger systems lesser averaging to decrease computation time for now  
+    // ((L >= 8) ? 20 : 50)
     for (int r = 0; r < R; r++) {
-        Cv_R.zeros(); Sq_R.zeros();  chi_R.zeros(); Z_constT = 0;
+        Cv_R.zeros(); Sq_R.zeros();  chi_R.zeros(); Z_constT = 0; Z.zeros();
         for (int Sz = -N_e; Sz <= N_e; Sz += 2) {
             Hamil->update_parameters(t, U, K, J_H, Sz);
             if (M > Hamil->N)  Hamil->lanczos_steps = Hamil->N;
@@ -1197,18 +1201,26 @@ void Main_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int 
             Cv_R += Hamil->Heat_Capacity_Lanczos(random_steps) / double(N_e + 1.0);
             chi_R += Hamil->static_spin_susceptibility(random_steps);
             Z += Hamil->partition_function;
-            Sq_R += Hamil->Sq_lanczos(random_steps, T);
+            if(calculate_Sq) 
+                Sq_R += Hamil->Sq_lanczos(random_steps, T);
             Z_constT += Hamil->Z_constT;
-            //out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
+            out << "Sector Sz = " << double(Sz) / 2.0 << "done" << endl;
         }
         Sq_R = Sq_R / Z_constT; chi_R = chi_R / Z;
         Sq += Sq_R / (double)R; Sq2 += arma::square(Sq_R) / (double)R;
         chi_0 += chi_R / (double)R; chi_0_2 += arma::square(chi_R) / (double)R;
         Cv += Cv_R / (double)R; Cv_2 += arma::square(Cv_R) / (double)R;
         out << "r = " << r << endl;
-        if (r % 5 == 0) {
-            std::ofstream fileR("Cv_R=" + std::to_string(r) + ".txt");
-            fileR << (Cv * (double)R / (double)r);
+        if (r % 1 == 0) {
+            std::ofstream fileR("Cv_L=" + std::to_string(L) + "_R=" + std::to_string(r) + ".txt");
+            //fileR << (Cv * (double)R / (double)r);
+            fileR << Cv_R;
+            fileR.close();
+            fileR.open("Sq_L=" + std::to_string(L) + "_R=" + std::to_string(r) + ".txt");
+            fileR << Sq_R;
+            fileR.close();
+            fileR.open("X_L=" + std::to_string(L) + "_R=" + std::to_string(r) + ".txt");
+            fileR << chi_R;
             fileR.close();
         }
     }
@@ -1299,7 +1311,7 @@ void print_Sq(vec&& Sq, vec&& Sq_stand_dev, double U, double N_e, int L, double 
     Nstr << setprecision(2) << fixed << (double)N_e / (double)L;
     savefile.open("Sq_L=" + std::to_string(L) + "_U=" + Ustr.str() + "_T=" + std::to_string(T) + ".txt");
     savefile << std::setprecision(8) << fixed;
-    //out << "Sq : " << endl;
+    out << "Sq : " << endl;
     for (int l = 0; l <= L; l++) {
         double q = (double)l * pi / ((double)L + 1.0);
         savefile << q << "\t\t" << Sq(l) << "\t\t" << Sq_stand_dev(l) << endl;
@@ -1338,7 +1350,7 @@ ull_int binary_to_int(vector<int>& vec) {
     return val;
 }
 
-ull_int binary_search(std::unique_ptr<std::vector<ull_int>>& arr, int l_point, int r_point, ull_int element) {
+ull_int binary_search(std::vector<ull_int>* arr, int l_point, int r_point, ull_int element) {
     //out << element << endl;
     if (r_point >= l_point) {
         int middle = l_point + (r_point - l_point) / 2;

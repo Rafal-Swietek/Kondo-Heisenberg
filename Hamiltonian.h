@@ -33,10 +33,11 @@ typedef std::complex<double> cpx;
 #define M_PI 3.14159265358979323846
 #define out std::cout << std::setprecision(16) << std::fixed
 #define num_of_threads 16
-#define memory_over_performance true // optimized by size --true-- (memory usage shortage) or performance --false--
-#define show_system_size_parameters true // this parameter defines whether to print data such as system size for each object conctructor call
+#define memory_over_performance false // optimized by size --true-- (memory usage shortage) or performance --false--
+#define show_system_size_parameters false // this parameter defines whether to print data such as system size for each object conctructor call
 #define use_reorthonormalization true // enables in lanczos procedure full reorthogonalization - needs full krylov_space access
 #define calculate_stand_dev true // enables the calculation of the standard deviation in the FTLM randomized method
+#define calculate_Sq true // calculate static structure factor?
 
 class HamiltonianKH {
 public:
@@ -48,7 +49,8 @@ public:
 	int Sz; // total spin for spin-sector selection
 	int num_of_electrons; //number of electrons
 
-	std::unique_ptr<std::vector<ull_int>> mapping; //generates the mapping of the base_vector number to the number in the block
+	//std::unique_ptr<std::vector<ull_int>> mapping; //generates the mapping of the base_vector number to the number in the block
+	std::vector<ull_int>* mapping;
 	ull_int N; //number of states
     mat H;
 	sp_mat H_sparse;
@@ -68,7 +70,7 @@ public:
 	void Diagonalization();
 
 	void generate_mapping();
-	void mapping_kernel(ull_int start, ull_int stop, std::unique_ptr<std::vector<ull_int>>& map_threaded, int _id);
+	void mapping_kernel(ull_int start, ull_int stop, std::vector<ull_int>* map_threaded, int _id);
     void setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp);
 	void setHamiltonianElem_sparse(ull_int& k, double value, std::vector<int>&& temp);
 	void printEnergy(double Ef);
@@ -122,7 +124,7 @@ public:
 //----------------------------------------------------------------------------------------------
 //--------------------------------------------------TOOLS---------------------------------------
 //----------------------------------------------------------------------------------------------
-ull_int binary_search(std::unique_ptr<std::vector<ull_int>>& arr, int l_point, int r_point, ull_int element);
+ull_int binary_search(std::vector<ull_int>* arr, int l_point, int r_point, ull_int element);
 void int_to_binary(ull_int idx, std::vector<int>& vec); //converges int to binary code of length N
 ull_int binary_to_int(vector<int>& vec); //converges vector with binary code to decimal system
 double FermiLevel(int L, int N_e, double t, double K, double U, double J_H);
