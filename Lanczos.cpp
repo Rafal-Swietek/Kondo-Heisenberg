@@ -344,7 +344,7 @@ void Lanczos::Build_Lanczos_Hamil(vec& initial_vec) {
     double beta = arma::dot(initial_vec, initial_vec);
     initial_vec = initial_vec / sqrt(beta); // normalized Krylov_space(j=0)
     // already normalized input random vector
-
+    out << "It's shuiiit!" << endl;
     this->randVec_inKrylovSpace = vec(lanczos_steps);
     randVec_inKrylovSpace(0) = arma::dot(initial_vec, initial_vec); // =1
 
@@ -373,7 +373,7 @@ void Lanczos::Build_Lanczos_Hamil(vec& initial_vec) {
         H_L(j - 1, j) = beta;
 
         tmp2_prev = tmp2;
-        //out << j << "lanczos" << endl;
+        out << j << "lanczos" << endl;
     }
 }
 
@@ -393,15 +393,24 @@ void Lanczos::Diagonalization() {
     }
 }
 void Lanczos::Lanczos_GroundState() {
-    auto initial_vec = Create_Random_vec();
+    out << "What is life?" << endl;
+    vec initial_vec = Create_Random_vec();
+    out << "You know, bro" << endl;
     Build_Lanczos_Hamil(initial_vec);
     try {
         eig_sym(eigenvalues, eigenvectors, H_L);
-    }
-    catch (const bad_alloc& e) {
-        std::cout << "Memory exceeded " << e.what() << "\n";
+    } catch (const bad_alloc& e) {
+        out << "Memory exceeded " << e.what() << "\n";
         out << "dim(H) = " << H_L.size() * sizeof(H_L(0, 0)) << "\n";
         assert(false);
+    } catch (const std::overflow_error& e) {
+        assert(false && "Result of computation is too large for the destination type");
+    } catch (const std::runtime_error& e) {
+        assert(false && "Beyond scope run-time error - hard to categorize");
+    } catch (const std::exception& e) {
+        assert(false && "An exception in the STL library -- no idea which on was triggered");
+    }catch (...) {
+        out << "Some weird, unrecognized exception here" << endl;
     }
     out << eigenvalues(0) << endl << endl;
     vec GS = eigenvectors.col(0);

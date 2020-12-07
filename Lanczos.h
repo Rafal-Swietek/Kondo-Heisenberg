@@ -8,6 +8,7 @@ private:
 public:
 	int lanczos_steps; // number of lanczos steps
 	double Z_constT; // partition function for given temperature;
+
 	mat H_L; // lanczos hamiltonian
 	vec randVec_inKrylovSpace; // overlap of random vector and eigenvectors
 	vec partition_function; // partition function
@@ -18,10 +19,10 @@ public:
 	Lanczos();
 	~Lanczos();
 
-	void update_parameters(double t, double U, double K, double J_H, double Sz) override;
-	void Hamiltonian() override;
-	void setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp) override;
-	void Diagonalization() override;
+	virtual void update_parameters(double t, double U, double K, double J_H, double Sz) override;
+	virtual void Hamiltonian() override;
+	virtual void setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp) override;
+	virtual void Diagonalization() override;
 
 	vec Create_Random_vec();
 	void Build_Lanczos_Hamil_wKrylov(vec& initial_vec);

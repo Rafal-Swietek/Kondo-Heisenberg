@@ -20,6 +20,7 @@
 #include <omp.h>
 #include <thread>
 #include <time.h>
+#include <utility> // auto, etc. 
 
 using namespace std;
 using namespace arma;

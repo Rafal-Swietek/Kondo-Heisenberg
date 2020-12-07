@@ -160,7 +160,7 @@ void HamiltonianKH::mapping_kernel(ull_int start, ull_int stop, my_uniq_ptr& map
     //out << "A new thread joined tha party! from " << start << " to " << stop << endl;
     std::vector<int> temp(L);
     for (ull_int j = start; j < stop; j++) {
-        int bSz = 0, fSz = 0, N_e = 0;
+        int bSz, fSz, N_e;
         std::tie(bSz, fSz, N_e) = calculateSpinElements(this->L, j, temp);
         if ((bSz + fSz == this->Sz) && N_e == this->num_of_electrons) 
              map_threaded->push_back(j);
@@ -179,12 +179,14 @@ void HamiltonianKH::generate_mapping() {
         stop = ((t + 1) == num_of_threads ? (ull_int)std::pow(8, L) : ull_int(std::pow(8, L) / (double)num_of_threads * (double)(t + 1) ));
         //map_threaded[t] = my_uniq_ptr(new std::vector<ull_int>());
         map_threaded[t] = std::make_unique<std::vector<ull_int>>();
+        //map_threaded[t]->reserve(std::pow(2, L)); ??
         threads.emplace_back(&HamiltonianKH::mapping_kernel, this, start, stop, ref(map_threaded[t]), t);
     }
     for (auto& t : threads) t.join();
 
     for (auto& t : map_threaded)
         mapping->insert(mapping->end(), std::make_move_iterator(t->begin()), std::make_move_iterator(t->end()));
+    mapping->shrink_to_fit();
     //sort(mapping->begin(), mapping->end());
     if (show_system_size_parameters) {
         out << "Mapping generated with  " << mapping->size() << "  elements" << endl;
