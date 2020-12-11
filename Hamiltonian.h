@@ -21,8 +21,8 @@ public:
 	my_uniq_ptr mapping;//generates the mapping of the base_vector number to the number in the block
 	ull_int N; //number of states
     mat eigenvectors;
-	vec ground_state;
     vec eigenvalues;
+	vec ground_state;
 
 	HamiltonianKH(); // default Constructor
 	HamiltonianKH(int L, int num_of_electrons, double t, double U, double K, double J_H, double Sz); //Constructor for subblock Hamiltonian
@@ -46,14 +46,6 @@ public:
 	mat correlation_matrix();
 	void print_base_vector(std::vector<int>& base_vector, std::ofstream& out_str);
 };
-
-//----------------------------------------------------------------------------------------------
-//--------------------------------------------------TOOLS---------------------------------------
-//----------------------------------------------------------------------------------------------
-ull_int binary_search(my_uniq_ptr& arr, int l_point, int r_point, ull_int element);
-void int_to_binary(ull_int idx, std::vector<int>& vec); //converges int to binary code of length N
-ull_int binary_to_int(vector<int>& vec); //converges vector with binary code to decimal system
-std::vector<double> prepare_parameterVec(double _min, double _max, double step);
 
 #endif
 

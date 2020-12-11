@@ -29,21 +29,6 @@ Lanczos::Lanczos(int L, int num_of_electrons, double t, double U, double K, doub
     if (!memory_over_performance)
         Hamiltonian();
 }
-Lanczos::Lanczos(std::unique_ptr<Lanczos>& obj) {
-    this->L = obj->L; //number of sites
-    this->num_of_electrons = obj->num_of_electrons; //number of electrons in lower orbital
-    this->t = obj->t;
-    this->U = obj->U;
-    this->K = obj->K;
-    this->J_H = obj->J_H;
-    this->Sz = obj->Sz;
-    this->lanczos_steps = obj->lanczos_steps;
-
-    this->mapping = std::move(obj->mapping);
-    this->N = this->mapping->size();
-    if (show_system_size_parameters == true)
-        out << "dim = " << N << endl;
-}
 Lanczos::~Lanczos() {}
 
 void Lanczos::setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp) {
@@ -279,15 +264,7 @@ void Lanczos::Hamil_vector_multiply(vec& initial_vec, vec& result_vec) {
     }for (auto& t : threads) t.join();
 }
 
-vec Lanczos::Create_Random_vec() {
-    vec random_vec(N, fill::zeros);
-    double norm = 0;
-    for (ull_int j = 0; j < N; j++) {
-        random_vec(j) = static_cast<double>(rand()) / (RAND_MAX + 0.0) - 0.5;
-        norm += random_vec(j) * random_vec(j);
-    }
-    return random_vec / norm;
-}
+
 void Lanczos::Build_Lanczos_Hamil_wKrylov(vec& initial_vec) {
     this->Krylov_space = mat(N, 1);
     this->H_L = mat(1, 1, fill::zeros);
@@ -344,7 +321,6 @@ void Lanczos::Build_Lanczos_Hamil(vec& initial_vec) {
     double beta = arma::dot(initial_vec, initial_vec);
     initial_vec = initial_vec / sqrt(beta); // normalized Krylov_space(j=0)
     // already normalized input random vector
-    out << "It's shuiiit!" << endl;
     this->randVec_inKrylovSpace = vec(lanczos_steps);
     randVec_inKrylovSpace(0) = arma::dot(initial_vec, initial_vec); // =1
 
@@ -354,7 +330,6 @@ void Lanczos::Build_Lanczos_Hamil(vec& initial_vec) {
 
     double alfa = arma::dot(initial_vec, tmp);
     tmp = tmp - alfa * initial_vec;
-    //out << tmp.t();
     vec tmp2_prev = initial_vec;
     H_L(0, 0) = alfa;
     for (int j = 1; j < lanczos_steps; j++) {
@@ -373,44 +348,26 @@ void Lanczos::Build_Lanczos_Hamil(vec& initial_vec) {
         H_L(j - 1, j) = beta;
 
         tmp2_prev = tmp2;
-        out << j << "lanczos" << endl;
     }
 }
 
 void Lanczos::Diagonalization() {
     //vec rand = randu<vec>(N);
-    int averaged_iterations = 10;
     this->eigenvalues = vec(lanczos_steps, fill::zeros);
     this->eigenvectors = mat(lanczos_steps, lanczos_steps, fill::zeros);
-    for (int r = 0; r < averaged_iterations; r++) {
-        vec rand = Create_Random_vec();
-        Build_Lanczos_Hamil(rand);
-        vec E;
-        mat V;
-        eig_sym(E, V, H_L);
-        eigenvalues += E / averaged_iterations;
-        eigenvectors += V / averaged_iterations;
-    }
+    vec rand = Create_Random_vec(N);
+    Build_Lanczos_Hamil(rand);
+    eig_sym(eigenvalues, eigenvectors, H_L);
 }
 void Lanczos::Lanczos_GroundState() {
-    out << "What is life?" << endl;
-    vec initial_vec = Create_Random_vec();
-    out << "You know, bro" << endl;
+    vec initial_vec = Create_Random_vec(N);
     Build_Lanczos_Hamil(initial_vec);
     try {
         eig_sym(eigenvalues, eigenvectors, H_L);
     } catch (const bad_alloc& e) {
-        out << "Memory exceeded " << e.what() << "\n";
-        out << "dim(H) = " << H_L.size() * sizeof(H_L(0, 0)) << "\n";
+        out << "Memory error:  " << e.what() << "\n";
+        //out << "dim(H) = " << H_L.size() * sizeof(H_L(0, 0)) << "\n";
         assert(false);
-    } catch (const std::overflow_error& e) {
-        assert(false && "Result of computation is too large for the destination type");
-    } catch (const std::runtime_error& e) {
-        assert(false && "Beyond scope run-time error - hard to categorize");
-    } catch (const std::exception& e) {
-        assert(false && "An exception in the STL library -- no idea which on was triggered");
-    }catch (...) {
-        out << "Some weird, unrecognized exception here" << endl;
     }
     out << eigenvalues(0) << endl << endl;
     vec GS = eigenvectors.col(0);
@@ -438,7 +395,7 @@ void Lanczos::Lanczos_GroundState() {
         tmp = tmp - alfa * tmp2 - beta * initial_vec;
 
         initial_vec = tmp2;
-        if (show_system_size_parameters) out << j << "lanczos" << endl;
+        //if (show_system_size_parameters) out << j << "lanczos" << endl;
     }
 }
 void Lanczos::Lanczos_convergence(vec& initial_vec) {
@@ -519,7 +476,7 @@ vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
 
     auto temperature = prepare_parameterVec(dT, T_end, dT);
     for (int r = 0; r < random_steps; r++) {
-        auto rand_vec = Create_Random_vec();
+        auto rand_vec = Create_Random_vec(N);
         Build_Lanczos_Hamil(rand_vec);
         eig_sym(eigenvalues, eigenvectors, H_L);
         //E_av.zeros(); E_av2.zeros(); Z.zeros();
@@ -557,7 +514,7 @@ vec Lanczos::static_spin_susceptibility(int random_steps) {
 
     auto temperature = prepare_parameterVec(dT, T_end, dT);
     for (int r = 0; r < random_steps; r++) {
-        auto rand_vec = Create_Random_vec();
+        auto rand_vec = Create_Random_vec(N);
         Build_Lanczos_Hamil(rand_vec);
         eig_sym(eigenvalues, eigenvectors, H_L);
         //vec chi_tmp(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
@@ -601,7 +558,7 @@ vec Lanczos::Sq_lanczos(int random_steps, double T) {
     this->Z_constT = 0;
     vector<int> vect(L);
     for (int r = 0; r < random_steps; r++) {
-        auto rand_vec = Create_Random_vec();
+        auto rand_vec = Create_Random_vec(N);
         Build_Lanczos_Hamil_wKrylov(rand_vec);
         mat V;
         eig_sym(eigenvalues, V, H_L);

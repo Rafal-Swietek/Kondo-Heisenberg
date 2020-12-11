@@ -1,4 +1,5 @@
 #include "subroutines.h"
+using namespace Routines;
 
 int main() {
     srand(time(NULL));
@@ -15,7 +16,7 @@ int main() {
 
     // Main Program---------------------------------------
     arma::arma_version ver;
-    std::cout << "ARMA version: "<< ver.as_string() << std::endl;
+    std::cout << "ARMA version: " << ver.as_string() << std::endl << std::endl;
 
     std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1, M));
     Hamil->Lanczos_GroundState();

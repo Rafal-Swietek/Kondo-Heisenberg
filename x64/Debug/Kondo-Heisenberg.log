@@ -3,10 +3,10 @@
   main.cpp
   sparse_mat.cpp
   WARNING: use of OpenMP disabled; compiler support for OpenMP 3.1+ not detected
-  NOTE: your compiler appears to have an ancient version of OpenMP
-  NOTE: consider upgrading to a better compiler
   WARNING: use of OpenMP disabled; compiler support for OpenMP 3.1+ not detected
   NOTE: your compiler appears to have an ancient version of OpenMP
+  NOTE: your compiler appears to have an ancient version of OpenMP
+  NOTE: consider upgrading to a better compiler
   NOTE: consider upgrading to a better compiler
   WARNING: use of OpenMP disabled; compiler support for OpenMP 3.1+ not detected
   NOTE: your compiler appears to have an ancient version of OpenMP
@@ -16,26 +16,29 @@
   NOTE: consider upgrading to a better compiler
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(21,16): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(34,16): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(13,16): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(42,47): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(50,47): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(136,20): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(152,16): warning C4244: 'initializing': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(170,55): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(178,55): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(191,55): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(203,55): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(13,16): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(35,47): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(121,20): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(137,16): warning C4244: 'initializing': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(155,55): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(163,55): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(176,55): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(188,55): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(203,59): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(218,59): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(233,59): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(247,51): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(253,51): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(136,46): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data (compiling source file main.cpp)
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(144,11): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data (compiling source file main.cpp)
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(330,60): warning C4244: '=': conversion from 'ull_int' to 'int', possible loss of data (compiling source file main.cpp)
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(406,41): warning C4101: 'e': unreferenced local variable
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(408,40): warning C4101: 'e': unreferenced local variable
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(410,36): warning C4101: 'e': unreferenced local variable
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(4,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(232,51): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(238,51): warning C4244: 'argument': conversion from 'ull_int' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(140,50): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(148,15): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(309,64): warning C4244: '=': conversion from 'ull_int' to 'int', possible loss of data (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(358,34): warning C4244: 'argument': conversion from 'ull_int' to 'unsigned int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(363,41): warning C4244: 'argument': conversion from 'ull_int' to 'unsigned int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(376,49): warning C4244: 'argument': conversion from 'ull_int' to 'unsigned int', possible loss of data (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(5,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(479,43): warning C4244: 'argument': conversion from 'ull_int' to 'unsigned int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(517,43): warning C4244: 'argument': conversion from 'ull_int' to 'unsigned int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(561,43): warning C4244: 'argument': conversion from 'ull_int' to 'unsigned int', possible loss of data
   Hamiltonian.obj : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
   Generating code

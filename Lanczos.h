@@ -15,7 +15,6 @@ public:
 	mat Krylov_space;
 
 	Lanczos(int L, int num_of_electrons, double t, double U, double K, double J_H, double Sz, int lanczos_steps);
-	Lanczos(std::unique_ptr<Lanczos>& obj); // copy constructor
 	Lanczos();
 	~Lanczos();
 
@@ -24,7 +23,6 @@ public:
 	virtual void setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp) override;
 	virtual void Diagonalization() override;
 
-	vec Create_Random_vec();
 	void Build_Lanczos_Hamil_wKrylov(vec& initial_vec);
 	void Build_Lanczos_Hamil(vec& initial_vec);
 	void Lanczos_convergence(vec& initial_vec);

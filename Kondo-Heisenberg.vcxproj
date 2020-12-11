@@ -167,6 +167,7 @@
     <ClInclude Include="Hamiltonian.h" />
     <ClInclude Include="headers.h" />
     <ClInclude Include="Lanczos.h" />
+    <ClInclude Include="MyEig.h" />
     <ClInclude Include="sparse_mat.h" />
     <ClInclude Include="subroutines.h" />
   </ItemGroup>
