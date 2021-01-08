@@ -48,4 +48,7 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".clang-tidy" />
+  </ItemGroup>
 </Project>

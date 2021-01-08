@@ -3,7 +3,6 @@
 
 //----------------------------------------------------------------------------------------------
 //--------------------------------------------------LANCZOS-------------------------------------
-Lanczos::Lanczos() {}
 Lanczos::Lanczos(int L, int num_of_electrons, double t, double U, double K, double J_H, double Sz, int lanczos_steps) {
     this->L = L; //number of sites
     this->num_of_electrons = num_of_electrons; //number of electrons in lower orbital
@@ -13,8 +12,8 @@ Lanczos::Lanczos(int L, int num_of_electrons, double t, double U, double K, doub
     this->Sz = Sz;
     this->lanczos_steps = lanczos_steps;
 
-    this->mapping = std::make_unique<std::vector<ull_int>>();
-    //this->mapping = std::vector<ull_int>();
+    this->mapping = std::make_unique<std::vector<u64>>();
+    //this->mapping = std::vector<u64>();
     generate_mapping();
     this->N = mapping->size();
     if (show_system_size_parameters)
@@ -29,10 +28,9 @@ Lanczos::Lanczos(int L, int num_of_electrons, double t, double U, double K, doub
     if (!memory_over_performance)
         Hamiltonian();
 }
-Lanczos::~Lanczos() {}
 
-void Lanczos::setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp) {
-    ull_int idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));// findElement(std::move(mapping), binary_to_int(std::move(temp))); //
+void Lanczos::setHamiltonianElem(u64& k, double value, std::vector<int>&& temp) {
+    u64 idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));// findElement(std::move(mapping), binary_to_int(std::move(temp))); //
     assert(idx < N && "Somehow index out of scope, wtf?? Found element not possibly present in the array");
     H(idx, k) += value;
     H(k, idx) += value;
@@ -41,7 +39,7 @@ void Lanczos::Hamiltonian() {
     std::vector<int> base_vector(L);
     std::vector<int> temp(base_vector);
     //#pragma omp parallel for num_threads(num_of_threads)
-    for (ull_int k = 0; k < N; k++) {
+    for (u64 k = 0; k < N; k++) {
         int_to_binary(mapping->at(k), base_vector);
         temp = base_vector;
         int s_i, s_j; //i=j, j=j+1
@@ -108,7 +106,7 @@ void Lanczos::Hamiltonian() {
             if (base_vector[j] == 2 || base_vector[j] == 5)
                 H(k, k) += 2.0 * J_H * 0.25;
         }
-        //if (k % (ull_int)std::pow(10, 2) == 0) out << k << endl;
+        //if (k % (u64)std::pow(10, 2) == 0) out << k << endl;
     }
     if (show_system_size_parameters) {
         out << "Hamiltonian complete" << endl;
@@ -119,8 +117,8 @@ void Lanczos::Hamiltonian() {
 void Lanczos::update_parameters(double t, double U, double K, double J_H, double Sz) {
         this->t = t; this->U = U, this->K = K; this->J_H = J_H;
         this->Sz = Sz;
-        this->mapping.reset(new std::vector<ull_int>());
-        //this->mapping = std::vector<ull_int>();
+        this->mapping.reset(new std::vector<u64>());
+        //this->mapping = std::vector<u64>();
         generate_mapping();
         this->N = mapping->size();
         //this->H.reset(new sp_mat(N, N));
@@ -128,11 +126,11 @@ void Lanczos::update_parameters(double t, double U, double K, double J_H, double
         if (!memory_over_performance)
             Hamiltonian();
 }
-void Lanczos::Hamil_vector_multiply_kernel(ull_int start, ull_int stop, vec& initial_vec, vec& result_vec_threaded) {
+void Lanczos::Hamil_vector_multiply_kernel(u64 start, u64 stop, vec& initial_vec, vec& result_vec_threaded) {
     std::vector<int> base_vector(L);
     int PBC = 0;
     int next_j;
-    ull_int idx;
+    u64 idx;
     int s_i, s_j;
     for (int k = start; k < stop; k++) {
         int_to_binary(mapping->at(k), base_vector);
@@ -257,8 +255,8 @@ void Lanczos::Hamil_vector_multiply(vec& initial_vec, vec& result_vec) {
     //Hamil_vector_multiply_kernel(0, N, initial_vec, result_vec);
     threads.reserve(num_of_threads);
     for (int t = 0; t < num_of_threads; t++) {
-        ull_int start = t * N / num_of_threads;
-        ull_int stop = ((t + 1) == num_of_threads ? N : N * (t + 1) / num_of_threads);
+        u64 start = t * N / num_of_threads;
+        u64 stop = ((t + 1) == num_of_threads ? N : N * (t + 1) / num_of_threads);
         result_threaded[t] = arma::vec(stop - start, fill::zeros);
         threads.emplace_back(&Lanczos::Hamil_vector_multiply_kernel, this, start, stop, ref(initial_vec), ref(result_vec));
     }for (auto& t : threads) t.join();
@@ -473,7 +471,6 @@ vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
     this->partition_function = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
 
     vec Cv(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
-
     auto temperature = prepare_parameterVec(dT, T_end, dT);
     for (int r = 0; r < random_steps; r++) {
         auto rand_vec = Create_Random_vec(N);
@@ -487,9 +484,9 @@ vec Lanczos::Heat_Capacity_Lanczos(int random_steps) {
             for (int m = 0; m < lanczos_steps; m++) {
                 overlap = dot(randVec_inKrylovSpace, eigenvectors.col(m));
                 overlap *= overlap;
-                Z(k) += (double)N / (double)random_steps * overlap * std::exp(-eigenvalues(m) / T);
-                E_av(k) += eigenvalues(m) * overlap * std::exp(-eigenvalues(m) / T);
-                E_av2(k) += eigenvalues(m) * eigenvalues(m) * overlap * std::exp(-eigenvalues(m) / T);
+                Z(k) += (double)N / (double)random_steps * overlap * std::exp(-(eigenvalues(m) - E0) / T);
+                E_av(k) += eigenvalues(m) * overlap * std::exp(-(eigenvalues(m) - E0) / T);
+                E_av2(k) += eigenvalues(m) * eigenvalues(m) * overlap * std::exp(-(eigenvalues(m) - E0) / T);
                 partition_function(k) += Z(k);
             }
         }
@@ -525,8 +522,8 @@ vec Lanczos::static_spin_susceptibility(int random_steps) {
             for (int m = 0; m < lanczos_steps; m++) {
                 overlap = dot(randVec_inKrylovSpace, eigenvectors.col(m));
                 overlap *= overlap;
-                partition_function(k) += (double)N / (double)random_steps * overlap * std::exp(-eigenvalues(m) / T);
-                chi_0(k) += Sz * Sz * overlap * std::exp(-eigenvalues(m) / T) * (double)N / (double)random_steps / T / (double)L;
+                partition_function(k) += (double)N / (double)random_steps * overlap * std::exp(-(eigenvalues(m) - E0) / T);
+                chi_0(k) += Sz * Sz * overlap * std::exp(-(eigenvalues(m) - E0) / T) * (double)N / (double)random_steps / T / (double)L;
             }
         }
         //chi_0 += chi_tmp;
@@ -583,20 +580,13 @@ vec Lanczos::Sq_lanczos(int random_steps, double T) {
             double Sq_tmp = 0;
             for (int m = 0; m < lanczos_steps; m++) {
                 double overlap = dot(rand_vec, eigenvectors.col(m));
-                Z += (double)N / (double)random_steps * overlap * overlap * std::exp(-eigenvalues(m) / T);
+                Z += (double)N / (double)random_steps * overlap * overlap * std::exp(-(eigenvalues(m) - E0) / T);
                 overlap = real(overlap * cdot(cx_vec(eigenvectors.col(m), vec(N, fill::zeros)), temp));
-                Sq_tmp += overlap * std::exp(-eigenvalues(m) / T);
+                Sq_tmp += overlap * std::exp(-(eigenvalues(m) - E0) / T);
             }
             Sq(l) += (double)N / (double)random_steps * 2.0 * Sq_tmp / pi / (L + 1.0);
         }
     }
     Z_constT = Z / (L + 1.0);
     return Sq;
-}
-
-vec Lanczos::LDOS(int site, double T, std::vector<double>&& omega_vec) {
-    vec LDOS(omega_vec.size(), fill::zeros);
-
-
-    return LDOS;
 }

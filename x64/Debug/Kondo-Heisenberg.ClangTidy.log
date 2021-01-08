@@ -1,0 +1,1321 @@
+Error while processing C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp.
+Error while processing C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp.
+Error while processing C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp.
+Error while processing C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\sparse_mat.cpp.
+error: no such file or directory: '/Qopenmp'; did you mean '/openmp'? [clang-diagnostic-error]
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Glue_meat.hpp:27:3: warning: 1 uninitialized field at the end of the constructor call [clang-analyzer-optin.cplusplus.UninitializedObject]
+  {
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Glue_bones.hpp:59:15: note: uninitialized field 'this->aux_uword'
+        uword aux_uword;  //!< storage of auxiliary data, uword format
+              ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:557:21: note: Assuming 'r' is < 'random_steps'
+    for (int r = 0; r < random_steps; r++) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:557:5: note: Loop condition is true.  Entering loop body
+    for (int r = 0; r < random_steps; r++) {
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:562:24: note: Calling 'operator*<arma::Mat<double>, arma::Mat<double>>'
+        eigenvectors = Krylov_space * V;
+                       ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/operator_times.hpp:210:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/operator_times.hpp:212:10: note: Calling constructor for 'Glue<arma::Mat<double>, arma::Mat<double>, arma::glue_times>'
+  return Glue<T1, T2, glue_times>(X, Y);
+         ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Glue_meat.hpp:28:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Glue_meat.hpp:27:3: note: 1 uninitialized field at the end of the constructor call
+  {
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_meat.hpp:26:3: warning: 3 uninitialized fields at the end of the constructor call [clang-analyzer-optin.cplusplus.UninitializedObject]
+  {
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_bones.hpp:63:32: note: uninitialized field 'this->aux_uword_b'
+  arma_aligned       uword     aux_uword_b;  //!< auxiliary data, uword format
+                               ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_bones.hpp:64:32: note: uninitialized field 'this->aux_uword_c'
+  arma_aligned       uword     aux_uword_c;  //!< auxiliary data, uword format
+                               ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_bones.hpp:62:32: note: uninitialized field 'this->aux_uword_a'
+  arma_aligned       uword     aux_uword_a;  //!< auxiliary data, uword format
+                               ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:236:21: note: Assuming 'l' is <= field 'L'
+    for (int l = 0; l <= L; l++) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:236:5: note: Loop condition is true.  Entering loop body
+    for (int l = 0; l <= L; l++) {
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:241:25: note: Assuming 'p' is >= field 'N'
+        for (int p = 0; p < N; p++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:241:9: note: Loop condition is false. Execution continues on line 253
+        for (int p = 0; p < N; p++) {
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:254:13: note: Assuming 'T' is <= 0
+        if (T > 0) {
+            ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:254:9: note: Taking false branch
+        if (T > 0) {
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:263:17: note: Calling 'operator*<arma::SpMat<std::complex<double> >, arma::Col<std::complex<double> >>'
+            a = Sq * cpx_vec;
+                ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/operator_times.hpp:370:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/operator_times.hpp:376:3: note: Calling 'spglue_times_misc::sparse_times_dense'
+  spglue_times_misc::sparse_times_dense(result, x, y);
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:300:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:304:6: note: 'value' is false
+  if(is_op_diagmat<T2>::value)
+     ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:304:3: note: Taking false branch
+  if(is_op_diagmat<T2>::value)
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:326:8: note: Assuming the condition is true
+    if(B_n_cols >= (B_n_rows / uword(100)))
+       ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:326:5: note: Taking true branch
+    if(B_n_cols >= (B_n_rows / uword(100)))
+    ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:328:7: note: '?' condition is true
+      arma_extra_debug_print("using transpose-based multiplication");
+      ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1281:44: note: expanded from macro 'arma_extra_debug_print'
+  #define arma_extra_debug_print           true ? (void)0 : arma_print
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:331:28: note: Calling 'Base_trans_cx::st'
+      const   Mat<eT> Bt = B.st();
+                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Base_meat.hpp:887:10: note: Calling constructor for 'Op<arma::Mat<std::complex<double> >, arma::op_strans>'
+  return Op<derived,op_strans>( static_cast<const derived&>(*this) );
+         ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_meat.hpp:27:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_meat.hpp:26:3: note: 3 uninitialized fields at the end of the constructor call
+  {
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_meat.hpp:26:3: warning: 4 uninitialized fields at the end of the constructor call [clang-analyzer-optin.cplusplus.UninitializedObject]
+  {
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_bones.hpp:61:32: note: uninitialized field 'this->aux'
+  arma_aligned       elem_type aux;          //!< auxiliary data, using the element type as used by T1
+                               ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_bones.hpp:62:32: note: uninitialized field 'this->aux_uword_a'
+  arma_aligned       uword     aux_uword_a;  //!< auxiliary data, uword format
+                               ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_bones.hpp:63:32: note: uninitialized field 'this->aux_uword_b'
+  arma_aligned       uword     aux_uword_b;  //!< auxiliary data, uword format
+                               ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_bones.hpp:64:32: note: uninitialized field 'this->aux_uword_c'
+  arma_aligned       uword     aux_uword_c;  //!< auxiliary data, uword format
+                               ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:412:5: note: Taking false branch
+    if (memory_over_performance) Hamil_vector_multiply(initial_vec, tmp); // tmp = H * Krylov_space(0)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:413:16: note: Calling 'operator*<arma::SpMat<double>, arma::subview_col<double>>'
+    else tmp = H * Krylov_space.col(0);
+               ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/operator_times.hpp:370:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/operator_times.hpp:376:3: note: Calling 'spglue_times_misc::sparse_times_dense'
+  spglue_times_misc::sparse_times_dense(result, x, y);
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:300:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:304:6: note: 'value' is false
+  if(is_op_diagmat<T2>::value)
+     ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:304:3: note: Taking false branch
+  if(is_op_diagmat<T2>::value)
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:326:8: note: Assuming the condition is true
+    if(B_n_cols >= (B_n_rows / uword(100)))
+       ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:326:5: note: Taking true branch
+    if(B_n_cols >= (B_n_rows / uword(100)))
+    ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:328:7: note: '?' condition is true
+      arma_extra_debug_print("using transpose-based multiplication");
+      ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1281:44: note: expanded from macro 'arma_extra_debug_print'
+  #define arma_extra_debug_print           true ? (void)0 : arma_print
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:331:28: note: Calling 'Base_trans_default::st'
+      const   Mat<eT> Bt = B.st();
+                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Base_meat.hpp:920:10: note: Calling constructor for 'Op<arma::Mat<double>, arma::op_htrans>'
+  return Op<derived,op_htrans>( static_cast<const derived&>(*this) );
+         ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_meat.hpp:27:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/Op_meat.hpp:26:3: note: 4 uninitialized fields at the end of the constructor call
+  {
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpOp_meat.hpp:26:3: warning: 2 uninitialized fields at the end of the constructor call [clang-analyzer-optin.cplusplus.UninitializedObject]
+  {
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpOp_bones.hpp:43:32: note: uninitialized field 'this->aux_uword_a'
+  arma_aligned       uword     aux_uword_a;  //!< auxiliary data, uword format
+                               ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpOp_bones.hpp:44:32: note: uninitialized field 'this->aux_uword_b'
+  arma_aligned       uword     aux_uword_b;  //!< auxiliary data, uword format
+                               ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:557:21: note: Assuming 'r' is < 'random_steps'
+    for (int r = 0; r < random_steps; r++) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:557:5: note: Loop condition is true.  Entering loop body
+    for (int r = 0; r < random_steps; r++) {
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:563:25: note: Assuming 'l' is <= field 'L'
+        for (int l = 0; l <= L; l++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:563:9: note: Loop condition is true.  Entering loop body
+        for (int l = 0; l <= L; l++) {
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:567:29: note: Assuming 'p' is >= field 'N'
+            for (int p = 0; p < N; p++) {
+                            ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:567:13: note: Loop condition is false. Execution continues on line 579
+            for (int p = 0; p < N; p++) {
+            ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:579:36: note: Calling 'SpBase::t'
+            cx_vec temp = Sq_mat * Sq_mat.t() * cx_vec(rand_vec, vec(N, fill::zeros));
+                                   ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpBase_meat.hpp:47:10: note: Calling constructor for 'SpOp<arma::SpMat<std::complex<double> >, arma::spop_htrans>'
+  return SpOp<derived,spop_htrans>( (*this).get_ref() );
+         ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpOp_meat.hpp:27:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpOp_meat.hpp:26:3: note: 2 uninitialized fields at the end of the constructor call
+  {
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpOp_meat.hpp:26:3: warning: 3 uninitialized fields at the end of the constructor call [clang-analyzer-optin.cplusplus.UninitializedObject]
+  {
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpOp_bones.hpp:42:32: note: uninitialized field 'this->aux'
+  arma_aligned       elem_type aux;          //!< auxiliary data, using the element type as used by T1
+                               ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpOp_bones.hpp:43:32: note: uninitialized field 'this->aux_uword_a'
+  arma_aligned       uword     aux_uword_a;  //!< auxiliary data, uword format
+                               ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpOp_bones.hpp:44:32: note: uninitialized field 'this->aux_uword_b'
+  arma_aligned       uword     aux_uword_b;  //!< auxiliary data, uword format
+                               ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:412:5: note: Taking false branch
+    if (memory_over_performance) Hamil_vector_multiply(initial_vec, tmp); // tmp = H * Krylov_space(0)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:413:16: note: Calling 'operator*<arma::SpMat<double>, arma::subview_col<double>>'
+    else tmp = H * Krylov_space.col(0);
+               ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/operator_times.hpp:370:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/operator_times.hpp:376:3: note: Calling 'spglue_times_misc::sparse_times_dense'
+  spglue_times_misc::sparse_times_dense(result, x, y);
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:300:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:304:6: note: 'value' is false
+  if(is_op_diagmat<T2>::value)
+     ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:304:3: note: Taking false branch
+  if(is_op_diagmat<T2>::value)
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:326:8: note: Assuming the condition is true
+    if(B_n_cols >= (B_n_rows / uword(100)))
+       ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:326:5: note: Taking true branch
+    if(B_n_cols >= (B_n_rows / uword(100)))
+    ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:328:7: note: '?' condition is true
+      arma_extra_debug_print("using transpose-based multiplication");
+      ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1281:44: note: expanded from macro 'arma_extra_debug_print'
+  #define arma_extra_debug_print           true ? (void)0 : arma_print
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/spglue_times_meat.hpp:330:28: note: Calling 'SpBase::st'
+      const SpMat<eT> At = A.st();
+                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpBase_meat.hpp:66:10: note: Calling constructor for 'SpOp<arma::SpMat<double>, arma::spop_strans>'
+  return SpOp<derived, spop_strans>( (*this).get_ref() );
+         ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpOp_meat.hpp:27:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/SpOp_meat.hpp:26:3: note: 3 uninitialized fields at the end of the constructor call
+  {
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/compiler_setup.hpp:486:11: warning: WARNING: use of OpenMP disabled; compiler support for OpenMP 3.1+ not detected [clang-diagnostic-#pragma-messages]
+  #pragma message ("WARNING: use of OpenMP disabled; compiler support for OpenMP 3.1+ not detected")
+          ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/eOp_meat.hpp:37:3: warning: 2 uninitialized fields at the end of the constructor call [clang-analyzer-optin.cplusplus.UninitializedObject]
+  {
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/eOp_bones.hpp:43:32: note: uninitialized field 'this->aux_uword_a'
+  arma_aligned       uword     aux_uword_a;  //!< storage of auxiliary data, uword format
+                               ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/eOp_bones.hpp:44:32: note: uninitialized field 'this->aux_uword_b'
+  arma_aligned       uword     aux_uword_b;  //!< storage of auxiliary data, uword format
+                               ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:292:25: note: Assuming 'k' is >= field 'N'
+    for (ull_int k = 0; k < N; k++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:292:5: note: Loop condition is false. Execution continues on line 300
+    for (ull_int k = 0; k < N; k++) {
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:300:10: note: Calling 'operator/<arma::Col<double>>'
+    GS = GS / arma::dot(GS, GS); //normalizing to be sure
+         ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/operator_div.hpp:33:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/operator_div.hpp:35:10: note: Calling constructor for 'eOp<arma::Col<double>, arma::eop_scalar_div_post>'
+  return eOp<T1, eop_scalar_div_post>(X, k);
+         ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/eOp_meat.hpp:38:3: note: '?' condition is true
+  arma_extra_debug_sigprint();
+  ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/debug.hpp:1279:44: note: expanded from macro 'arma_extra_debug_sigprint'
+  #define arma_extra_debug_sigprint        true ? (void)0 : arma_bktprint
+                                           ^
+C:\Users\77swi\source\repos\Libraries\arma\include/armadillo_bits/eOp_meat.hpp:37:3: note: 2 uninitialized fields at the end of the constructor call
+  {
+  ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/headers.h:83:20: warning: comparison of integers of different signs: 'int' and 'std::vector<int, std::allocator<int> >::size_type' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+        for (int k = 0; k < vec.size(); k++) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/headers.h:90:20: warning: comparison of integers of different signs: 'int' and 'std::vector<int, std::allocator<int> >::size_type' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+        for (int k = 0; k < vec.size(); k++) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:63:27: warning: comparison of integers of different signs: 'int' and 'std::vector<double, std::allocator<double> >::size_type' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+        for (int k = 0; k < omega_vec.size(); k++)
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:120:27: warning: comparison of integers of different signs: 'int' and 'std::vector<double, std::allocator<double> >::size_type' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+        for (int k = 0; k < temperature.size(); k++) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:125:24: warning: Value stored to 'Sz' during its initialization is never read [clang-analyzer-deadcode.DeadStores]
+                double Sz = -((double)E.size() - 1.0) / 2. + (double)l;
+                       ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:125:24: note: Value stored to 'Sz' during its initialization is never read
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:125:24: warning: unused variable 'Sz' [clang-diagnostic-unused-variable]
+                double Sz = -((double)E.size() - 1.0) / 2. + (double)l;
+                       ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:130:35: warning: comparison of integers of different signs: 'int' and 'arma::uword' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+                for (int n = 0; n < E.size(); n++) {
+                                  ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:150:27: warning: comparison of integers of different signs: 'int' and 'std::vector<double, std::allocator<double> >::size_type' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+        for (int k = 0; k < temperature.size(); k++) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:158:35: warning: comparison of integers of different signs: 'int' and 'arma::uword' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+                for (int n = 0; n < E.size(); n++) {
+                                  ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:219:17: warning: unused variable 'q' [clang-diagnostic-unused-variable]
+            int q = 0;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:221:31: warning: comparison of integers of different signs: 'int' and 'std::vector<double, std::allocator<double> >::size_type' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+            for (int q = 0; q < omega_vec.size(); q++) {
+                              ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:261:16: warning: unused variable 'T' [clang-diagnostic-unused-variable]
+        double T = 1.0;
+               ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:262:9: warning: Variable 'T' with floating point type 'double' should not be used as a loop counter [clang-analyzer-security.FloatLoopCounter]
+        for (double T = 0.01; T <= 1; T += 0.02) {
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:262:9: note: Variable 'T' with floating point type 'double' should not be used as a loop counter
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg/subroutines.h:312:23: warning: comparison of integers of different signs: 'int' and 'ull_int' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+                if (M > Hamil->N)  Hamil->lanczos_steps = Hamil->N;
+                      ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:25:5: warning: Call to virtual method 'HamiltonianKH::Hamiltonian' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+    Hamiltonian();
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:25:5: note: Call to virtual method 'HamiltonianKH::Hamiltonian' during construction bypasses virtual dispatch
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:77:21: warning: Call to virtual method 'HamiltonianKH::setHamiltonianElem' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+                    setHamiltonianElem(k, K / 2., std::move(temp));
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:25:5: note: Calling 'HamiltonianKH::Hamiltonian'
+    Hamiltonian();
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:56:25: note: Assuming 'k' is < field 'N'
+    for (ull_int k = 0; k < N; k++){
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:56:5: note: Loop condition is true.  Entering loop body
+    for (ull_int k = 0; k < N; k++){
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:59:19: note: Assuming the condition is true
+                for (int j = 0; j <= L - 1; j++) {
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:59:3: note: Loop condition is true.  Entering loop body
+                for (int j = 0; j <= L - 1; j++) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:17: note: Assuming the condition is true
+            if (j < L - 1 || PBC == 1) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:27: note: Left side of '||' is true
+            if (j < L - 1 || PBC == 1) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:61:21: note: 'PBC' is not equal to 1
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:61:30: note: Left side of '&&' is false
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:64:21: note: Assuming the condition is false
+                if (base_vector[j] < 4) s_i = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:64:17: note: Taking false branch
+                if (base_vector[j] < 4) s_i = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:68:21: note: Assuming the condition is true
+                if (base_vector[next_j] < 4) s_j = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:68:17: note: Taking true branch
+                if (base_vector[next_j] < 4) s_j = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:21: note: 's_i' is equal to 0
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:33: note: 's_j' is equal to 1
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:17: note: Taking true branch
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:77:21: note: Call to virtual method 'HamiltonianKH::setHamiltonianElem' during construction bypasses virtual dispatch
+                    setHamiltonianElem(k, K / 2., std::move(temp));
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:87:25: warning: Call to virtual method 'HamiltonianKH::setHamiltonianElem' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+                        setHamiltonianElem(k, -t, std::move(temp));
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:25:5: note: Calling 'HamiltonianKH::Hamiltonian'
+    Hamiltonian();
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:56:25: note: Assuming 'k' is < field 'N'
+    for (ull_int k = 0; k < N; k++){
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:56:5: note: Loop condition is true.  Entering loop body
+    for (ull_int k = 0; k < N; k++){
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:59:19: note: Assuming the condition is true
+                for (int j = 0; j <= L - 1; j++) {
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:59:3: note: Loop condition is true.  Entering loop body
+                for (int j = 0; j <= L - 1; j++) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:17: note: Assuming the condition is true
+            if (j < L - 1 || PBC == 1) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:27: note: Left side of '||' is true
+            if (j < L - 1 || PBC == 1) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:61:21: note: 'PBC' is not equal to 1
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:61:30: note: Left side of '&&' is false
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:64:21: note: Assuming the condition is false
+                if (base_vector[j] < 4) s_i = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:64:17: note: Taking false branch
+                if (base_vector[j] < 4) s_i = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:68:21: note: Assuming the condition is false
+                if (base_vector[next_j] < 4) s_j = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:68:17: note: Taking false branch
+                if (base_vector[next_j] < 4) s_j = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:21: note: 's_i' is equal to 0
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:33: note: 's_j' is not equal to 1
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:17: note: Taking false branch
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:83:21: note: Assuming the condition is true
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:83:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:83:53: note: Assuming the condition is true
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                                                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:83:17: note: Taking true branch
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:86:25: note: Assuming the condition is true
+                    if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:86:25: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:86:57: note: Assuming the condition is true
+                    if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                                                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:86:21: note: Taking true branch
+                    if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:87:25: note: Call to virtual method 'HamiltonianKH::setHamiltonianElem' during construction bypasses virtual dispatch
+                        setHamiltonianElem(k, -t, std::move(temp));
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:89:27: warning: Call to virtual method 'HamiltonianKH::setHamiltonianElem' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+                    else  setHamiltonianElem(k, +t, std::move(temp));
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:25:5: note: Calling 'HamiltonianKH::Hamiltonian'
+    Hamiltonian();
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:56:25: note: Assuming 'k' is < field 'N'
+    for (ull_int k = 0; k < N; k++){
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:56:5: note: Loop condition is true.  Entering loop body
+    for (ull_int k = 0; k < N; k++){
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:59:19: note: Assuming the condition is true
+                for (int j = 0; j <= L - 1; j++) {
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:59:3: note: Loop condition is true.  Entering loop body
+                for (int j = 0; j <= L - 1; j++) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:17: note: Assuming the condition is true
+            if (j < L - 1 || PBC == 1) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:27: note: Left side of '||' is true
+            if (j < L - 1 || PBC == 1) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:61:21: note: 'PBC' is not equal to 1
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:61:30: note: Left side of '&&' is false
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:64:21: note: Assuming the condition is false
+                if (base_vector[j] < 4) s_i = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:64:17: note: Taking false branch
+                if (base_vector[j] < 4) s_i = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:68:21: note: Assuming the condition is false
+                if (base_vector[next_j] < 4) s_j = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:68:17: note: Taking false branch
+                if (base_vector[next_j] < 4) s_j = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:21: note: 's_i' is equal to 0
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:33: note: 's_j' is not equal to 1
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:17: note: Taking false branch
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:83:21: note: Assuming the condition is true
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:83:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:83:53: note: Assuming the condition is true
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                                                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:83:17: note: Taking true branch
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:86:25: note: Assuming the condition is false
+                    if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:86:54: note: Left side of '&&' is false
+                    if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                                                     ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:89:27: note: Call to virtual method 'HamiltonianKH::setHamiltonianElem' during construction bypasses virtual dispatch
+                    else  setHamiltonianElem(k, +t, std::move(temp));
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:99:29: warning: Call to virtual method 'HamiltonianKH::setHamiltonianElem' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+                            setHamiltonianElem(k, -t, std::move(temp));
+                            ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:25:5: note: Calling 'HamiltonianKH::Hamiltonian'
+    Hamiltonian();
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:56:25: note: Assuming 'k' is < field 'N'
+    for (ull_int k = 0; k < N; k++){
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:56:5: note: Loop condition is true.  Entering loop body
+    for (ull_int k = 0; k < N; k++){
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:59:19: note: Assuming the condition is true
+                for (int j = 0; j <= L - 1; j++) {
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:59:3: note: Loop condition is true.  Entering loop body
+                for (int j = 0; j <= L - 1; j++) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:17: note: Assuming the condition is true
+            if (j < L - 1 || PBC == 1) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:27: note: Left side of '||' is true
+            if (j < L - 1 || PBC == 1) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:61:21: note: 'PBC' is not equal to 1
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:61:30: note: Left side of '&&' is false
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:64:21: note: Assuming the condition is false
+                if (base_vector[j] < 4) s_i = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:64:17: note: Taking false branch
+                if (base_vector[j] < 4) s_i = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:68:21: note: Assuming the condition is false
+                if (base_vector[next_j] < 4) s_j = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:68:17: note: Taking false branch
+                if (base_vector[next_j] < 4) s_j = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:21: note: 's_i' is equal to 0
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:33: note: 's_j' is not equal to 1
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:17: note: Taking false branch
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:83:21: note: Assuming the condition is false
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:83:50: note: Left side of '&&' is false
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                                                 ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:94:21: note: Assuming the condition is false
+                if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:94:21: note: Left side of '||' is false
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:94:53: note: Assuming the condition is true
+                if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                                                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:94:17: note: Taking true branch
+                if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:95:25: note: Assuming the condition is true
+                    if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:95:49: note: Left side of '||' is true
+                    if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
+                                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:98:30: note: Assuming the condition is true
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:98:30: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:98:62: note: Assuming the condition is true
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                                                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:98:87: note: Left side of '||' is true
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                                                                                      ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:99:29: note: Call to virtual method 'HamiltonianKH::setHamiltonianElem' during construction bypasses virtual dispatch
+                            setHamiltonianElem(k, -t, std::move(temp));
+                            ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:101:31: warning: Call to virtual method 'HamiltonianKH::setHamiltonianElem' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+                        else  setHamiltonianElem(k, +t, std::move(temp));
+                              ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:25:5: note: Calling 'HamiltonianKH::Hamiltonian'
+    Hamiltonian();
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:56:25: note: Assuming 'k' is < field 'N'
+    for (ull_int k = 0; k < N; k++){
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:56:5: note: Loop condition is true.  Entering loop body
+    for (ull_int k = 0; k < N; k++){
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:59:19: note: Assuming the condition is true
+                for (int j = 0; j <= L - 1; j++) {
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:59:3: note: Loop condition is true.  Entering loop body
+                for (int j = 0; j <= L - 1; j++) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:17: note: Assuming the condition is true
+            if (j < L - 1 || PBC == 1) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:27: note: Left side of '||' is true
+            if (j < L - 1 || PBC == 1) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:61:21: note: 'PBC' is not equal to 1
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:61:30: note: Left side of '&&' is false
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:64:21: note: Assuming the condition is false
+                if (base_vector[j] < 4) s_i = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:64:17: note: Taking false branch
+                if (base_vector[j] < 4) s_i = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:68:21: note: Assuming the condition is false
+                if (base_vector[next_j] < 4) s_j = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:68:17: note: Taking false branch
+                if (base_vector[next_j] < 4) s_j = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:21: note: 's_i' is equal to 0
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:33: note: 's_j' is not equal to 1
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:74:17: note: Taking false branch
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:83:21: note: Assuming the condition is false
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:83:50: note: Left side of '&&' is false
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                                                 ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:94:21: note: Assuming the condition is false
+                if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:94:21: note: Left side of '||' is false
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:94:53: note: Assuming the condition is true
+                if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                                                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:94:17: note: Taking true branch
+                if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:95:25: note: Assuming the condition is false
+                    if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:95:25: note: Left side of '||' is false
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:95:52: note: Assuming the condition is true
+                    if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
+                                                   ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:95:21: note: Taking true branch
+                    if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:98:30: note: Assuming the condition is false
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:98:59: note: Left side of '&&' is false
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                                                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:98:91: note: Assuming the condition is false
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                                                                                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:98:115: note: Left side of '&&' is false
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                                                                                                                  ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:101:31: note: Call to virtual method 'HamiltonianKH::setHamiltonianElem' during construction bypasses virtual dispatch
+                        else  setHamiltonianElem(k, +t, std::move(temp));
+                              ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:112:21: warning: Call to virtual method 'HamiltonianKH::setHamiltonianElem' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+                    setHamiltonianElem(k,-J_H, std::move(temp));
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:25:5: note: Calling 'HamiltonianKH::Hamiltonian'
+    Hamiltonian();
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:56:25: note: Assuming 'k' is < field 'N'
+    for (ull_int k = 0; k < N; k++){
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:56:5: note: Loop condition is true.  Entering loop body
+    for (ull_int k = 0; k < N; k++){
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:59:19: note: Assuming the condition is true
+                for (int j = 0; j <= L - 1; j++) {
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:59:3: note: Loop condition is true.  Entering loop body
+                for (int j = 0; j <= L - 1; j++) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:17: note: Assuming the condition is false
+            if (j < L - 1 || PBC == 1) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:17: note: Left side of '||' is false
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:30: note: 'PBC' is not equal to 1
+            if (j < L - 1 || PBC == 1) {
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:60:13: note: Taking false branch
+            if (j < L - 1 || PBC == 1) {
+            ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:106:9: note: Assuming the condition is false
+                                if (base_vector[j] == 7 || base_vector[j] == 3) 
+                                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:106:9: note: Left side of '||' is false
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:106:32: note: Assuming the condition is false
+                                if (base_vector[j] == 7 || base_vector[j] == 3) 
+                                                           ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:106:5: note: Taking false branch
+                                if (base_vector[j] == 7 || base_vector[j] == 3) 
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:110:9: note: Assuming the condition is true
+                                if (base_vector[j] == 5) {// S_i^+ s_i^-
+                                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:110:5: note: Taking true branch
+                                if (base_vector[j] == 5) {// S_i^+ s_i^-
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:112:21: note: Call to virtual method 'HamiltonianKH::setHamiltonianElem' during construction bypasses virtual dispatch
+                    setHamiltonianElem(k,-J_H, std::move(temp));
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:155:96: warning: unused parameter '_id' [clang-diagnostic-unused-parameter]
+void HamiltonianKH::mapping_kernel(ull_int start, ull_int stop, my_uniq_ptr& map_threaded, int _id) {
+                                                                                               ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:156:9: warning: unused variable 'n' [clang-diagnostic-unused-variable]
+    int n = 1;
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:167:24: warning: Value stored to 'stop' during its initialization is never read [clang-analyzer-deadcode.DeadStores]
+    ull_int start = 0, stop = (ull_int)std::pow(8, L);
+                       ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:167:24: note: Value stored to 'stop' during its initialization is never read
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:219:12: warning: unused variable 'maximum' [clang-diagnostic-unused-variable]
+    double maximum = 0;
+           ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:221:23: warning: comparison of integers of different signs: 'int' and 'std::vector<double, std::allocator<double> >::size_type' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+    for (int w = 0; w < omega_vec.size(); w++) {
+                      ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:241:27: warning: comparison of integers of different signs: 'int' and 'ull_int' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+        for (int p = 0; p < N; p++) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:255:31: warning: comparison of integers of different signs: 'int' and 'ull_int' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+            for (int n = 0; n < N; n++) {
+                              ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:280:27: warning: comparison of integers of different signs: 'int' and 'arma::uword' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+        for (int n = 0; n < eigenvalues.size(); n++)
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp:322:23: warning: comparison of integers of different signs: 'int' and 'ull_int' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+    for (int p = 0; p < N; p++) {
+                      ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:29:9: warning: Call to virtual method 'Lanczos::Hamiltonian' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+        Hamiltonian();
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:19:5: note: Taking false branch
+    if (show_system_size_parameters)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:28:5: note: Taking true branch
+    if (!memory_over_performance)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:29:9: note: Call to virtual method 'Lanczos::Hamiltonian' during construction bypasses virtual dispatch
+        Hamiltonian();
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:66:21: warning: Call to virtual method 'Lanczos::setHamiltonianElem' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+                    setHamiltonianElem(k, K / 2., std::move(temp));
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:19:5: note: Taking false branch
+    if (show_system_size_parameters)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:28:5: note: Taking true branch
+    if (!memory_over_performance)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:29:9: note: Calling 'Lanczos::Hamiltonian'
+        Hamiltonian();
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:42:25: note: Assuming 'k' is < field 'N'
+    for (ull_int k = 0; k < N; k++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:42:5: note: Loop condition is true.  Entering loop body
+    for (ull_int k = 0; k < N; k++) {
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:48:25: note: Assuming the condition is true
+        for (int j = 0; j <= L - 1; j++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:48:9: note: Loop condition is true.  Entering loop body
+        for (int j = 0; j <= L - 1; j++) {
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:17: note: Assuming the condition is true
+            if (j < L - 1 || PBC == 1) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:27: note: Left side of '||' is true
+            if (j < L - 1 || PBC == 1) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:50:21: note: 'PBC' is not equal to 1
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:50:30: note: Left side of '&&' is false
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:53:21: note: Assuming the condition is false
+                if (base_vector[j] < 4) s_i = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:53:17: note: Taking false branch
+                if (base_vector[j] < 4) s_i = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:57:21: note: Assuming the condition is true
+                if (base_vector[next_j] < 4) s_j = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:57:17: note: Taking true branch
+                if (base_vector[next_j] < 4) s_j = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:21: note: 's_i' is equal to 0
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:33: note: 's_j' is equal to 1
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:17: note: Taking true branch
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:66:21: note: Call to virtual method 'Lanczos::setHamiltonianElem' during construction bypasses virtual dispatch
+                    setHamiltonianElem(k, K / 2., std::move(temp));
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:76:25: warning: Call to virtual method 'Lanczos::setHamiltonianElem' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+                        setHamiltonianElem(k, -t, std::move(temp));
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:19:5: note: Taking false branch
+    if (show_system_size_parameters)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:28:5: note: Taking true branch
+    if (!memory_over_performance)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:29:9: note: Calling 'Lanczos::Hamiltonian'
+        Hamiltonian();
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:42:25: note: Assuming 'k' is < field 'N'
+    for (ull_int k = 0; k < N; k++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:42:5: note: Loop condition is true.  Entering loop body
+    for (ull_int k = 0; k < N; k++) {
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:48:25: note: Assuming the condition is true
+        for (int j = 0; j <= L - 1; j++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:48:9: note: Loop condition is true.  Entering loop body
+        for (int j = 0; j <= L - 1; j++) {
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:17: note: Assuming the condition is true
+            if (j < L - 1 || PBC == 1) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:27: note: Left side of '||' is true
+            if (j < L - 1 || PBC == 1) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:50:21: note: 'PBC' is not equal to 1
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:50:30: note: Left side of '&&' is false
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:53:21: note: Assuming the condition is true
+                if (base_vector[j] < 4) s_i = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:53:17: note: Taking true branch
+                if (base_vector[j] < 4) s_i = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:57:21: note: Assuming the condition is false
+                if (base_vector[next_j] < 4) s_j = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:57:17: note: Taking false branch
+                if (base_vector[next_j] < 4) s_j = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:21: note: 's_i' is not equal to 0
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:30: note: Left side of '&&' is false
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:72:21: note: Assuming the condition is true
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:72:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:72:53: note: Assuming the condition is true
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                                                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:72:17: note: Taking true branch
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:75:25: note: Assuming the condition is true
+                    if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:75:25: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:75:57: note: Assuming the condition is true
+                    if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                                                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:75:21: note: Taking true branch
+                    if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:76:25: note: Call to virtual method 'Lanczos::setHamiltonianElem' during construction bypasses virtual dispatch
+                        setHamiltonianElem(k, -t, std::move(temp));
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:78:27: warning: Call to virtual method 'Lanczos::setHamiltonianElem' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+                    else  setHamiltonianElem(k, +t, std::move(temp));
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:19:5: note: Taking false branch
+    if (show_system_size_parameters)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:28:5: note: Taking true branch
+    if (!memory_over_performance)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:29:9: note: Calling 'Lanczos::Hamiltonian'
+        Hamiltonian();
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:42:25: note: Assuming 'k' is < field 'N'
+    for (ull_int k = 0; k < N; k++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:42:5: note: Loop condition is true.  Entering loop body
+    for (ull_int k = 0; k < N; k++) {
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:48:25: note: Assuming the condition is true
+        for (int j = 0; j <= L - 1; j++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:48:9: note: Loop condition is true.  Entering loop body
+        for (int j = 0; j <= L - 1; j++) {
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:17: note: Assuming the condition is true
+            if (j < L - 1 || PBC == 1) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:27: note: Left side of '||' is true
+            if (j < L - 1 || PBC == 1) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:50:21: note: 'PBC' is not equal to 1
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:50:30: note: Left side of '&&' is false
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:53:21: note: Assuming the condition is false
+                if (base_vector[j] < 4) s_i = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:53:17: note: Taking false branch
+                if (base_vector[j] < 4) s_i = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:57:21: note: Assuming the condition is false
+                if (base_vector[next_j] < 4) s_j = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:57:17: note: Taking false branch
+                if (base_vector[next_j] < 4) s_j = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:21: note: 's_i' is equal to 0
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:33: note: 's_j' is not equal to 1
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:17: note: Taking false branch
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:72:21: note: Assuming the condition is true
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:72:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:72:53: note: Assuming the condition is true
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                                                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:72:17: note: Taking true branch
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:75:25: note: Assuming the condition is false
+                    if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:75:54: note: Left side of '&&' is false
+                    if (base_vector[next_j] % 4 == 3 && base_vector[j] % 2 == 0) {
+                                                     ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:78:27: note: Call to virtual method 'Lanczos::setHamiltonianElem' during construction bypasses virtual dispatch
+                    else  setHamiltonianElem(k, +t, std::move(temp));
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:88:29: warning: Call to virtual method 'Lanczos::setHamiltonianElem' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+                            setHamiltonianElem(k, -t, std::move(temp));
+                            ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:19:5: note: Taking false branch
+    if (show_system_size_parameters)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:28:5: note: Taking true branch
+    if (!memory_over_performance)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:29:9: note: Calling 'Lanczos::Hamiltonian'
+        Hamiltonian();
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:42:25: note: Assuming 'k' is < field 'N'
+    for (ull_int k = 0; k < N; k++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:42:5: note: Loop condition is true.  Entering loop body
+    for (ull_int k = 0; k < N; k++) {
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:48:25: note: Assuming the condition is true
+        for (int j = 0; j <= L - 1; j++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:48:9: note: Loop condition is true.  Entering loop body
+        for (int j = 0; j <= L - 1; j++) {
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:17: note: Assuming the condition is true
+            if (j < L - 1 || PBC == 1) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:27: note: Left side of '||' is true
+            if (j < L - 1 || PBC == 1) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:50:21: note: 'PBC' is not equal to 1
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:50:30: note: Left side of '&&' is false
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:53:21: note: Assuming the condition is false
+                if (base_vector[j] < 4) s_i = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:53:17: note: Taking false branch
+                if (base_vector[j] < 4) s_i = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:57:21: note: Assuming the condition is false
+                if (base_vector[next_j] < 4) s_j = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:57:17: note: Taking false branch
+                if (base_vector[next_j] < 4) s_j = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:21: note: 's_i' is equal to 0
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:33: note: 's_j' is not equal to 1
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:17: note: Taking false branch
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:72:21: note: Assuming the condition is false
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:72:50: note: Left side of '&&' is false
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                                                 ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:83:21: note: Assuming the condition is true
+                if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:83:50: note: Left side of '||' is true
+                if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                                                 ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:84:25: note: Assuming the condition is true
+                    if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:84:49: note: Left side of '||' is true
+                    if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
+                                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:87:30: note: Assuming the condition is true
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:87:30: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:87:62: note: Assuming the condition is true
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                                                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:87:87: note: Left side of '||' is true
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                                                                                      ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:88:29: note: Call to virtual method 'Lanczos::setHamiltonianElem' during construction bypasses virtual dispatch
+                            setHamiltonianElem(k, -t, std::move(temp));
+                            ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:90:31: warning: Call to virtual method 'Lanczos::setHamiltonianElem' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+                        else  setHamiltonianElem(k, +t, std::move(temp));
+                              ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:19:5: note: Taking false branch
+    if (show_system_size_parameters)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:28:5: note: Taking true branch
+    if (!memory_over_performance)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:29:9: note: Calling 'Lanczos::Hamiltonian'
+        Hamiltonian();
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:42:25: note: Assuming 'k' is < field 'N'
+    for (ull_int k = 0; k < N; k++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:42:5: note: Loop condition is true.  Entering loop body
+    for (ull_int k = 0; k < N; k++) {
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:48:25: note: Assuming the condition is true
+        for (int j = 0; j <= L - 1; j++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:48:9: note: Loop condition is true.  Entering loop body
+        for (int j = 0; j <= L - 1; j++) {
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:17: note: Assuming the condition is true
+            if (j < L - 1 || PBC == 1) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:27: note: Left side of '||' is true
+            if (j < L - 1 || PBC == 1) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:50:21: note: 'PBC' is not equal to 1
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:50:30: note: Left side of '&&' is false
+                if (PBC == 1 && j == L - 1) next_j = 0;
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:53:21: note: Assuming the condition is false
+                if (base_vector[j] < 4) s_i = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:53:17: note: Taking false branch
+                if (base_vector[j] < 4) s_i = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:57:21: note: Assuming the condition is false
+                if (base_vector[next_j] < 4) s_j = 1;
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:57:17: note: Taking false branch
+                if (base_vector[next_j] < 4) s_j = 1;
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:21: note: 's_i' is equal to 0
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:21: note: Left side of '&&' is true
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:33: note: 's_j' is not equal to 1
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:63:17: note: Taking false branch
+                if (s_i == 0 && s_j == 1) { // S_i^+ S_i+1^-
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:72:21: note: Assuming the condition is false
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:72:50: note: Left side of '&&' is false
+                if (base_vector[next_j] % 2 == 1 && base_vector[j] % 2 == 0) {
+                                                 ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:83:21: note: Assuming the condition is true
+                if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:83:50: note: Left side of '||' is true
+                if (base_vector[next_j] % 4 == 2 || base_vector[next_j] % 4 == 3) {
+                                                 ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:84:25: note: Assuming the condition is true
+                    if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:84:49: note: Left side of '||' is true
+                    if (base_vector[j] % 4 == 0 || base_vector[j] % 4 == 1) {
+                                                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:87:30: note: Assuming the condition is false
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:87:59: note: Left side of '&&' is false
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                                                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:87:91: note: Assuming the condition is false
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                                                                                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:87:115: note: Left side of '&&' is false
+                        if ((base_vector[next_j] % 4 == 3 && base_vector[j] % 4 == 1) || (base_vector[j] % 4 == 1 && base_vector[next_j] % 4 == 2)) {
+                                                                                                                  ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:90:31: note: Call to virtual method 'Lanczos::setHamiltonianElem' during construction bypasses virtual dispatch
+                        else  setHamiltonianElem(k, +t, std::move(temp));
+                              ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:101:17: warning: Call to virtual method 'Lanczos::setHamiltonianElem' during construction bypasses virtual dispatch [clang-analyzer-optin.cplusplus.VirtualCall]
+                setHamiltonianElem(k, -J_H, std::move(temp));
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:19:5: note: Taking false branch
+    if (show_system_size_parameters)
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:28:5: note: Taking true branch
+    if (!memory_over_performance)
+Found compiler error(s).
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:29:9: note: Calling 'Lanczos::Hamiltonian'
+        Hamiltonian();
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:42:25: note: Assuming 'k' is < field 'N'
+    for (ull_int k = 0; k < N; k++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:42:5: note: Loop condition is true.  Entering loop body
+    for (ull_int k = 0; k < N; k++) {
+    ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:48:25: note: Assuming the condition is true
+        for (int j = 0; j <= L - 1; j++) {
+                        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:48:9: note: Loop condition is true.  Entering loop body
+        for (int j = 0; j <= L - 1; j++) {
+        ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:17: note: Assuming the condition is false
+            if (j < L - 1 || PBC == 1) {
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:17: note: Left side of '||' is false
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:30: note: 'PBC' is not equal to 1
+            if (j < L - 1 || PBC == 1) {
+                             ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:49:13: note: Taking false branch
+            if (j < L - 1 || PBC == 1) {
+            ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:95:17: note: Assuming the condition is false
+            if (base_vector[j] == 7 || base_vector[j] == 3)
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:95:17: note: Left side of '||' is false
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:95:40: note: Assuming the condition is false
+            if (base_vector[j] == 7 || base_vector[j] == 3)
+                                       ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:95:13: note: Taking false branch
+            if (base_vector[j] == 7 || base_vector[j] == 3)
+            ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:99:17: note: Assuming the condition is true
+            if (base_vector[j] == 5) {// S_i^+ s_i^-
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:99:13: note: Taking true branch
+            if (base_vector[j] == 5) {// S_i^+ s_i^-
+            ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:101:17: note: Call to virtual method 'Lanczos::setHamiltonianElem' during construction bypasses virtual dispatch
+                setHamiltonianElem(k, -J_H, std::move(temp));
+                ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:135:27: warning: comparison of integers of different signs: 'int' and 'ull_int' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+    for (int k = start; k < stop; k++) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:455:31: warning: comparison of integers of different signs: 'int' and 'arma::uword' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+            for (int k = 0; k < e.size(); k++) {
+                              ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:481:27: warning: comparison of integers of different signs: 'int' and 'std::vector<double, std::allocator<double> >::size_type' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+        for (int k = 0; k < temperature.size(); k++) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:498:23: warning: comparison of integers of different signs: 'int' and 'std::vector<double, std::allocator<double> >::size_type' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+    for (int k = 0; k < temperature.size(); k++) {
+                      ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:519:27: warning: comparison of integers of different signs: 'int' and 'std::vector<double, std::allocator<double> >::size_type' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+        for (int k = 0; k < temperature.size(); k++) {
+                          ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp:567:31: warning: comparison of integers of different signs: 'int' and 'ull_int' (aka 'unsigned long long') [clang-diagnostic-sign-compare]
+            for (int p = 0; p < N; p++) {
+                              ^
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp:15:9: warning: unused variable 'R' [clang-diagnostic-unused-variable]
+    int R = 15; // number of randomized steps for thermal average
+        ^

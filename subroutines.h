@@ -299,7 +299,10 @@ namespace Routines{
         vec chi0_stand_dev(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
         vec Cv_stand_dev(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
         double Z_constT = 0;
-        std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, -N_e, M));
+        std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1, M));
+        Hamil->Diagonalization();
+        E0 = Hamil->eigenvalues(0); // set global GS energy
+        out << E0 << endl;
         int R = (calculate_stand_dev) ? 50 : 1; // for bigger systems lesser averaging to decrease computation time for now  
         // ((L >= 8) ? 20 : 50)
         for (int r = 0; r < R; r++) {
@@ -343,30 +346,29 @@ namespace Routines{
 
         chi0_stand_dev = arma::sqrt(chi_0_2 - square(chi_0));
         print_chi(std::move(chi_0), std::move(chi0_stand_dev), U, N_e, L);
+        E0 = 0;
     }
 
     inline void Main_Jh(int L, int N_e, double t, double K, double U) {
-        double J_H = 0.01 * U;
-        while (J_H <= 0.3 * U) {
-            Main_DOS(L, N_e, t, K, U, J_H);
-            Main_Cv(L, N_e, t, K, U, J_H);
-            out << "J_H/U = " << J_H / U << " done!" << endl;
-            J_H += 0.01 * U;
-        }
-    }
-    inline void Main_U(int L, int N_e, double t) {
-#pragma omp parallel for 
-        for (int k = 1; k <= 30; k += 2) {
-            double U = (double)k / 10.0;
-            double K, J_H;
-            K = 4 * 0.15 * 0.15 / U;
-            J_H = 0.25 * U;
-            //K = 0; J_H = 0;
+        double J_H = 0.0 * U;
+        while (J_H <= 0.4 * U) {
             //Main_DOS(L, N_e, t, K, U, J_H);
             //Main_Cv(L, N_e, t, K, U, J_H);
             Main_Lanczos(L, N_e, t, K, U, J_H, (L == 4) ? 100 : 150, 20);
+            out << "J_H/U = " << J_H / U << " done!" << endl;
+            J_H += 0.05 * U;
+        }
+    }
+    inline void Main_U(int L, int N_e, double t) {
+        double U = 0.1 * W;
+        while (U <= 3*W) {
+            double K, J_H;
+            K = 4 * 0.15 * 0.15 / U;
+            J_H = 0.25 * U;
+            Main_Lanczos(L, N_e, t, K, U, J_H, (L == 4) ? 100 : 150, 15);
 
             out << "U = " << U << " done!" << endl;
+            U += 0.1 * W;
         }
     }
 

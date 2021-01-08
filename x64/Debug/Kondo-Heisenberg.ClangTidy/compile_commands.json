@@ -1,0 +1,22 @@
+[
+  {
+    "directory": "C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg",
+    "command": "\"C:\\WINDOWS\\system32\\CL.exe\" \/c \/IC:\\Users\\77swi\\source\\repos\\Libraries\\mkl\\include \/IC:\\Users\\77swi\\source\\repos\\Libraries\\arma\\include \/Z7 \/JMC \/nologo \/W4 \/WX- \/diagnostics:column \/O2 \/Ot \/D CODE_ANALYSIS \/D _DEBUG \/D _CONSOLE \/D _UNICODE \/D UNICODE \/EHsc \/MDd \/GS \/fp:precise \/permissive- \/std:c++latest \/Fo\"x64\\Debug\\\\\" \/Gd \/TP  \/Qopenmp  \"C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg\\Hamiltonian.cpp\"",
+    "file": "C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg\\Hamiltonian.cpp"
+  },
+  {
+    "directory": "C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg",
+    "command": "\"C:\\WINDOWS\\system32\\CL.exe\" \/c \/IC:\\Users\\77swi\\source\\repos\\Libraries\\mkl\\include \/IC:\\Users\\77swi\\source\\repos\\Libraries\\arma\\include \/Z7 \/JMC \/nologo \/W4 \/WX- \/diagnostics:column \/O2 \/Ot \/D CODE_ANALYSIS \/D _DEBUG \/D _CONSOLE \/D _UNICODE \/D UNICODE \/EHsc \/MDd \/GS \/fp:precise \/permissive- \/std:c++latest \/Fo\"x64\\Debug\\\\\" \/Gd \/TP  \/Qopenmp  \"C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg\\Lanczos.cpp\"",
+    "file": "C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg\\Lanczos.cpp"
+  },
+  {
+    "directory": "C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg",
+    "command": "\"C:\\WINDOWS\\system32\\CL.exe\" \/c \/IC:\\Users\\77swi\\source\\repos\\Libraries\\mkl\\include \/IC:\\Users\\77swi\\source\\repos\\Libraries\\arma\\include \/Z7 \/JMC \/nologo \/W4 \/WX- \/diagnostics:column \/O2 \/Ot \/D CODE_ANALYSIS \/D _DEBUG \/D _CONSOLE \/D _UNICODE \/D UNICODE \/EHsc \/MDd \/GS \/fp:precise \/permissive- \/std:c++latest \/Fo\"x64\\Debug\\\\\" \/Gd \/TP  \/Qopenmp  \"C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg\\main.cpp\"",
+    "file": "C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg\\main.cpp"
+  },
+  {
+    "directory": "C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg",
+    "command": "\"C:\\WINDOWS\\system32\\CL.exe\" \/c \/IC:\\Users\\77swi\\source\\repos\\Libraries\\mkl\\include \/IC:\\Users\\77swi\\source\\repos\\Libraries\\arma\\include \/Z7 \/JMC \/nologo \/W4 \/WX- \/diagnostics:column \/O2 \/Ot \/D CODE_ANALYSIS \/D _DEBUG \/D _CONSOLE \/D _UNICODE \/D UNICODE \/EHsc \/MDd \/GS \/fp:precise \/permissive- \/std:c++latest \/Fo\"x64\\Debug\\\\\" \/Gd \/TP  \/Qopenmp  \"C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg\\sparse_mat.cpp\"",
+    "file": "C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg\\sparse_mat.cpp"
+  }
+]

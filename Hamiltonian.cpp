@@ -6,12 +6,19 @@ double dT = 0.001;
 double T_end = 3.0;
 double domega = 0.005;
 double eta = 0.02;
+double E0 = 0;
 
 std::mutex my_mut;
 
-//Destructor
-HamiltonianKH::~HamiltonianKH() {}
-// Constructor for Hamiltonian separated to blocks
+HamiltonianKH::HamiltonianKH() {
+    this->L = 8;
+    this->num_of_electrons = 12;
+    this->Sz = 0;
+    this->U = W;
+    this->K = 4 * 0.15 * 0.15 / U;
+    this->t = 0.5;
+    this->J_H = U / 4;
+}
 HamiltonianKH::HamiltonianKH(int L, int num_of_electrons, double t, double U, double K, double J_H, double Sz) {
 	this->L = L; //number of sites
 	this->num_of_electrons = num_of_electrons; //number of electrons in lower orbital
@@ -20,26 +27,25 @@ HamiltonianKH::HamiltonianKH(int L, int num_of_electrons, double t, double U, do
 	this->J_H = J_H;
     this->Sz = Sz;
 
-    this->mapping = std::make_unique<std::vector<ull_int>>();
-    //this->mapping = std::vector<ull_int>();
+    this->mapping = std::make_unique<std::vector<u64>>();
+    //this->mapping = std::vector<u64>();
 	generate_mapping();
 	this->N = mapping->size();
     Hamiltonian();
 }
-HamiltonianKH::HamiltonianKH() {}
 //-------------------------
 
 void HamiltonianKH::update_parameters(double t, double U, double K, double J_H, double Sz) {
     this->t = t; this->U = U, this->K = K; this->J_H = J_H;
     this->Sz = Sz;
-    this->mapping.reset(new vector<ull_int>());
-    //this->mapping = std::vector<ull_int>();
+    this->mapping.reset(new vector<u64>());
+    //this->mapping = std::vector<u64>();
     generate_mapping();
     this->N = mapping->size();
 }
 
-void HamiltonianKH::setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp){
-    ull_int idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
+void HamiltonianKH::setHamiltonianElem(u64& k, double value, std::vector<int>&& temp){
+    u64 idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
         H(idx, k) += value;
         H(k, idx) += value;
 }
@@ -56,7 +62,7 @@ void HamiltonianKH::Hamiltonian() {
 	int next_j;
     std::vector<int> base_vector(L);
     vector<int> temp = base_vector;
-    for (ull_int k = 0; k < N; k++){
+    for (u64 k = 0; k < N; k++){
 		int_to_binary(mapping->at(k), base_vector);
 		temp = base_vector;
 		for (int j = 0; j <= L - 1; j++) {
@@ -124,15 +130,15 @@ void HamiltonianKH::Hamiltonian() {
    //out << "dim(H) = " << (sizeof(H) + H.n_elem * sizeof(double)) / std::pow(10, 9) << " gb" << "\n";
 }
 
-ull_int findElement(std::vector<ull_int>* vector, ull_int element) {
-    std::vector<ull_int>::iterator it = find(vector->begin(), vector->end(), element);
+u64 findElement(std::vector<u64>* vector, u64 element) {
+    std::vector<u64>::iterator it = find(vector->begin(), vector->end(), element);
     assert(it != vector->end() && "Element not present in the array");
-    return (ull_int)std::distance(vector->begin(), it);
+    return (u64)std::distance(vector->begin(), it);
 }
 
 
 //generates the vector, which maps the base_vector index to the index in given subblock
-std::tuple<int, int, int> calculateSpinElements(int L, ull_int& j, std::vector<int>& temp) {
+std::tuple<int, int, int> calculateSpinElements(int L, u64& j, std::vector<int>& temp) {
     int bSz = 0; //bosonic total spin - spin of upper orbital locked to n=1 filling
     int fSz = 0; //fermionic total spin
     int N_e = 0; // numer of electrons in given state
@@ -155,11 +161,11 @@ std::tuple<int, int, int> calculateSpinElements(int L, ull_int& j, std::vector<i
 
     return std::make_tuple(bSz, fSz, N_e);
 }
-void HamiltonianKH::mapping_kernel(ull_int start, ull_int stop, my_uniq_ptr& map_threaded, int _id) {
+void HamiltonianKH::mapping_kernel(u64 start, u64 stop, my_uniq_ptr& map_threaded, int _id) {
     int n = 1;
     //out << "A new thread joined tha party! from " << start << " to " << stop << endl;
     std::vector<int> temp(L);
-    for (ull_int j = start; j < stop; j++) {
+    for (u64 j = start; j < stop; j++) {
         int bSz, fSz, N_e;
         std::tie(bSz, fSz, N_e) = calculateSpinElements(this->L, j, temp);
         if ((bSz + fSz == this->Sz) && N_e == this->num_of_electrons) 
@@ -167,7 +173,7 @@ void HamiltonianKH::mapping_kernel(ull_int start, ull_int stop, my_uniq_ptr& map
     }
 }
 void HamiltonianKH::generate_mapping() {
-    ull_int start = 0, stop = (ull_int)std::pow(8, L);
+    u64 start = 0, stop = (u64)std::pow(8, L);
     //mapping_kernel(start, stop, mapping, L, Sz, num_of_electrons);
     //Threaded
     //std::vector<my_uniq_ptr> map_threaded(num_of_threads);
@@ -175,10 +181,10 @@ void HamiltonianKH::generate_mapping() {
     std::vector<std::thread> threads;
     threads.reserve(num_of_threads);
     for (int t = 0; t < num_of_threads; t++) {
-        start = t * (ull_int)std::pow(8, L) / num_of_threads;
-        stop = ((t + 1) == num_of_threads ? (ull_int)std::pow(8, L) : ull_int(std::pow(8, L) / (double)num_of_threads * (double)(t + 1) ));
-        //map_threaded[t] = my_uniq_ptr(new std::vector<ull_int>());
-        map_threaded[t] = std::make_unique<std::vector<ull_int>>();
+        start = t * (u64)std::pow(8, L) / num_of_threads;
+        stop = ((t + 1) == num_of_threads ? (u64)std::pow(8, L) : u64(std::pow(8, L) / (double)num_of_threads * (double)(t + 1) ));
+        //map_threaded[t] = my_uniq_ptr(new std::vector<u64>());
+        map_threaded[t] = std::make_unique<std::vector<u64>>();
         //map_threaded[t]->reserve(std::pow(2, L)); ??
         threads.emplace_back(&HamiltonianKH::mapping_kernel, this, start, stop, ref(map_threaded[t]), t);
     }
@@ -225,7 +231,7 @@ vec HamiltonianKH::Total_Density_of_states(std::vector<double>&& omega_vec) {
         double omega = omega_vec[w];
         double DOS = 0;
     //#pragma omp parallel for shared(omega_vec, resultDOS) reduction(+: DOS)
-        for (ull_int n = 0; n < N; n++)
+        for (u64 n = 0; n < N; n++)
             DOS += -1. / (double)L / pi * cpx(1. / (omega + eta * 1i - eigenvalues(n))).imag();
 
         resultDOS(w) = DOS;
@@ -235,7 +241,6 @@ vec HamiltonianKH::Total_Density_of_states(std::vector<double>&& omega_vec) {
 
 vec HamiltonianKH::static_structure_factor(double T) { /// here sth wrong?., check
     vec static_structure_factor(L + 1, fill::zeros);
-    int number_of_thr = L + 1; // if - elseif - else statement
 #pragma omp parallel for num_threads(L+1)
     for (int l = 0; l <= L; l++) {
         double q = (double)l * pi / ((double)L + 1.0);
@@ -291,9 +296,9 @@ double HamiltonianKH::partition_function(double T) {
 
 void HamiltonianKH::show_ground_state() {
     ofstream GSfile("Ground state for L = " + std::to_string(L) + ".txt");
-    vec GS((ull_int)std::pow(2, L), fill::zeros);
+    vec GS((u64)std::pow(2, L), fill::zeros);
     std::vector<int> base_vector(L);
-    for (ull_int k = 0; k < N; k++) {
+    for (u64 k = 0; k < N; k++) {
         int_to_binary(mapping->at(k), base_vector);
         int val = 0;
         for (int j = 0; j < L; j++)
@@ -305,9 +310,9 @@ void HamiltonianKH::show_ground_state() {
     GSfile << endl;
     double maximum = arma::max(GS);
     std::vector<int> vec(L);
-    for (ull_int k = 0; k < GS.size(); k++) {
+    for (u64 k = 0; k < GS.size(); k++) {
         if (std::fabs(GS(k)) >= 0.2 * maximum) {
-            ull_int temp = k;
+            u64 temp = k;
             for (int p = 0; p < L; p++) {
                 vec[vec.size() - 1 - p] = temp % 2;
                 temp = static_cast<int>((double)temp / 2.);
@@ -332,7 +337,6 @@ mat HamiltonianKH::correlation_matrix() {
             if (vect[m] % 4 == 1) Szm += 0.5;
             else if (vect[m] % 4 == 2) Szm -= 0.5;
 
-            double Szk = 0;
             for (int k = 0; k < L; k++) {
                 double Szk = 0;
                 if (vect[k] < 4) Szk += 0.5;

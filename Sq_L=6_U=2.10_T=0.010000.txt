@@ -1,0 +1,7 @@
+0.00000000		-nan(ind)		-nan(ind)
+0.44879895		-nan(ind)		-nan(ind)
+0.89759790		-nan(ind)		-nan(ind)
+1.34639685		-nan(ind)		-nan(ind)
+1.79519580		-nan(ind)		-nan(ind)
+2.24399475		-nan(ind)		-nan(ind)
+2.69279370		-nan(ind)		-nan(ind)

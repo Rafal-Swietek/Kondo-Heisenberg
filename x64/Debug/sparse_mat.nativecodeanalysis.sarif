@@ -16,9 +16,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arma_forward.hpp"
                 },
                 "region": {
-                  "startLine": 440,
+                  "startLine": 438,
                   "startColumn": 5,
-                  "endLine": 440,
+                  "endLine": 438,
                   "endColumn": 20
                 }
               },
@@ -44,9 +44,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arma_forward.hpp"
                 },
                 "region": {
-                  "startLine": 441,
+                  "startLine": 439,
                   "startColumn": 5,
-                  "endLine": 441,
+                  "endLine": 439,
                   "endColumn": 20
                 }
               },
@@ -401,9 +401,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Mat_meat.hpp"
                 },
                 "region": {
-                  "startLine": 135,
+                  "startLine": 134,
                   "startColumn": 10,
-                  "endLine": 135,
+                  "endLine": 134,
                   "endColumn": 10
                 }
               },
@@ -432,9 +432,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Mat_meat.hpp"
                 },
                 "region": {
-                  "startLine": 643,
+                  "startLine": 642,
                   "startColumn": 12,
-                  "endLine": 643,
+                  "endLine": 642,
                   "endColumn": 12
                 }
               },
@@ -460,9 +460,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Mat_meat.hpp"
                 },
                 "region": {
-                  "startLine": 643,
+                  "startLine": 642,
                   "startColumn": 12,
-                  "endLine": 643,
+                  "endLine": 642,
                   "endColumn": 12
                 }
               },
@@ -519,9 +519,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                 },
                 "region": {
-                  "startLine": 162,
+                  "startLine": 161,
                   "startColumn": 13,
-                  "endLine": 162,
+                  "endLine": 161,
                   "endColumn": 13
                 }
               },
@@ -536,6 +536,37 @@
           "suppressions": []
         },
         {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'arma::Mat<double>::mem_local' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Mat_meat.hpp"
+                },
+                "region": {
+                  "startLine": 134,
+                  "startColumn": 10,
+                  "endLine": 134,
+                  "endColumn": 10
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0?$Mat@N@arma@@IEAA@AEBUarma_vec_indicator@1@I@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "arma::Mat<double>::mem_local"
+          }
+        },
+        {
           "ruleId": "C26439",
           "message": {
             "text": "This kind of function may not throw. Declare it 'noexcept' (f.6)."
@@ -547,9 +578,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Mat_meat.hpp"
                 },
                 "region": {
-                  "startLine": 643,
+                  "startLine": 642,
                   "startColumn": 12,
-                  "endLine": 643,
+                  "endLine": 642,
                   "endColumn": 12
                 }
               },
@@ -575,9 +606,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Mat_meat.hpp"
                 },
                 "region": {
-                  "startLine": 643,
+                  "startLine": 642,
                   "startColumn": 12,
-                  "endLine": 643,
+                  "endLine": 642,
                   "endColumn": 12
                 }
               },
@@ -606,9 +637,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Mat_meat.hpp"
                 },
                 "region": {
-                  "startLine": 6586,
+                  "startLine": 6534,
                   "startColumn": 7,
-                  "endLine": 6586,
+                  "endLine": 6534,
                   "endColumn": 7
                 }
               },
@@ -662,9 +693,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                 },
                 "region": {
-                  "startLine": 162,
+                  "startLine": 161,
                   "startColumn": 13,
-                  "endLine": 162,
+                  "endLine": 161,
                   "endColumn": 13
                 }
               },
@@ -690,9 +721,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                 },
                 "region": {
-                  "startLine": 5734,
+                  "startLine": 5720,
                   "startColumn": 11,
-                  "endLine": 5734,
+                  "endLine": 5720,
                   "endColumn": 44
                 }
               },
@@ -717,7 +748,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5708,
+                            "startLine": 5694,
                             "startColumn": 3
                           }
                         }
@@ -732,7 +763,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5710,
+                            "startLine": 5696,
                             "startColumn": 19
                           }
                         }
@@ -747,7 +778,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5712,
+                            "startLine": 5698,
                             "startColumn": 16
                           }
                         }
@@ -762,7 +793,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5714,
+                            "startLine": 5700,
                             "startColumn": 5
                           }
                         }
@@ -777,7 +808,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5715,
+                            "startLine": 5701,
                             "startColumn": 8
                           }
                         }
@@ -792,7 +823,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5717,
+                            "startLine": 5703,
                             "startColumn": 24
                           }
                         }
@@ -807,7 +838,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5726,
+                            "startLine": 5712,
                             "startColumn": 6
                           }
                         },
@@ -828,7 +859,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5727,
+                            "startLine": 5713,
                             "startColumn": 6
                           }
                         }
@@ -843,7 +874,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5729,
+                            "startLine": 5715,
                             "startColumn": 27
                           }
                         }
@@ -858,7 +889,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5730,
+                            "startLine": 5716,
                             "startColumn": 27
                           }
                         }
@@ -873,7 +904,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5734,
+                            "startLine": 5720,
                             "startColumn": 42
                           }
                         },
@@ -905,9 +936,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                 },
                 "region": {
-                  "startLine": 5735,
+                  "startLine": 5721,
                   "startColumn": 11,
-                  "endLine": 5735,
+                  "endLine": 5721,
                   "endColumn": 44
                 }
               },
@@ -932,7 +963,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5708,
+                            "startLine": 5694,
                             "startColumn": 3
                           }
                         }
@@ -947,7 +978,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5710,
+                            "startLine": 5696,
                             "startColumn": 19
                           }
                         }
@@ -962,7 +993,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5712,
+                            "startLine": 5698,
                             "startColumn": 16
                           }
                         }
@@ -977,7 +1008,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5714,
+                            "startLine": 5700,
                             "startColumn": 5
                           }
                         }
@@ -992,7 +1023,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5715,
+                            "startLine": 5701,
                             "startColumn": 8
                           }
                         }
@@ -1007,7 +1038,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5717,
+                            "startLine": 5703,
                             "startColumn": 24
                           }
                         }
@@ -1022,7 +1053,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5726,
+                            "startLine": 5712,
                             "startColumn": 6
                           }
                         }
@@ -1037,7 +1068,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5727,
+                            "startLine": 5713,
                             "startColumn": 6
                           }
                         },
@@ -1058,7 +1089,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5729,
+                            "startLine": 5715,
                             "startColumn": 27
                           }
                         }
@@ -1073,7 +1104,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5730,
+                            "startLine": 5716,
                             "startColumn": 27
                           }
                         }
@@ -1088,7 +1119,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5734,
+                            "startLine": 5720,
                             "startColumn": 42
                           }
                         }
@@ -1103,7 +1134,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/SpMat_meat.hpp"
                           },
                           "region": {
-                            "startLine": 5735,
+                            "startLine": 5721,
                             "startColumn": 42
                           }
                         },
@@ -1122,6 +1153,68 @@
             }
           ],
           "suppressions": []
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'arma::eOp<arma::Col<double>,arma::eop_scalar_div_post>::aux_uword_a' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/eOp_meat.hpp"
+                },
+                "region": {
+                  "startLine": 34,
+                  "startColumn": 20,
+                  "endLine": 34,
+                  "endColumn": 20
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0?$eOp@V?$Col@N@arma@@Veop_scalar_div_post@2@@arma@@QEAA@AEBV?$Col@N@1@N@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "arma::eOp<arma::Col<double>,arma::eop_scalar_div_post>::aux_uword_a"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'arma::eOp<arma::Col<double>,arma::eop_scalar_div_post>::aux_uword_b' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/eOp_meat.hpp"
+                },
+                "region": {
+                  "startLine": 34,
+                  "startColumn": 20,
+                  "endLine": 34,
+                  "endColumn": 20
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??0?$eOp@V?$Col@N@arma@@Veop_scalar_div_post@2@@arma@@QEAA@AEBV?$Col@N@1@N@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": [],
+          "properties": {
+            "targetSymbol": "arma::eOp<arma::Col<double>,arma::eop_scalar_div_post>::aux_uword_b"
+          }
         },
         {
           "ruleId": "C26451",
@@ -1191,9 +1284,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Mat_meat.hpp"
                 },
                 "region": {
-                  "startLine": 6586,
+                  "startLine": 6534,
                   "startColumn": 7,
-                  "endLine": 6586,
+                  "endLine": 6534,
                   "endColumn": 7
                 }
               },
@@ -1219,9 +1312,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Mat_meat.hpp"
                 },
                 "region": {
-                  "startLine": 135,
+                  "startLine": 134,
                   "startColumn": 10,
-                  "endLine": 135,
+                  "endLine": 134,
                   "endColumn": 10
                 }
               },
@@ -1236,37 +1329,6 @@
           "suppressions": [],
           "properties": {
             "targetSymbol": "arma::Mat<__int64>::mem_local"
-          }
-        },
-        {
-          "ruleId": "C26495",
-          "message": {
-            "text": "Variable 'arma::Mat<double>::mem_local' is uninitialized. Always initialize a member variable (type.6)."
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Mat_meat.hpp"
-                },
-                "region": {
-                  "startLine": 135,
-                  "startColumn": 10,
-                  "endLine": 135,
-                  "endColumn": 10
-                }
-              },
-              "logicalLocations": [
-                {
-                  "decoratedName": "??0?$Mat@N@arma@@IEAA@AEBUarma_vec_indicator@1@I@Z",
-                  "kind": "function"
-                }
-              ]
-            }
-          ],
-          "suppressions": [],
-          "properties": {
-            "targetSymbol": "arma::Mat<double>::mem_local"
           }
         },
         {
@@ -1533,9 +1595,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
                 },
                 "region": {
-                  "startLine": 688,
+                  "startLine": 671,
                   "startColumn": 11,
-                  "endLine": 688,
+                  "endLine": 671,
                   "endColumn": 11
                 }
               },
@@ -1561,9 +1623,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
                 },
                 "region": {
-                  "startLine": 690,
+                  "startLine": 673,
                   "startColumn": 11,
-                  "endLine": 690,
+                  "endLine": 673,
                   "endColumn": 11
                 }
               },
@@ -1589,9 +1651,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
                 },
                 "region": {
-                  "startLine": 692,
+                  "startLine": 675,
                   "startColumn": 11,
-                  "endLine": 692,
+                  "endLine": 675,
                   "endColumn": 11
                 }
               },
@@ -1617,9 +1679,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
                 },
                 "region": {
-                  "startLine": 694,
+                  "startLine": 677,
                   "startColumn": 11,
-                  "endLine": 694,
+                  "endLine": 677,
                   "endColumn": 11
                 }
               },
@@ -1645,9 +1707,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
                 },
                 "region": {
-                  "startLine": 696,
+                  "startLine": 679,
                   "startColumn": 11,
-                  "endLine": 696,
+                  "endLine": 679,
                   "endColumn": 11
                 }
               },
@@ -1673,9 +1735,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
                 },
                 "region": {
-                  "startLine": 698,
+                  "startLine": 681,
                   "startColumn": 11,
-                  "endLine": 698,
+                  "endLine": 681,
                   "endColumn": 11
                 }
               },
@@ -1701,9 +1763,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
                 },
                 "region": {
-                  "startLine": 700,
+                  "startLine": 683,
                   "startColumn": 11,
-                  "endLine": 700,
+                  "endLine": 683,
                   "endColumn": 11
                 }
               },
@@ -1729,9 +1791,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
                 },
                 "region": {
-                  "startLine": 702,
+                  "startLine": 685,
                   "startColumn": 11,
-                  "endLine": 702,
+                  "endLine": 685,
                   "endColumn": 11
                 }
               },
@@ -1757,9 +1819,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
                 },
                 "region": {
-                  "startLine": 702,
+                  "startLine": 685,
                   "startColumn": 14,
-                  "endLine": 702,
+                  "endLine": 685,
                   "endColumn": 25
                 }
               },
@@ -1785,9 +1847,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                 },
                 "region": {
-                  "startLine": 476,
+                  "startLine": 475,
                   "startColumn": 7,
-                  "endLine": 476,
+                  "endLine": 475,
                   "endColumn": 26
                 }
               },
@@ -1812,7 +1874,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 452,
+                            "startLine": 451,
                             "startColumn": 3
                           }
                         }
@@ -1827,7 +1889,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 454,
+                            "startLine": 453,
                             "startColumn": 15
                           }
                         }
@@ -1842,7 +1904,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 460,
+                            "startLine": 459,
                             "startColumn": 18
                           }
                         }
@@ -1857,7 +1919,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 462,
+                            "startLine": 461,
                             "startColumn": 19
                           }
                         }
@@ -1872,7 +1934,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 468,
+                            "startLine": 467,
                             "startColumn": 30
                           }
                         }
@@ -1887,7 +1949,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 470,
+                            "startLine": 469,
                             "startColumn": 29
                           }
                         },
@@ -1908,7 +1970,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 474,
+                            "startLine": 473,
                             "startColumn": 15
                           }
                         }
@@ -1923,7 +1985,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 474,
+                            "startLine": 473,
                             "startColumn": 34
                           }
                         },
@@ -1944,7 +2006,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 476,
+                            "startLine": 475,
                             "startColumn": 24
                           }
                         },
@@ -1976,9 +2038,9 @@
                   "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                 },
                 "region": {
-                  "startLine": 476,
+                  "startLine": 475,
                   "startColumn": 7,
-                  "endLine": 476,
+                  "endLine": 475,
                   "endColumn": 26
                 }
               },
@@ -2003,7 +2065,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 452,
+                            "startLine": 451,
                             "startColumn": 3
                           }
                         }
@@ -2018,7 +2080,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 454,
+                            "startLine": 453,
                             "startColumn": 15
                           }
                         }
@@ -2033,7 +2095,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 460,
+                            "startLine": 459,
                             "startColumn": 18
                           }
                         }
@@ -2048,7 +2110,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 462,
+                            "startLine": 461,
                             "startColumn": 19
                           }
                         }
@@ -2063,7 +2125,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 468,
+                            "startLine": 467,
                             "startColumn": 30
                           }
                         }
@@ -2078,7 +2140,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 470,
+                            "startLine": 469,
                             "startColumn": 29
                           }
                         },
@@ -2099,7 +2161,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 474,
+                            "startLine": 473,
                             "startColumn": 15
                           }
                         }
@@ -2114,7 +2176,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 474,
+                            "startLine": 473,
                             "startColumn": 34
                           }
                         },
@@ -2135,7 +2197,7 @@
                             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
                           },
                           "region": {
-                            "startLine": 476,
+                            "startLine": 475,
                             "startColumn": 24
                           }
                         },
@@ -2658,6 +2720,510 @@
             }
           ],
           "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 671,
+                  "startColumn": 11,
+                  "endLine": 671,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@E@arrayops@arma@@SAXPEAEE_K@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 673,
+                  "startColumn": 11,
+                  "endLine": 673,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@E@arrayops@arma@@SAXPEAEE_K@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 675,
+                  "startColumn": 11,
+                  "endLine": 675,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@E@arrayops@arma@@SAXPEAEE_K@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 677,
+                  "startColumn": 11,
+                  "endLine": 677,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@E@arrayops@arma@@SAXPEAEE_K@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 679,
+                  "startColumn": 11,
+                  "endLine": 679,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@E@arrayops@arma@@SAXPEAEE_K@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 681,
+                  "startColumn": 11,
+                  "endLine": 681,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@E@arrayops@arma@@SAXPEAEE_K@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 683,
+                  "startColumn": 11,
+                  "endLine": 683,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@E@arrayops@arma@@SAXPEAEE_K@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 685,
+                  "startColumn": 11,
+                  "endLine": 685,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@E@arrayops@arma@@SAXPEAEE_K@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 685,
+                  "startColumn": 14,
+                  "endLine": 685,
+                  "endColumn": 25
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@E@arrayops@arma@@SAXPEAEE_K@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 671,
+                  "startColumn": 11,
+                  "endLine": 671,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@_K@arrayops@arma@@SAXPEA_K_K1@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 673,
+                  "startColumn": 11,
+                  "endLine": 673,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@_K@arrayops@arma@@SAXPEA_K_K1@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 675,
+                  "startColumn": 11,
+                  "endLine": 675,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@_K@arrayops@arma@@SAXPEA_K_K1@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 677,
+                  "startColumn": 11,
+                  "endLine": 677,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@_K@arrayops@arma@@SAXPEA_K_K1@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 679,
+                  "startColumn": 11,
+                  "endLine": 679,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@_K@arrayops@arma@@SAXPEA_K_K1@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 681,
+                  "startColumn": 11,
+                  "endLine": 681,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@_K@arrayops@arma@@SAXPEA_K_K1@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 683,
+                  "startColumn": 11,
+                  "endLine": 683,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@_K@arrayops@arma@@SAXPEA_K_K1@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 685,
+                  "startColumn": 11,
+                  "endLine": 685,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@_K@arrayops@arma@@SAXPEA_K_K1@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "Unannotated fallthrough between switch labels (es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/arrayops_meat.hpp"
+                },
+                "region": {
+                  "startLine": 685,
+                  "startColumn": 14,
+                  "endLine": 685,
+                  "endColumn": 25
+                }
+              },
+              "logicalLocations": [
+                {
+                  "decoratedName": "??$inplace_set_small@_K@arrayops@arma@@SAXPEA_K_K1@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "suppressions": []
         }
       ],
       "tool": {
@@ -2669,7 +3235,7 @@
       },
       "invocations": [
         {
-          "commandLine": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.28.29333\\bin\\HostX86\\x64\\c1xx.dll\" -ACf{1F7B090C-16DB-4822-966A-A93D26ED4681} -ACpmspft140.dll -Alint -D_PREFAST_ -D_AST_FE_ -Analyze -zm0x00F0B1D0 -il C:\\Users\\77swi\\AppData\\Local\\Temp\\_CL_0ec18d24ast -typedil -f sparse_mat.cpp -Ze -D_MSC_EXTENSIONS -Zp16 -pc \\:/ -D_MSC_VER=1928 -D_MSC_FULL_VER=192829334 -D_MSC_BUILD=0 -D_M_AMD64=100 -ZILP448 -D_M_X64=100 -D_WIN64 -D_WIN32 -GR -D_CPPRTTI -I C:\\Users\\77swi\\source\\repos\\Libraries\\mkl\\include -I C:\\Users\\77swi\\source\\repos\\Libraries\\arma\\include -nologo -W 3 -diagnostics:column -D_GUARDOVERFLOW_CRT_ALLOCATORS=1 -GF -Og -Oi -Oy -Ot -ltcg -DCODE_ANALYSIS -D_DEBUG -D_CONSOLE -D_UNICODE -DUNICODE -EHs -D_CPPUNWIND -EHc -MDd -D_DEBUG -D_MT -D_DLL -GS -D_M_FP_PRECISE -permissive- -Zc:wchar_t -Zc:forScope -omp -D_OPENMP=200203 -std:c++17 -Fox64\\Debug\\sparse_mat.obj -Fdx64\\Debug\\vc142.pdb -Gd -analyze:projectdirectory C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg -analyze:rulesetdirectory ;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\Team Tools\\Static Analysis Tools\\\\Rule Sets; -analyze:ruleset C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\Team Tools\\Static Analysis Tools\\Rule Sets\\NativeRecommendedRules.ruleset -analyze:quiet -analyze:plugin C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.28.29333\\bin\\HostX86\\x86\\EspXEngine.dll -FC -errorreport:prompt -I C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.28.29333\\include -I C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.28.29333\\atlmfc\\include -I C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Auxiliary\\VS\\include -I D:\\Windows Kits\\10\\Include\\10.0.18362.0\\ucrt -I D:\\Windows Kits\\10\\Include\\10.0.18362.0\\um -I D:\\Windows Kits\\10\\Include\\10.0.18362.0\\shared -I D:\\Windows Kits\\10\\Include\\10.0.18362.0\\winrt -I D:\\Windows Kits\\10\\Include\\10.0.18362.0\\cppwinrt -I C:\\Program Files (x86)\\Windows Kits\\NETFXSDK\\4.8\\Include\\um -MPdiagMutex 00000000000001B0",
+          "commandLine": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.28.29333\\bin\\HostX86\\x64\\c1xx.dll\" -ACf{1F7B090C-16DB-4822-966A-A93D26ED4681} -ACpmspft140.dll -Alint -D_PREFAST_ -D_AST_FE_ -Analyze -zm0x0016B1D0 -il C:\\Users\\77swi\\AppData\\Local\\Temp\\_CL_a9a227cfast -typedil -f sparse_mat.cpp -Ze -D_MSC_EXTENSIONS -Zp16 -pc \\:/ -D_MSC_VER=1928 -D_MSC_FULL_VER=192829334 -D_MSC_BUILD=0 -D_M_AMD64=100 -ZILP448 -D_M_X64=100 -D_WIN64 -D_WIN32 -GR -D_CPPRTTI -I C:\\Users\\77swi\\source\\repos\\Libraries\\mkl\\include -I C:\\Users\\77swi\\source\\repos\\Libraries\\arma\\include -nologo -W 4 -diagnostics:column -D_GUARDOVERFLOW_CRT_ALLOCATORS=1 -GF -Og -Oi -Oy -Ot -ltcg -DCODE_ANALYSIS -D_DEBUG -D_CONSOLE -D_UNICODE -DUNICODE -EHs -D_CPPUNWIND -EHc -MDd -D_DEBUG -D_MT -D_DLL -GS -D_M_FP_PRECISE -permissive- -Zc:wchar_t -Zc:forScope -omp -D_OPENMP=200203 -std:c++latest -Fox64\\Debug\\sparse_mat.obj -Fdx64\\Debug\\vc142.pdb -Gd -analyze:projectdirectory C:\\Users\\77swi\\source\\repos\\Master's Degree\\Kondo-Heisenberg -analyze:rulesetdirectory ;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\Team Tools\\Static Analysis Tools\\\\Rule Sets; -analyze:ruleset C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\Team Tools\\Static Analysis Tools\\Rule Sets\\NativeRecommendedRules.ruleset -analyze:quiet -analyze:plugin C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.28.29333\\bin\\HostX86\\x86\\EspXEngine.dll -FC -errorreport:prompt -I C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.28.29333\\include -I C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.28.29333\\atlmfc\\include -I C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Auxiliary\\VS\\include -I D:\\Windows Kits\\10\\Include\\10.0.18362.0\\ucrt -I D:\\Windows Kits\\10\\Include\\10.0.18362.0\\um -I D:\\Windows Kits\\10\\Include\\10.0.18362.0\\shared -I D:\\Windows Kits\\10\\Include\\10.0.18362.0\\winrt -I D:\\Windows Kits\\10\\Include\\10.0.18362.0\\cppwinrt -I C:\\Program Files (x86)\\Windows Kits\\NETFXSDK\\4.8\\Include\\um -MPdiagMutex 00000000000001A8",
           "executionSuccessful": true
         }
       ],
@@ -2733,6 +3299,14 @@
         {
           "location": {
             "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/Cube_meat.hpp"
+          },
+          "roles": [
+            "resultFile"
+          ]
+        },
+        {
+          "location": {
+            "uri": "file:///C:/Users/77swi/source/repos/Libraries/arma/include/armadillo_bits/eOp_meat.hpp"
           },
           "roles": [
             "resultFile"
@@ -4101,14 +4675,6 @@
         },
         {
           "location": {
-            "uri": "file:///c:/users/77swi/source/repos/libraries/arma/include/armadillo_bits/op_powmat_bones.hpp"
-          },
-          "roles": [
-            "responseFile"
-          ]
-        },
-        {
-          "location": {
             "uri": "file:///c:/users/77swi/source/repos/libraries/arma/include/armadillo_bits/glue_times_bones.hpp"
           },
           "roles": [
@@ -5381,14 +5947,6 @@
         },
         {
           "location": {
-            "uri": "file:///c:/users/77swi/source/repos/libraries/arma/include/armadillo_bits/fn_trimat_ind.hpp"
-          },
-          "roles": [
-            "responseFile"
-          ]
-        },
-        {
-          "location": {
             "uri": "file:///c:/users/77swi/source/repos/libraries/arma/include/armadillo_bits/fn_cumsum.hpp"
           },
           "roles": [
@@ -5749,14 +6307,6 @@
         },
         {
           "location": {
-            "uri": "file:///c:/users/77swi/source/repos/libraries/arma/include/armadillo_bits/fn_powmat.hpp"
-          },
-          "roles": [
-            "responseFile"
-          ]
-        },
-        {
-          "location": {
             "uri": "file:///c:/users/77swi/source/repos/libraries/arma/include/armadillo_bits/fn_speye.hpp"
           },
           "roles": [
@@ -5990,14 +6540,6 @@
         {
           "location": {
             "uri": "file:///c:/users/77swi/source/repos/libraries/arma/include/armadillo_bits/mtspglue_meat.hpp"
-          },
-          "roles": [
-            "responseFile"
-          ]
-        },
-        {
-          "location": {
-            "uri": "file:///c:/users/77swi/source/repos/libraries/arma/include/armadillo_bits/eop_meat.hpp"
           },
           "roles": [
             "responseFile"
@@ -6846,14 +7388,6 @@
         {
           "location": {
             "uri": "file:///c:/users/77swi/source/repos/libraries/arma/include/armadillo_bits/op_sp_minus_meat.hpp"
-          },
-          "roles": [
-            "responseFile"
-          ]
-        },
-        {
-          "location": {
-            "uri": "file:///c:/users/77swi/source/repos/libraries/arma/include/armadillo_bits/op_powmat_meat.hpp"
           },
           "roles": [
             "responseFile"

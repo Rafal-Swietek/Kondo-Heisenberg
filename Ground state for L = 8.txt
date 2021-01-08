@@ -1,7 +1,7 @@
 
 Ground state:	 |00110011>
- with probability	 p=8.71478
+ with probability	 p=8.71538
 
 Ground state:	 |11001100>
- with probability	 p=8.71803
+ with probability	 p=8.71753
 

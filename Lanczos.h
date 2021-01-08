@@ -15,12 +15,12 @@ public:
 	mat Krylov_space;
 
 	Lanczos(int L, int num_of_electrons, double t, double U, double K, double J_H, double Sz, int lanczos_steps);
-	Lanczos();
-	~Lanczos();
+	Lanczos() = default;
+	virtual ~Lanczos() = default;
 
 	virtual void update_parameters(double t, double U, double K, double J_H, double Sz) override;
 	virtual void Hamiltonian() override;
-	virtual void setHamiltonianElem(ull_int& k, double value, std::vector<int>&& temp) override;
+	virtual void setHamiltonianElem(u64& k, double value, std::vector<int>&& temp) override;
 	virtual void Diagonalization() override;
 
 	void Build_Lanczos_Hamil_wKrylov(vec& initial_vec);
@@ -28,10 +28,8 @@ public:
 	void Lanczos_convergence(vec& initial_vec);
 
 	void Lanczos_GroundState();
-	//void Lanczos_Diagonalization();
-	void Hamil_vector_multiply_kernel(ull_int start, ull_int stop, vec& initial_vec, vec& result_vec_threaded);
+	void Hamil_vector_multiply_kernel(u64 start, u64 stop, vec& initial_vec, vec& result_vec_threaded);
 	void Hamil_vector_multiply(vec& initial_vec, vec& result_vec);
-	vec LDOS(int site, double T, std::vector<double>&& omega_vec);
 
 	vec thermal_average_lanczos(vec&& quantity, int& random_steps);
 	vec Heat_Capacity_Lanczos(int random_steps);

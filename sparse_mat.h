@@ -5,19 +5,19 @@
 //sparse matrix multithreaded class, especially for sparse hamiltonian, 2xN matrix where N is number of elements
 template <typename eT> class  MySpMat {
 public:
-	ull_int num_of_elem;
-	ull_int dim;
+	u64 num_of_elem;
+	u64 dim;
 	std::unique_ptr<std::vector<eT>> elements; //offdiagonal elements start after diagonal (up to dim(H) is diag)
-	std::unique_ptr<std::vector<std::complex<ull_int>>> col_shift;
+	std::unique_ptr<std::vector<std::complex<u64>>> col_shift;
 public:
-	MySpMat(ull_int& n);
+	MySpMat(u64& n);
 	//MySpMat(const std::unique_ptr<MySpMat>& SpMat); //copy constructor
 	~MySpMat();
 
-	void resize(ull_int& new_size);
+	void resize(u64& new_size);
 	//void herm_trans(); // hermitian conjungate
-	//T& operator()(const ull_int& row, const ull_int& col);
-	eT& operator()(const ull_int& row, const ull_int& col);
+	//T& operator()(const u64& row, const u64& col);
+	eT& operator()(const u64& row, const u64& col);
 	arma::Col<eT> operator*(arma::Col<eT>& vec);
 
 };
@@ -29,10 +29,10 @@ std::ostream& operator<<(std::ostream& os, MySpMat<eT>& mat);
 template <typename eT> class SpMat_elem {
 private:
 	MySpMat<eT>& parent;
-	const ull_int row;
-	const ull_int col;
+	const u64 row;
+	const u64 col;
 	
-	inline SpMat_elem(MySpMat<eT>& parent, const ull_int& row, const ull_int& col);
+	inline SpMat_elem(MySpMat<eT>& parent, const u64& row, const u64& col);
 
 	friend MySpMat<eT>;
 public:

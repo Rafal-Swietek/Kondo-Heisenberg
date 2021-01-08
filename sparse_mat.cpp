@@ -3,11 +3,11 @@
 #include "sparse_mat.h"
 
 template<typename eT>
-MySpMat<eT>::MySpMat(ull_int& n) {
+MySpMat<eT>::MySpMat(u64& n) {
     num_of_elem = n;
     dim = n;
     elements = std::unique_ptr<std::vector<eT>>(new std::vector<eT>(n));
-    col_shift = std::unique_ptr<std::vector<std::complex<ull_int>>>(new std::vector<std::complex<ull_int>>());
+    col_shift = std::unique_ptr<std::vector<std::complex<u64>>>(new std::vector<std::complex<u64>>());
 }
 
 template<typename eT>
@@ -15,7 +15,7 @@ MySpMat<eT>::~MySpMat() {}
 
 
 template<typename eT>
-void MySpMat<eT>::resize(ull_int& new_size) {
+void MySpMat<eT>::resize(u64& new_size) {
     elements->resize(new_size);
     num_of_elem = new_size;
 }
@@ -43,7 +43,7 @@ arma::Col<eT> MySpMat<eT>::operator*(arma::Col<eT>& vec) {
 }
 
 template<typename eT>
-eT& MySpMat<eT>::operator()(const ull_int& row, const ull_int& col) {
+eT& MySpMat<eT>::operator()(const u64& row, const u64& col) {
     if (row != col) {
         //auto idx = std::find(col_shift->begin(), col_shift->end(), cpx(row, col));
             elements->emplace_back(0);
