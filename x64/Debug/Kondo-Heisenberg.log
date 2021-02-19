@@ -1,42 +1,97 @@
-﻿  main.cpp
+﻿  Lanczos.cpp
+  main.cpp
   WARNING: use of OpenMP disabled; compiler support for OpenMP 3.1+ not detected
   NOTE: your compiler appears to have an ancient version of OpenMP
   NOTE: consider upgrading to a better compiler
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(79,1): warning C4245: 'return': conversion from 'int' to 'u64', signed/unsigned mismatch
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(75,20): warning C4459: declaration of 'T' hides global declaration
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(47,15): message : see declaration of 'T'
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(91,20): warning C4459: declaration of 'T' hides global declaration
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(47,15): message : see declaration of 'T'
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(100,95): warning C4459: declaration of 'T' hides global declaration
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(47,15): message : see declaration of 'T'
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(121,24): warning C4459: declaration of 'T' hides global declaration
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(47,15): message : see declaration of 'T'
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(140,50): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(125,24): warning C4189: 'Sz': local variable is initialized but not referenced
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(148,15): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(151,24): warning C4459: declaration of 'T' hides global declaration
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(47,15): message : see declaration of 'T'
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(191,24): warning C4459: declaration of 'T' hides global declaration
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(47,15): message : see declaration of 'T'
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(221,13): warning C4456: declaration of 'q' hides previous local declaration
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(219,17): message : see declaration of 'q'
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(219,17): warning C4189: 'q': local variable is initialized but not referenced
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(261,20): warning C4459: declaration of 'T' hides global declaration
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(47,15): message : see declaration of 'T'
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(262,9): warning C4456: declaration of 'T' hides previous local declaration
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(261,16): message : see declaration of 'T'
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(261,16): warning C4189: 'T': local variable is initialized but not referenced
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(312,64): warning C4244: '=': conversion from 'u64' to 'int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(328,50): warning C4127: conditional expression is constant
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(328,50): message : consider using 'if constexpr' statement instead
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(378,49): warning C4244: 'argument': conversion from 'u64' to 'unsigned int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(5,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(14,9): warning C4189: 'M': local variable is initialized but not referenced
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(15,9): warning C4189: 'R': local variable is initialized but not referenced
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(12,12): warning C4189: 'J_H': local variable is initialized but not referenced
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(11,12): warning C4189: 'K': local variable is initialized but not referenced
+  WARNING: use of OpenMP disabled; compiler support for OpenMP 3.1+ not detected
+  NOTE: your compiler appears to have an ancient version of OpenMP
+  NOTE: consider upgrading to a better compiler
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(98,1): warning C4245: 'return': conversion from 'int' to 'u64', signed/unsigned mismatch (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(98,1): warning C4245: 'return': conversion from 'int' to 'u64', signed/unsigned mismatch (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(12,16): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(19,66): warning C4244: '=': conversion from 'u64' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(130,86): warning C4458: declaration of 't' hides class member
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.h(16,9): message : see declaration of 'HamiltonianKH::t' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(130,86): warning C4458: declaration of 'U' hides class member
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.h(17,9): message : see declaration of 'HamiltonianKH::U' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(130,86): warning C4458: declaration of 'K' hides class member
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.h(18,9): message : see declaration of 'HamiltonianKH::K' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(130,86): warning C4458: declaration of 'J_H' hides class member
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.h(19,9): message : see declaration of 'HamiltonianKH::J_H' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(130,86): warning C4458: declaration of 'Sz' hides class member
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.h(20,6): message : see declaration of 'HamiltonianKH::Sz' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(132,20): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(76,20): warning C4459: declaration of 'T' hides global declaration (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(274,5): warning C4458: declaration of 't' hides class member
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.h(16,9): message : see declaration of 'HamiltonianKH::t' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(275,19): warning C4244: 'initializing': conversion from 'double' to 'u64', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(276,18): warning C4244: 'initializing': conversion from 'double' to 'u64', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(279,28): warning C4458: declaration of 't' hides class member
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.h(16,9): message : see declaration of 'HamiltonianKH::t' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(93,20): warning C4459: declaration of 'T' hides global declaration (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(103,108): warning C4459: declaration of 'T' hides global declaration (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(126,20): warning C4459: declaration of 'T' hides global declaration (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(141,24): warning C4459: declaration of 'T' hides global declaration (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(161,50): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(146,24): warning C4189: 'Sz': local variable is initialized but not referenced (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(169,15): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(172,24): warning C4459: declaration of 'T' hides global declaration (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(213,24): warning C4459: declaration of 'T' hides global declaration (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(352,23): warning C4456: declaration of 'beta' hides previous local declaration
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(337,12): message : see declaration of 'beta'
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(243,13): warning C4456: declaration of 'q' hides previous local declaration (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(241,17): message : see declaration of 'q' (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(241,17): warning C4189: 'q': local variable is initialized but not referenced (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(252,101): warning C4100: 'R': unreferenced formal parameter (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(311,20): warning C4459: declaration of 'T' hides global declaration (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(312,9): warning C4456: declaration of 'T' hides previous local declaration (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(311,16): message : see declaration of 'T' (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(311,16): warning C4189: 'T': local variable is initialized but not referenced (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(514,24): warning C4459: declaration of 'T' hides global declaration
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(530,20): warning C4459: declaration of 'T' hides global declaration
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(562,24): warning C4459: declaration of 'T' hides global declaration
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(575,20): warning C4459: declaration of 'T' hides global declaration
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(606,24): warning C4459: declaration of 'T' hides global declaration
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(620,16): warning C4459: declaration of 'T' hides global declaration
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(621,13): warning C4458: declaration of 't' hides class member
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.h(16,9): message : see declaration of 'HamiltonianKH::t' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Lanczos.cpp(637,53): warning C4459: declaration of 'T' hides global declaration
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(57,15): message : see declaration of 'T' (compiling source file Lanczos.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(513,25): warning C4459: declaration of 'E0' hides global declaration (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(62,15): message : see declaration of 'E0' (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(513,20): warning C4189: 'E0': local variable is initialized but not referenced (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(546,39): warning C4244: 'argument': conversion from 'double' to 'const _Ty', possible loss of data
+          with
+          [
+              _Ty=float
+          ] (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(547,30): warning C4244: 'argument': conversion from 'double' to 'const _Ty', possible loss of data
+          with
+          [
+              _Ty=float
+          ] (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(531,16): warning C4189: 'Jh': local variable is initialized but not referenced (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(586,23): warning C4244: 'initializing': conversion from 'unsigned __int64' to 'int', possible loss of data (compiling source file main.cpp)
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(16,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   Hamiltonian.obj : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
   Generating code
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(194): warning C4701: potentially uninitialized local variable 'statement' used
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(571): warning C4701: potentially uninitialized local variable 'tempLoc' used
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(351): warning C4701: potentially uninitialized local variable 'Sz_tot' used
   Finished generating code
   Kondo-Heisenberg.vcxproj -> C:\Users\77swi\source\repos\Master's Degree\x64\Debug\Kondo-Heisenberg.exe

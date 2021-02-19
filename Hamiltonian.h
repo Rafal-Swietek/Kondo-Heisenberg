@@ -40,14 +40,12 @@ public:
 	virtual void Diagonalization();
 	//--
 	vec static_structure_factor(double T);
-
 	
 	void printEnergy(double Ef);
 	void show_ground_state();
 
 	double partition_function(double T);
 	mat correlation_matrix();
-	void print_base_vector(std::vector<int>& base_vector, std::ofstream& out_str);
 };
 
 #endif

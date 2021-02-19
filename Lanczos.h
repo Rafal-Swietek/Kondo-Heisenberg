@@ -33,8 +33,10 @@ public:
 
 	vec thermal_average_lanczos(vec&& quantity, int& random_steps);
 	vec Heat_Capacity_Lanczos(int random_steps);
+	vec entropy(int random_steps);
 	vec static_spin_susceptibility(int random_steps);
 	vec Sq_lanczos(int random_steps, double T);
+	vec Sq_T0(int random_steps); //  zero-temperature static structure factor
 };
 
 
