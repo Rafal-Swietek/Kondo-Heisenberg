@@ -2,10 +2,12 @@
 using namespace Routines;
 
 //externs
+double domega = 0.005; // freq step for DOS
+double eta = 0.02; // ~(peak width) in DOS, eta->0
 double T = 0.0; // temperature at which Sq is calculated
 double dT = 0.0001; // temperature step
 double T_end = 10.0; // end temperature, saturated entropy?
-bool PBC = 0; // allow periodic boundary conditions?
+bool PBC = 1; // allow periodic boundary conditions?
 int model = 0;
 // model = 0 - gKH
 // model = 1 - Heisenberg
@@ -16,9 +18,9 @@ int main() {
     srand(time(NULL));
 
     clock_t tStart = clock();
-    int L = 8; //chain length
+    int L = 4; //chain length
     double t = 0.5; //electron hopping = t_00
-    double U = 1.4*W; // electron repulsion
+    double U = W; // electron repulsion
     double K = 4 * 0.15 * 0.15 / U; // spin exchange integral*.
     double J_H = U / 4.; // electron-spin interaction
     int N_e = 3 * L / 2; // numer of electrons - parity same as number of sites
@@ -34,7 +36,12 @@ int main() {
     //Main_Cv(L, N_e, t, K, U, J_H);
     //Main_X(L, N_e, t, K, W);
 
-    Main_Lanczos(L, N_e, t, K, U, J_H, M, R);
+    //Main_Lanczos(L, N_e, t, K, U, J_H, M, R);
+    model = 2;
+    for (U = 0; U <= 3*W; U += 0.1*W) {
+        //Main_DOS(L, N_e, t, (U == 0) ? 0 : 4 * 0.15 * 0.15 / U, U, U / 4.);
+        Main_DOS(L, L, t, 0, U, 0);
+    }
 
     //Energu_U_sweep(L, N_e, t);
     //Main_Jh(L, N_e, t, K, U, R);

@@ -8,7 +8,7 @@ private:
 	mat H;
 public:
 	// non-use in lanczos class
-	vec Total_Density_of_states(std::vector<double>&& omega_vec);
+	vec Total_Density_of_states(std::vector<double>& omega_vec);
 
 	//-------
 

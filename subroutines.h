@@ -48,17 +48,15 @@ namespace Routines{
         Object.reset(new HamiltonianKH(L, N_e - 1, t, U, K, J_H, ((N_e - 1) % 2 == 0) ? 0 : 1));
         Object->Hamiltonian();
         Object->Diagonalization();
-        Ef = (Ef + Object->eigenvalues(0)) / 2.0;
-
-        return Ef;
+        return (Ef + Object->eigenvalues(0)) / 2.0;
     }
 
-    inline void printDOS(vec&& resultDOS, double U, double N_e, int L, std::vector<double>&& omega_vec, double maximum, double E_fermi) {
+    inline void printDOS(vec&& resultDOS, double U, double N_e, int L, std::vector<double>& omega_vec, double maximum, double E_fermi) {
         ofstream DOSfile;
         stringstream Ustr, Nstr;
         Ustr << setprecision(1) << fixed << U;
         Nstr << setprecision(2) << fixed << (double)N_e / (double)L;
-        DOSfile.open("DOS_L=" + std::to_string(L) + "_U=" + Ustr.str() + ".txt");
+        DOSfile.open("DOS_L=" + std::to_string(L) + "_U=" + Ustr.str() + "_n=" + Nstr.str() + "_PBC=" + std::to_string(PBC) + ".txt");
         //DOSfile.open("DOS_dw=" + std::to_string(domega) + "_eta=" + std::to_string(eta) + ".txt");
         DOSfile << std::setprecision(16) << std::fixed;
         for (int k = 0; k < omega_vec.size(); k++)
@@ -237,7 +235,7 @@ namespace Routines{
             Hamil->Hamiltonian();
             Hamil->Diagonalization();
             vector<double> omega_vec = prepare_parameterVec(Hamil->eigenvalues(0) - 100 * domega, Hamil->eigenvalues(Hamil->eigenvalues.size() - 1) + 100 * domega, domega);
-            vec DOS = Hamil->Total_Density_of_states(std::move(omega_vec));
+            vec DOS = Hamil->Total_Density_of_states(omega_vec);
             int q = 0;
             double Ef = FermiLevel(L, N_e, t, K, U, J_H);
             for (int q = 0; q < omega_vec.size(); q++) {
@@ -325,12 +323,12 @@ namespace Routines{
         //HamiltonianKH Hamil(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1);
         std::unique_ptr<HamiltonianKH> Hamil(new HamiltonianKH(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1));
         Hamil->Diagonalization();
-        vector<double> omega_vec = prepare_parameterVec(Hamil->eigenvalues(0) - 100 * domega, Hamil->eigenvalues(Hamil->eigenvalues.size() - 1) + 100 * domega, domega);
-        vec DOS = Hamil->Total_Density_of_states(std::move(omega_vec)); //rvalue of DOS
+        vector<double> omega_vec = prepare_parameterVec(Hamil->eigenvalues(0) - 10000 * domega, Hamil->eigenvalues(Hamil->eigenvalues.size() - 1) + 10000 * domega, domega);
+        vec DOS = Hamil->Total_Density_of_states(omega_vec); //rvalue of DOS
         double maximum = max(DOS);
         double Ef = FermiLevel(L, N_e, t, K, U, J_H);
         //Hamil->printEnergy(Ef);
-        printDOS(std::move(DOS), U, N_e, L, std::move(omega_vec), maximum, Ef);
+        printDOS(std::move(DOS), U, N_e, L, omega_vec, maximum, Ef);
     }
     inline void Main_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int M, int random_steps) {
         int Sz_tot;

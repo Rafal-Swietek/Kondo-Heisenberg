@@ -3,8 +3,6 @@
 
 double pi = 3.14159265358979323846;
 double E0 = 0;
-double domega = 0.005; // freq step for DOS
-double eta = 0.02; // ~(peak width) in DOS, eta->0
 
 std::mutex my_mut;
 
@@ -183,12 +181,15 @@ void HamiltonianKH::mapping_kernel(u64 start, u64 stop, my_uniq_ptr& map_threade
         int bSz = 0, fSz = 0, N_e = 0;
         std::tie(bSz, fSz, N_e) = calculateSpinElements(this->L, j, temp);
         switch (model) {
-        case 0: statement = (bSz + fSz == this->Sz) && (N_e == this->num_of_electrons); //gKH 
-                //statement = (N_e == this->num_of_electrons); //gKH - no spin-symmetry block
+        case 0: 
+            if(Sz_symmetry) statement = (bSz + fSz == this->Sz) && (N_e == this->num_of_electrons); //gKH 
+            else statement = (N_e == this->num_of_electrons); //gKH - no spin-symmetry block
             break;
         case 1: statement = (bSz == this->Sz) && (N_e == 0); // Heisenberg
             break;
-        case 2: statement = (bSz == L) && (fSz == this->Sz) && (N_e == this->num_of_electrons); // Hubbard
+        case 2: 
+            if(Sz_symmetry) statement = (bSz == -L) && (fSz == this->Sz) && (N_e == this->num_of_electrons); // Hubbard
+            else statement = (bSz == -L) && (N_e == this->num_of_electrons); // Hubbard no spin symmetry
             break;
         }
         if(statement)
@@ -197,26 +198,29 @@ void HamiltonianKH::mapping_kernel(u64 start, u64 stop, my_uniq_ptr& map_threade
 }
 void HamiltonianKH::generate_mapping() {
     u64 start = 0, stop = (u64)std::pow(8, L);
-    //mapping_kernel(start, stop, mapping, L, Sz, num_of_electrons);
-    //Threaded
-    //std::vector<my_uniq_ptr> map_threaded(num_of_threads);
-    std::vector<my_uniq_ptr> map_threaded(num_of_threads);
-    std::vector<std::thread> threads;
-    threads.reserve(num_of_threads);
-    for (int t = 0; t < num_of_threads; t++) {
-        start = std::pow(8, L) / (double)num_of_threads * t;
-        stop = ((t + 1) == num_of_threads ? (u64)std::pow(8, L) : u64(std::pow(8, L) / (double)num_of_threads * (double)(t + 1) ));
-        //map_threaded[t] = my_uniq_ptr(new std::vector<u64>());
-        map_threaded[t] = std::make_unique<std::vector<u64>>();
-        //map_threaded[t]->reserve(std::pow(2, L)); ??
-        threads.emplace_back(&HamiltonianKH::mapping_kernel, this, start, stop, ref(map_threaded[t]), t);
-    }
-    for (auto& t : threads) t.join();
+    if(num_of_threads == 1)
+        mapping_kernel(start, stop, mapping, 0);
+    else {
+        //Threaded
+        //std::vector<my_uniq_ptr> map_threaded(num_of_threads);
+        std::vector<my_uniq_ptr> map_threaded(num_of_threads);
+        std::vector<std::thread> threads;
+        threads.reserve(num_of_threads);
+        for (int t = 0; t < num_of_threads; t++) {
+            start = std::pow(8, L) / (double)num_of_threads * t;
+            stop = ((t + 1) == num_of_threads ? (u64)std::pow(8, L) : u64(std::pow(8, L) / (double)num_of_threads * (double)(t + 1)));
+            //map_threaded[t] = my_uniq_ptr(new std::vector<u64>());
+            map_threaded[t] = std::make_unique<std::vector<u64>>();
+            //map_threaded[t]->reserve(std::pow(2, L)); ??
+            threads.emplace_back(&HamiltonianKH::mapping_kernel, this, start, stop, ref(map_threaded[t]), t);
+        }
+        for (auto& t : threads) t.join();
 
-    for (auto& t : map_threaded)
-        mapping->insert(mapping->end(), std::make_move_iterator(t->begin()), std::make_move_iterator(t->end()));
-    mapping->shrink_to_fit();
-    //sort(mapping->begin(), mapping->end());
+        for (auto& t : map_threaded)
+            mapping->insert(mapping->end(), std::make_move_iterator(t->begin()), std::make_move_iterator(t->end()));
+        mapping->shrink_to_fit();
+        //sort(mapping->begin(), mapping->end());
+    }
     if (show_system_size_parameters) {
         out << "Mapping generated with  " << mapping->size() << "  elements" << endl;
         out << "Last element = " << mapping->at(mapping->size() - 1) << endl;
@@ -239,7 +243,7 @@ void HamiltonianKH::Diagonalization() {
     //out << "dim(H) = " << H.size() * sizeof(H(0, 0)) << "\n";
 }
 
-vec HamiltonianKH::Total_Density_of_states(std::vector<double>&& omega_vec) {
+vec HamiltonianKH::Total_Density_of_states(std::vector<double>& omega_vec) {
     vec resultDOS(omega_vec.size());
 
     double maximum = 0;
