@@ -376,6 +376,67 @@ mat HamiltonianKH::correlation_matrix() {
     }
     return cor_mat;
 }
+double HamiltonianKH::total_spin_squared(vec&& state) {
+    double S2 = 0;
+    u64 idx;
+    vector<int> vect(L), temp(L);
+    for (int p = 0; p < N; p++) { //! 1 -localized, 2 - electrons
+        int_to_binary(mapping->at(p), vect);
+        for (int m = 0; m < L; m++) {
+            double Sz1m = 0, Sz2m = 0;
+
+            if (vect[m] < 4) Sz1m = 0.5;
+            else Sz1m = -0.5;
+            if (vect[m] % 4 == 1) Sz2m = 0.5;
+            else if (vect[m] % 4 == 2) Sz2m = -0.5;
+
+            S2 += state(p) * (Sz1m * Sz1m + Sz1m * Sz2m + Sz2m * Sz1m + Sz2m * Sz2m) * state(p); //  <Sz(i) Sz(i)>
+            for (int k = m; k < L; k++) {
+                double Sz1k = 0, Sz2k = 0;
+
+                if (vect[k] < 4) Sz1k = 0.5;
+                else Sz1k = -0.5;
+                if (vect[k] % 4 == 1) Sz2k = 0.5;
+                else if (vect[k] % 4 == 2) Sz2k = -0.5;
+
+                S2 += 2 * state(p) * (Sz1m * Sz1k + Sz1m * Sz2k + Sz2m * Sz1k + Sz2m * Sz2k) * state(p); //  <Sz(i) Sz(j)> dla j>i
+                // <S^+ S^-> + <S^- S^+>
+                temp = vect;
+                if ((vect[m] < 4) && (vect[k] >= 4)) {
+                    temp[m] += 4;
+                    temp[k] -= 4;
+                    idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
+                    S2 += 2*state(idx) * state(p);
+                }
+                // <S^+ s^-> + <S^- s^+>
+                temp = vect;
+                if (vect[m] >= 4 && vect[k] % 4 == 1) {
+                    temp[m] -= 4;
+                    temp[k] += 1;
+                    idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
+                    S2 += 2*state(idx) * state(p);
+                }
+                // <s^+ S^-> + <s^- S^+>
+                temp = vect;
+                if (vect[m] % 4 == 2 && vect[k] < 4) {
+                    temp[m] -= 1;
+                    temp[k] += 4;
+                    idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
+                    S2 += 2*state(idx) * state(p);
+                }
+                // <s^+ s^-> + <s^- s^+>
+                temp = vect;
+                if ((vect[m] % 4 == 1) && (vect[k] % 4 == 2)) {
+                    temp[m] += 1;
+                    temp[k] -= 1;
+                    idx = binary_search(mapping, 0, N - 1, binary_to_int(temp));
+                    S2 += 2*state(idx) * state(p);
+                }
+            }
+        }
+    }
+    return S2;
+}
 
 void HamiltonianKH::printEnergy(double Ef) {
     ofstream Efile;

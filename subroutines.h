@@ -500,25 +500,45 @@ namespace Routines{
         //Main_Lanczos(14, 21, t, K, U, J_H, M, random_steps);
     }
     inline void Energu_U_sweep(int L, int N_e, double t) {
-        double U = 0.1 * W;
+        double U = 0.05 * W;
+        int number = (model == 1) ? 6 : 15;
         ofstream file("Energy U sweep_L=" + std::to_string(L) + ".txt");
-        while (U <= 3 * W) {
+        ofstream file22("S2_L=" + std::to_string(L) + ".txt");
+        file   << setprecision(10) << fixed << "U/W\t\t";
+        file22 << setprecision(10) << fixed << "U/W\t\t";
+        for (int j = 0; j < number; j++) {
+            file <<   "E_" << j << "\t\t";
+            file22 << " |" << j << ">\t\t";
+        }
+        file << endl;
+        file22 << endl;
+        while (U <= 3.05 * W) {
             double K = 4 * 0.15 * 0.15 / U;
             double J_H = 0.25 * U;
-
-            std::unique_ptr<HamiltonianKH> Hamil(new HamiltonianKH(L, N_e, t, U, K, J_H, (L % 4 == 0) ? 0 : 1));
-            Hamil->Diagonalization();
-            double E0 = Hamil->eigenvalues(0);
-            int degeneracy = 0;
-            /*for (int k = 0; k < 10; k++) {
-                out << Hamil->eigenvalues(k) << ' ';
-            }*/
-            while (abs(Hamil->eigenvalues(0) - Hamil->eigenvalues(degeneracy + 1)) < 1e-3) degeneracy++;
-            for (int k = 0; k < 10; k++) {
-                file << U / W << "\t\t" << Hamil->eigenvalues(k) - Hamil->eigenvalues(0) << endl;
+            switch (model) {
+            case 1: //Heisenberg
+                t = 0; J_H = 0; N_e = 0;
+                break;
+            case 2: // Hubbard
+                K = 0; J_H = 0;
+                break;
             }
-            out << "U/W = " << U / W << " has " << degeneracy << " ground state degeneracy" << endl;
-            U += 0.1 * W;
+            std::unique_ptr<HamiltonianKH> Hamil(new HamiltonianKH(L, N_e, t, (model == 1) ? 0 : U, K, J_H, (L % ((model == 1) ? 2 : 4) == 0) ? 0 : 1));
+            Hamil->Diagonalization();
+            file << U / W << "\t";
+            file22 << U / W << "\t";
+            for (int k = 0; k < number; k++) {
+                file << Hamil->eigenvalues(k) << "\t";
+                vec state = Hamil->eigenvectors.col(k);
+                double S2 = Hamil->total_spin_squared(std::move(state));
+                //S2 = (sqrt(1 + 4 * S2) - 1) / 2.0;
+                file22 << S2 << "\t";
+                if (k == 0) out << S2 << "\t";
+            }
+            file << endl;
+            file22 << endl;
+            out << "U/W = " << U / W << " done " << endl;
+            U += 0.05 * W;
         }
         file.close();
 

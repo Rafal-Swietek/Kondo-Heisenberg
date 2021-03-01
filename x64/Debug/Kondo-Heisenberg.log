@@ -29,29 +29,25 @@ C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(59,15): m
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(310,9): warning C4456: declaration of 'T' hides previous local declaration
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(309,16): message : see declaration of 'T'
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(309,16): warning C4189: 'T': local variable is initialized but not referenced
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(511,25): warning C4459: declaration of 'E0' hides global declaration
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\headers.h(64,15): message : see declaration of 'E0'
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(511,20): warning C4189: 'E0': local variable is initialized but not referenced
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(544,39): warning C4244: 'argument': conversion from 'double' to 'const _Ty', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(564,39): warning C4244: 'argument': conversion from 'double' to 'const _Ty', possible loss of data
           with
           [
               _Ty=float
           ]
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(545,30): warning C4244: 'argument': conversion from 'double' to 'const _Ty', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(565,30): warning C4244: 'argument': conversion from 'double' to 'const _Ty', possible loss of data
           with
           [
               _Ty=float
           ]
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(529,16): warning C4189: 'Jh': local variable is initialized but not referenced
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(584,23): warning C4244: 'initializing': conversion from 'unsigned __int64' to 'int', possible loss of data
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(549,16): warning C4189: 'Jh': local variable is initialized but not referenced
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\subroutines.h(604,23): warning C4244: 'initializing': conversion from 'unsigned __int64' to 'int', possible loss of data
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(18,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(27,9): warning C4189: 'M': local variable is initialized but not referenced
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(26,9): warning C4189: 'N_e': local variable is initialized but not referenced
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\main.cpp(28,9): warning C4189: 'R': local variable is initialized but not referenced
   Hamiltonian.obj : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
   Generating code
 C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(195): warning C4701: potentially uninitialized local variable 'statement' used
-C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(575): warning C4701: potentially uninitialized local variable 'tempLoc' used
+C:\Users\77swi\source\repos\Master's Degree\Kondo-Heisenberg\Hamiltonian.cpp(636): warning C4701: potentially uninitialized local variable 'tempLoc' used
   Finished generating code
   Kondo-Heisenberg.vcxproj -> C:\Users\77swi\source\repos\Master's Degree\x64\Debug\Kondo-Heisenberg.exe

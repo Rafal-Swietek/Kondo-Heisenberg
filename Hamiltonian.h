@@ -46,6 +46,7 @@ public:
 
 	double partition_function(double T);
 	mat correlation_matrix();
+	double total_spin_squared(vec&& state);
 };
 
 #endif
