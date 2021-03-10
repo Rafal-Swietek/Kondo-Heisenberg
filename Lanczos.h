@@ -7,7 +7,6 @@ private:
 	sp_mat H; // here the hamil matrix is sparse
 public:
 	int lanczos_steps; // number of lanczos steps
-	double Z_constT; // partition function for given temperature;
 
 	mat H_L; // lanczos hamiltonian
 	vec randVec_inKrylovSpace; // overlap of random vector and eigenvectors
@@ -27,7 +26,7 @@ public:
 	void Build_Lanczos_Hamil(vec& initial_vec);
 	void Lanczos_convergence(vec& initial_vec);
 
-	void Lanczos_GroundState();
+	void Lanczos_GroundState(vec& initial_vec);
 	void Hamil_vector_multiply_kernel(u64 start, u64 stop, vec& initial_vec, vec& result_vec_threaded);
 	void Hamil_vector_multiply(vec& initial_vec, vec& result_vec);
 
@@ -37,6 +36,8 @@ public:
 	vec static_spin_susceptibility(int random_steps);
 	vec Sq_lanczos(int random_steps, double T);
 	vec Sq_T0(int random_steps); //  zero-temperature static structure factor
+
+	void SSF_T0(); // dynamical spin structure factor
 };
 
 

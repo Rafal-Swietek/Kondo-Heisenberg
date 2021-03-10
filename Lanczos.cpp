@@ -329,8 +329,9 @@ void Lanczos::Build_Lanczos_Hamil_wKrylov(vec& initial_vec) {
         H_L(j, j) = alfa;
         H_L(j, j - 1) = beta;
         H_L(j - 1, j) = beta;
+        //out << j << endl;
     }
-    out << "Watch out! It's Krylov!!" << endl;
+    //out << "Watch out! It's Krylov!!" << endl;
 }
 void Lanczos::Build_Lanczos_Hamil(vec& initial_vec) {
     this->H_L = mat(lanczos_steps, lanczos_steps, fill::zeros);
@@ -376,9 +377,8 @@ void Lanczos::Diagonalization() {
     Build_Lanczos_Hamil(rand);
     eig_sym(eigenvalues, eigenvectors, H_L);
 }
-void Lanczos::Lanczos_GroundState() {
+void Lanczos::Lanczos_GroundState(vec& initial_vec) {
     this->ground_state = vec(N, fill::zeros);
-    vec initial_vec = Create_Random_vec(N);
     Build_Lanczos_Hamil(initial_vec);
     try {
         eig_sym(eigenvalues, eigenvectors, H_L);
@@ -636,8 +636,12 @@ vec Lanczos::thermal_average_lanczos(vec&& quantity, int& random_steps) {
 }
 vec Lanczos::Sq_lanczos(int random_steps, double T) {
     vec Sq(L + 1, fill::zeros);
+    double Z_constT;
+    std::vector<sp_cx_mat> Sq_matrices(L + 1);
+    int s = L + 1;
+#pragma omp parallel for shared(Sq_matrices) num_threads(s)
     for (int l = 0; l <= L; l++) {
-        vector<int> vect(L);
+        std::vector<int> vect(L);
         double q = (double)l * pi / ((double)L + 1.0);
         sp_cx_mat Sq_mat(sp_mat(N, N), sp_mat(N, N));
         for (int p = 0; p < N; p++) {
@@ -652,14 +656,17 @@ vec Lanczos::Sq_lanczos(int random_steps, double T) {
                 Sq_mat(p, p) += std::exp(cpx(1i * q * (m + 0.0))) * Szm;
             }
         }
-        double Sq0 = 0, Z = 0;
-        for (int r = 0; r < random_steps; r++) {
-            vec rand_vec = Create_Random_vec(N);
-            Build_Lanczos_Hamil_wKrylov(rand_vec);
-            mat V;
-            eig_sym(eigenvalues, V, H_L);
-            eigenvectors = Krylov_space * V;
-            cx_vec temp = Sq_mat * Sq_mat.t() * cx_vec(rand_vec, vec(N, fill::zeros));
+        Sq_matrices[l] = Sq_mat;
+    }
+    double Sq0 = 0, Z = 0;
+    for (int r = 0; r < random_steps; r++) {
+        vec rand_vec = Create_Random_vec(N);
+        Build_Lanczos_Hamil_wKrylov(rand_vec);
+        mat V;
+        eig_sym(eigenvalues, V, H_L);
+        eigenvectors = Krylov_space * V;
+        for (int l = 0; l <= L; l++) {
+            cx_vec temp = Sq_matrices[l] * Sq_matrices[l].t() * cx_vec(rand_vec, vec(N, fill::zeros));
             double Sq_tmp = 0;
             for (int m = 0; m < lanczos_steps; m++) {
                 double overlap = dot(rand_vec, eigenvectors.col(m));
@@ -667,19 +674,22 @@ vec Lanczos::Sq_lanczos(int random_steps, double T) {
                 overlap = real(overlap * cdot(cx_vec(eigenvectors.col(m), vec(N, fill::zeros)), temp));
                 Sq_tmp += overlap * std::exp(-(eigenvalues(m) - eigenvalues(0)) / T);
             }
-            Sq0 += (double)N / (double)random_steps * 2.0 * Sq_tmp / pi / (L + 1.0);
+            Sq0 = (double)N / (double)random_steps * 2.0 * Sq_tmp / pi / (L + 1.0);
+            if (Sq0 != Sq0) Sq0 = 0; // catch NaN
+            Sq(l) += Sq0;
+            if (Sq0 > std::pow(10, 3)) out << "whaaaaat?" << endl;
         }
-        if (Sq0 != Sq0) Sq0 = 0; // catch NaN
-        Sq(l) = Sq0;
-        Z_constT = Z;
+        out << "R = " << r << endl;
     }
-    return Sq;
+    Z_constT = Z / ((double)L + 1.0);
+    return Sq / Z_constT;
 }
 
 vec Lanczos::Sq_T0(int random_steps) {
     vec Sq(L + 1, fill::zeros);
     for (int r = 0; r < random_steps; r++) {
-        Lanczos_GroundState(); // get the GS from lanczos procedure
+        vec randvec = Create_Random_vec(N);
+        Lanczos_GroundState(randvec); // get the GS from lanczos procedure
         mat corr_mat = correlation_matrix(); // <GS| Sz(i)Sz(j) |GS> correlations
         int num_thr = (L + 1 > num_of_threads) ? num_of_threads : L + 1;
 #pragma omp parallel for num_threads(num_thr)
@@ -695,4 +705,55 @@ vec Lanczos::Sq_T0(int random_steps) {
         }
     }
     return Sq / (double)random_steps;
+}
+
+void Lanczos::SSF_T0() {
+    stringstream Ustr, Jhstr, nstr;
+    nstr << setprecision(2) << fixed << (double)this->num_of_electrons / (double)this->L;
+    Ustr << setprecision(2) << fixed << this->U / W;
+    Jhstr << setprecision(2) << fixed << this->J_H / ((this->U == 0) ? 1.0 : this->U);
+    std::ofstream SpinFactorFile("SSF_L=" + std::to_string(L) + "_U=" + Ustr.str() + "W__Jh=" + Jhstr.str() + "U_n=" + nstr.str() + "_PBC=" + std::to_string(PBC) + ".txt");
+    SpinFactorFile << std::setprecision(16) << std::fixed;
+    int s = L + 1;
+//#pragma omp parallel for num_threads(s)
+    vec randvec = Create_Random_vec(N);
+    Lanczos_GroundState(randvec);
+    for (int l = 0; l <= L; l++) {
+        double q;
+        if(PBC) q = 2*(double)l * pi / (double)L;
+        else q = (double)l * pi / ((double)L + 1.0);
+        sp_cx_mat Sq(N, N);
+#pragma omp parallel for num_threads(num_of_threads)
+        for (int p = 0; p < N; p++) {
+            std::vector<int> vect(L);
+            int_to_binary(mapping->at(p), vect);
+            Sq(p, p) = 0;
+            for (int m = 0; m < L; m++) {
+                double Szm = 0;
+                if (vect[m] < 4) Szm += 0.5;
+                else Szm -= 0.5;
+                if (vect[m] % 4 == 1) Szm += 0.5;
+                else if (vect[m] % 4 == 2) Szm -= 0.5;
+                Sq(p, p) += std::exp(cpx(1i * q * (m + 0.0))) * Szm;
+                //Sq(p, p) += sin(q * (m + 0.0)) * Szm;
+            }
+        }
+        cx_vec Sq_GS = Sq * this->ground_state;
+        cx_double alfa = cdot(conj(Sq_GS), Sq_GS);
+        std::unique_ptr<Lanczos> Hamil(new Lanczos(L, num_of_electrons, t, U, K, J_H, 0, lanczos_steps));
+        vec initial_vec = real(Sq_GS / alfa);
+        Hamil->Build_Lanczos_Hamil(initial_vec);
+        double SpinFactor = 0;
+        for (double omega = 0; omega < pi; omega += domega) { // Calculate S(q,w)
+            cx_double z = omega + 1i * eta + eigenvalues(0);
+            cx_double Continous_Fraction = z - cpx(Hamil->H(this->lanczos_steps - 1, this->lanczos_steps - 1));
+            for (int m = this->lanczos_steps - 2; m >= 0; m--) {
+                Continous_Fraction = z - cpx(Hamil->H(m, m)) - cpx(Hamil->H(m, m + 1) * H(m, m + 1)) / Continous_Fraction;
+            }
+            SpinFactor = -1 / (L + 1.0) / pi * imag(alfa / Continous_Fraction);
+            SpinFactorFile << q << "\t\t" << omega << "\t\t" << SpinFactor << endl;
+        }
+        out << q << endl;
+    }
+    SpinFactorFile.close();
 }

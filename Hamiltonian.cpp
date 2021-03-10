@@ -4,7 +4,6 @@
 double pi = 3.14159265358979323846;
 double E0 = 0;
 
-std::mutex my_mut;
 
 HamiltonianKH::HamiltonianKH() {
     this->L = 8;
@@ -188,8 +187,8 @@ void HamiltonianKH::mapping_kernel(u64 start, u64 stop, my_uniq_ptr& map_threade
         case 1: statement = (bSz == this->Sz) && (N_e == 0); // Heisenberg
             break;
         case 2: 
-            if(Sz_symmetry) statement = (bSz == -L) && (fSz == this->Sz) && (N_e == this->num_of_electrons); // Hubbard
-            else statement = (bSz == -L) && (N_e == this->num_of_electrons); // Hubbard no spin symmetry
+            if(Sz_symmetry) statement = ((bSz == L) && (fSz == this->Sz) && (N_e == this->num_of_electrons)); // Hubbard
+            else statement = (bSz == L) && (N_e == this->num_of_electrons); // Hubbard no spin symmetry
             break;
         }
         if(statement)
@@ -243,7 +242,7 @@ void HamiltonianKH::Diagonalization() {
     //out << "dim(H) = " << H.size() * sizeof(H(0, 0)) << "\n";
 }
 
-vec HamiltonianKH::Total_Density_of_states(std::vector<double>& omega_vec) {
+vec HamiltonianKH::Total_Density_of_states(std::vector<double>& omega_vec, double Ef) {
     vec resultDOS(omega_vec.size());
 
     double maximum = 0;
@@ -252,11 +251,19 @@ vec HamiltonianKH::Total_Density_of_states(std::vector<double>& omega_vec) {
         double omega = omega_vec[w];
         double DOS = 0;
     //#pragma omp parallel for shared(omega_vec, resultDOS) reduction(+: DOS)
-        for (u64 n = 0; n < N; n++)
+        for (u64 n = 0; n < N; n++) {
             DOS += -1. / (double)L / pi * cpx(1. / (omega + eta * 1i - eigenvalues(n))).imag();
+        }
 
         resultDOS(w) = DOS;
     }
+    /*
+    std::vector<int> base_vector(L);
+    for (u64 n = 0; n < N; n++) {
+        int_to_binary(mapping->at(n), base_vector);
+        print_base_vector(base_vector, out);
+    }
+    out << endl;*/
     return resultDOS;
 }
 
@@ -506,7 +513,7 @@ void Peaks::findPeaks(vector<float> x0, vector<int>& peakInds)
 {
     int minIdx = distance(x0.begin(), min_element(x0.begin(), x0.end()));
     int maxIdx = distance(x0.begin(), max_element(x0.begin(), x0.end()));
-    float sel = (x0[maxIdx] - x0[minIdx]) / 4.0;
+    float sel = (x0[maxIdx] - x0[minIdx]) / 12.0;
 
     int len0 = x0.size();
 

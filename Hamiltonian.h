@@ -8,7 +8,7 @@ private:
 	mat H;
 public:
 	// non-use in lanczos class
-	vec Total_Density_of_states(std::vector<double>& omega_vec);
+	vec Total_Density_of_states(std::vector<double>& omega_vec, double Ef);
 
 	//-------
 
@@ -47,6 +47,7 @@ public:
 	double partition_function(double T);
 	mat correlation_matrix();
 	double total_spin_squared(vec&& state);
+	std::mutex my_mut;
 };
 
 #endif

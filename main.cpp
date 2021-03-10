@@ -2,12 +2,12 @@
 using namespace Routines;
 
 //externs
-double domega = 0.005; // freq step for DOS
+double domega = 0.001; // freq step for DOS
 double eta = 0.02; // ~(peak width) in DOS, eta->0
-double T = 0.0; // temperature at which Sq is calculated
+double T = 0.01; // temperature at which Sq is calculated
 double dT = 0.0001; // temperature step
 double T_end = 10.0; // end temperature, saturated entropy?
-bool PBC = 0; // allow periodic boundary conditions?
+bool PBC = 1; // allow periodic boundary conditions?
 int model = 0;
 // model = 0 - gKH
 // model = 1 - Heisenberg
@@ -18,13 +18,13 @@ int main() {
     srand(time(NULL));
 
     clock_t tStart = clock();
-    int L = 4; //chain length
+    int L = 8; //chain length
     double t = 0.5; //electron hopping = t_00
     double U = W; // electron repulsion
     double K = 4 * 0.15 * 0.15 / U; // spin exchange integral*.
     double J_H = U / 4.; // electron-spin interaction
-    int N_e = 1 * L / 2; // numer of electrons - parity same as number of sites
-    int M = 500; // number of Lanczos steps
+    int N_e = 3 * L / 2; // numer of electrons - parity same as number of sites
+    int M = 300; // number of Lanczos steps
     int R = 50; // number of randomized steps for thermal average
 
 
@@ -37,19 +37,21 @@ int main() {
     //Main_X(L, N_e, t, K, W);
 
     //Main_Lanczos(L, N_e, t, K, U, J_H, M, R);
-    
 
-
-    /*model = 2;
-    for (U = 0; U <= 3*W; U += 0.1*W) {
+    std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, 0, M));
+    Hamil->SSF_T0();
+    //Find_Cv_peaks(L);
+    /*
+    model = 2;
+    for (U = 0; U <= W; U += 0.01*W) {
         //Main_DOS(L, N_e, t, (U == 0) ? 0 : 4 * 0.15 * 0.15 / U, U, U / 4.);
-        Main_DOS(L, L, t, 0, U, 0);
-    }
-*/
-    Energu_U_sweep(L, N_e, t);
+        Main_DOS(L, L, 0.2, 0, U, 0);
+    }*/
+    //Main_U(L, L, 1, R);
+    //Energu_U_sweep(L, N_e, t);
     //Main_Jh(L, N_e, t, K, U, R);
     //Main_X(L, N_e, t, K, U, R);
-    //Main_U(L, N_e, t, R);
+    //Main_U(L, N_e, t, R, M);
     //Sq_max_map(L, M, R, t);
   
     //Lanczos_convergence(L, N_e);

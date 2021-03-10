@@ -41,12 +41,12 @@ namespace Routines{
     inline double FermiLevel(int L, int N_e, double t, double K, double U, double J_H) {
         double Ef;
         std::unique_ptr<HamiltonianKH> Object(new HamiltonianKH(L, N_e + 1, t, U, K, J_H, ((N_e + 1) % 2 == 0) ? 0 : 1));
-        Object->Hamiltonian();
+        //Object->Hamiltonian();
         Object->Diagonalization();
         Ef = Object->eigenvalues(0);
 
         Object.reset(new HamiltonianKH(L, N_e - 1, t, U, K, J_H, ((N_e - 1) % 2 == 0) ? 0 : 1));
-        Object->Hamiltonian();
+        //Object->Hamiltonian();
         Object->Diagonalization();
         return (Ef + Object->eigenvalues(0)) / 2.0;
     }
@@ -54,9 +54,9 @@ namespace Routines{
     inline void printDOS(vec&& resultDOS, double U, double N_e, int L, std::vector<double>& omega_vec, double maximum, double E_fermi) {
         ofstream DOSfile;
         stringstream Ustr, Nstr;
-        Ustr << setprecision(1) << fixed << U;
+        Ustr << setprecision(2) << fixed << U / W;
         Nstr << setprecision(2) << fixed << (double)N_e / (double)L;
-        DOSfile.open("DOS_L=" + std::to_string(L) + "_U=" + Ustr.str() + "_n=" + Nstr.str() + "_PBC=" + std::to_string(PBC) + ".txt");
+        DOSfile.open("DOS_L=" + std::to_string(L) + "_U=" + Ustr.str() + "W_n=" + Nstr.str() + "_PBC=" + std::to_string(PBC) + ".txt");
         //DOSfile.open("DOS_dw=" + std::to_string(domega) + "_eta=" + std::to_string(eta) + ".txt");
         DOSfile << std::setprecision(16) << std::fixed;
         for (int k = 0; k < omega_vec.size(); k++)
@@ -231,13 +231,13 @@ namespace Routines{
             K = 4 * 0.15 * 0.15 / U;
             J_H = 0.25 * U;
 
+            double Ef = FermiLevel(L, N_e, t, K, U, J_H);
             std::unique_ptr<HamiltonianKH> Hamil(new HamiltonianKH(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1));
             Hamil->Hamiltonian();
             Hamil->Diagonalization();
             vector<double> omega_vec = prepare_parameterVec(Hamil->eigenvalues(0) - 100 * domega, Hamil->eigenvalues(Hamil->eigenvalues.size() - 1) + 100 * domega, domega);
-            vec DOS = Hamil->Total_Density_of_states(omega_vec);
+            vec DOS = Hamil->Total_Density_of_states(omega_vec, Ef);
             int q = 0;
-            double Ef = FermiLevel(L, N_e, t, K, U, J_H);
             for (int q = 0; q < omega_vec.size(); q++) {
                 savefile << omega_vec[q] - Ef << "\t\t" << U << "\t\t" << DOS(q) << endl; //save heat capacity to file
             }
@@ -263,7 +263,8 @@ namespace Routines{
             break;
         }
         std::unique_ptr<Lanczos> Hamil(new Lanczos(L, N_e, t, U, K, J_H, Sz, M));
-        Hamil->Lanczos_GroundState();
+        vec randvec = Create_Random_vec(Hamil->N);
+        Hamil->Lanczos_GroundState(randvec);
         Hamil->show_ground_state();
         //out << Hamil->correlation_matrix() << endl;
         //out << Hamil->Sq_T0();
@@ -323,11 +324,12 @@ namespace Routines{
         //HamiltonianKH Hamil(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1);
         std::unique_ptr<HamiltonianKH> Hamil(new HamiltonianKH(L, N_e, t, U, K, J_H, (N_e % 2 == 0) ? 0 : 1));
         Hamil->Diagonalization();
-        vector<double> omega_vec = prepare_parameterVec(Hamil->eigenvalues(0) - 10000 * domega, Hamil->eigenvalues(Hamil->eigenvalues.size() - 1) + 10000 * domega, domega);
-        vec DOS = Hamil->Total_Density_of_states(omega_vec); //rvalue of DOS
-        double maximum = max(DOS);
+        vector<double> omega_vec = prepare_parameterVec(Hamil->eigenvalues(0) - 1000 * domega, Hamil->eigenvalues(Hamil->eigenvalues.size() - 1) + 1000 * domega, domega);
         double Ef = FermiLevel(L, N_e, t, K, U, J_H);
         //Hamil->printEnergy(Ef);
+        out << Ef << '\t' << Hamil->eigenvalues(0) << endl;
+        vec DOS = Hamil->Total_Density_of_states(omega_vec, Ef);
+        double maximum = max(DOS);
         printDOS(std::move(DOS), U, N_e, L, omega_vec, maximum, Ef);
     }
     inline void Main_Lanczos(int L, int N_e, double t, double K, double U, double J_H, int M, int random_steps) {
@@ -361,13 +363,12 @@ namespace Routines{
         vec S(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
         vec S2(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
 
-        double Z_constT = 0;
-        int R = (calculate_stand_dev) ? 20 : 1; // for bigger systems lesser averaging to decrease computation time for now  
+        int R = (calculate_stand_dev) ? 10 : 1; // for bigger systems lesser averaging to decrease computation time for now  
         // ((L >= 8) ? 20 : 50)
         int Sz_max = (model == 0) ? N_e : ((model == 1) ? L : 2*L-N_e);
         out << "dim(H) = " << Hamil->N << endl;
         for (int r = 0; r < R; r++) {
-            Z_constT = 0; Z.zeros();
+            Z.zeros();
             vec Cv_R, Sq_R, chi_R, S_R;
             if (calulate_X0) {
                 chi_R = vec(static_cast<int>((T_end - dT) / dT + 1), fill::zeros);
@@ -384,7 +385,7 @@ namespace Routines{
             if (calculate_Sq) {
                 Sq_R;
                 if (T == 0) Sq_R = Hamil->Sq_T0(random_steps);
-                else Sq_R = Hamil->Sq_lanczos(random_steps, T) / Hamil->Z_constT;
+                else Sq_R = Hamil->Sq_lanczos(random_steps, T);
                 Sq += Sq_R / (double)R;
                 Sq2 += arma::square(Sq_R) / (double)R;
             }
@@ -460,19 +461,19 @@ namespace Routines{
             J_H += (J_H / U < 0.1) ? 0.01 * U : 0.05 * U;
         }
     }
-    inline void Main_U(int L, int N_e, double t, int R) {
-        double U = 0.1 * W;
-        while (U <= 3.05*W) {
+    inline void Main_U(int L, int N_e, double t, int R, int M) {
+        double U = 0.05 * W;
+        while (U <= 3.25*W) {
             double K, J_H;
             K = 4 * 0.15 * 0.15 / U;
             J_H = 0.25 * U;
-            Main_Lanczos(L, N_e, t, K, U, J_H, 150, R);
-
+            Main_Lanczos(L, N_e, t, K, U, J_H, M, R);
+            //Main_DOS(L, L, t, 0, U, 0);
             /*std::unique_ptr<HamiltonianKH> Hamil(new HamiltonianKH(L, N_e, t, U, K, J_H, (L % 4 == 0) ? 0 : 1));
             Hamil->Diagonalization();
             Hamil->show_ground_state();*/
             out << "U/W = " << U / W << " done!" << endl;
-            U += 0.1 * W;
+            U += 0.05 * W;
         }
     }
     inline void Main_X(int L, int N_e, double t, double K, double X, int R) {
@@ -545,15 +546,15 @@ namespace Routines{
     }
 
     inline void Find_Cv_peaks(int L) {
-        double U = 0.1 * W;
+        double U = 0.05 * W;
         double Jh = 0.0 * W;
-        std::ofstream peaks("Cv_peaks3.txt");
+        std::ofstream peaks("Cv_peaks.txt");
         peaks << "U / W\t\t T1\t\tCv(T1)\t\t\tT2\t\tCv(T2)\t\t\t..." << endl;
         //for (U = 0.1 * W; U <= 3 * W; U += 0.1*W) {
-        for (U = 0.15; U <= 0.4; U += 0.05) {
+        for (U = 0.05; U <= 3.2; U += 0.05) {
             stringstream Ustr;
             Ustr << setprecision(2) << fixed << U;
-            std::ifstream file("Cv_L=" + std::to_string(L) + "_U=" + Ustr.str() + ".txt");
+            std::ifstream file("Cv_L=" + std::to_string(L) + "_U=" + Ustr.str() + "W__Jh=0.25U_n=1.50_PBC=0.txt");
             //std::ifstream file("Cv_L=" + std::to_string(L) + "_U=3W_Jh=" + Ustr.str() + ".txt");
             std::vector<float> temperature, Cv;
             //std::ifstream file("Cv_L=10_U=2.10.txt");
@@ -599,7 +600,7 @@ namespace Routines{
                 else {
                     // THIS SHIT IS ONLY FOR  T > 0
                     out << "Doing T > 0" << endl;
-                    Sq = Hamil->Sq_lanczos(random_steps, T) / Hamil->Z_constT;
+                    Sq = Hamil->Sq_lanczos(random_steps, T);
                 }
                 int l = arma::index_max(Sq);
                 double q_max = (double)l * pi / ((double)L + 1.0);
