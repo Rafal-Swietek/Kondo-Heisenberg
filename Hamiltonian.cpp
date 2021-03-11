@@ -184,7 +184,9 @@ void HamiltonianKH::mapping_kernel(u64 start, u64 stop, my_uniq_ptr& map_threade
             if(Sz_symmetry) statement = (bSz + fSz == this->Sz) && (N_e == this->num_of_electrons); //gKH 
             else statement = (N_e == this->num_of_electrons); //gKH - no spin-symmetry block
             break;
-        case 1: statement = (bSz == this->Sz) && (N_e == 0); // Heisenberg
+        case 1:
+            if (Sz_symmetry) statement = (bSz == this->Sz) && (N_e == 0); // Heisenberg
+            else statement = (N_e == 0); //Heisenberg no spin-symmetry block
             break;
         case 2: 
             if(Sz_symmetry) statement = ((bSz == L) && (fSz == this->Sz) && (N_e == this->num_of_electrons)); // Hubbard
@@ -252,7 +254,7 @@ vec HamiltonianKH::Total_Density_of_states(std::vector<double>& omega_vec, doubl
         double DOS = 0;
     //#pragma omp parallel for shared(omega_vec, resultDOS) reduction(+: DOS)
         for (u64 n = 0; n < N; n++) {
-            DOS += -1. / (double)L / pi * cpx(1. / (omega + eta * 1i - eigenvalues(n))).imag();
+            DOS += -1. / (double)L / pi * imag(1. / (omega + eta * 1i - eigenvalues(n)));
         }
 
         resultDOS(w) = DOS;

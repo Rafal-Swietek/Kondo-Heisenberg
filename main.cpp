@@ -7,7 +7,7 @@ double eta = 0.02; // ~(peak width) in DOS, eta->0
 double T = 0.01; // temperature at which Sq is calculated
 double dT = 0.0001; // temperature step
 double T_end = 10.0; // end temperature, saturated entropy?
-bool PBC = 1; // allow periodic boundary conditions?
+bool PBC = 0; // allow periodic boundary conditions?
 int model = 0;
 // model = 0 - gKH
 // model = 1 - Heisenberg
@@ -26,7 +26,6 @@ int main() {
     int N_e = 3 * L / 2; // numer of electrons - parity same as number of sites
     int M = 300; // number of Lanczos steps
     int R = 50; // number of randomized steps for thermal average
-
 
     out << "t=" << t << "\tU/W=" << U / W << "\tK=" << K << "\tJh/U=" << J_H / U << endl;
     // Main Program---------------------------------------

@@ -50,7 +50,7 @@ typedef std::unique_ptr<std::vector<u64>> my_uniq_ptr;
 #define calulate_X0 false 
 #define calculate_Cv false
 #define calculate_entropy false
-#define Sz_symmetry true
+#define Sz_symmetry false
 #define N_symmetry true
 #define use_reorthonormalization (memory_over_performance)? false : true // enables in lanczos procedure full reorthogonalization - needs full krylov_space access
 
@@ -70,7 +70,6 @@ extern int model;
 
 //----------------------------------------------------------------------------------------------
 //--------------------------------------------------TOOLS---------------------------------------
-//--source: https://github.com/PaulRitaldato1/ThreadPool  --------------------------------------
 inline void print_base_vector(std::vector<int>& base_vector, std::ostream& out_str) {
 	out_str << " |";
 	for (auto it = base_vector.begin(); it != base_vector.end(); ++it)
@@ -142,7 +141,7 @@ namespace Peaks {
 
 //----------------------------------------------------------------------------------------------
 //---------------------------------------ThreadPool class---------------------------------------
-//----------------------------------------------------------------------------------------------
+//--source: https://github.com/PaulRitaldato1/ThreadPool  --------------------------------------
 
 /*
 class ThreadPool
