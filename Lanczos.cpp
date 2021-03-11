@@ -715,16 +715,19 @@ void Lanczos::SSF_T0() {
     std::ofstream SpinFactorFile("SSF_L=" + std::to_string(L) + "_U=" + Ustr.str() + "W__Jh=" + Jhstr.str() + "U_n=" + nstr.str() + "_PBC=" + std::to_string(PBC) + ".txt");
     SpinFactorFile << std::setprecision(16) << std::fixed;
     int s = L + 1;
-    double domega = 0.0005;
-//#pragma omp parallel for num_threads(s)
+    double w_max = 0.1;
+    double domega = w_max / 100.0;
+    double eta = 2 * domega;
+    std::vector<double> w = prepare_parameterVec(0, w_max, domega);
     vec randvec = Create_Random_vec(N);
     Lanczos_GroundState(randvec);
+    E0 = eigenvalues(0);
     for (int l = 0; l <= L; l++) {
         double q;
         if(PBC) q = 2*(double)l * pi / (double)L;
         else q = (double)l * pi / ((double)L + 1.0);
         sp_cx_mat Sq(N, N);
-//#pragma omp parallel for num_threads(num_of_threads)
+#pragma omp parallel for num_threads(num_of_threads)
         for (int p = 0; p < N; p++) {
             std::vector<int> vect(L);
             int_to_binary(mapping->at(p), vect);
@@ -736,25 +739,30 @@ void Lanczos::SSF_T0() {
                 //if (vect[m] % 4 == 1) Szm += 0.5;
                 //else if (vect[m] % 4 == 2) Szm -= 0.5;
                 Sq(p, p) += std::exp(cpx(1i * q * (m + 0.0))) * Szm;
-                //Sq(p, p) += sin(q * (m + 0.0)) * Szm;
             }
         }
         cx_vec Sq_GS = Sq * this->ground_state;
-        cx_double alfa = cdot(cx_vec(this->ground_state, vec(N, fill::zeros)), Sq.t()*Sq_GS);
-        std::unique_ptr<Lanczos> Hamil(new Lanczos(L, num_of_electrons, t, U, K, J_H, (this->num_of_electrons % 2 == 0) ? 0 : 1, lanczos_steps));
+        cx_double alfa = cdot(Sq_GS, Sq_GS);
         vec initial_vec = real(Sq_GS / sqrt(alfa));
-        Hamil->Build_Lanczos_Hamil(initial_vec);
-        double SpinFactor = 0;
-        for (double omega = 0; omega < 1; omega += domega) { // Calculate S(q,w)
-            cx_double z = omega + 1i * eta + eigenvalues(0);
-            cx_double Continous_Fraction = z - Hamil->H_L(this->lanczos_steps - 1, this->lanczos_steps - 1);
+        Build_Lanczos_Hamil(initial_vec);
+        std::vector<double> SpinFactor(w.size());
+#pragma omp parallel for num_threads(num_of_threads)
+        for (int k = 0; k < w.size(); k++) { // Calculate S(q,w)
+            cx_double z = w[k] + 1i * eta + E0;
+            cx_double Continous_Fraction = z - H_L(this->lanczos_steps - 1, this->lanczos_steps - 1);
             for (int m = this->lanczos_steps - 2; m >= 0; m--) {
-                Continous_Fraction = z - Hamil->H_L(m, m) - Hamil->H(m, m + 1) * Hamil->H_L(m, m + 1) / Continous_Fraction;
+                Continous_Fraction = z - H_L(m, m) - H_L(m, m + 1) * H_L(m, m + 1) / Continous_Fraction;
             }
-            SpinFactor = -1 / (L + 1.0) / pi * imag(alfa / Continous_Fraction);
-            SpinFactorFile << q << "\t\t" << omega << "\t\t" << SpinFactor << endl;
+            SpinFactor[k] = -1 / (L + 1.0) / pi * imag(alfa / Continous_Fraction);
         }
         out << q << endl;
+        for (int k = 0; k < w.size(); k++)
+            SpinFactorFile << q / pi << "\t\t" << w[k] << "\t\t" << SpinFactor[k] << endl;
     }
     SpinFactorFile.close();
 }
+
+
+
+    //if (PBC) Sq(p, p) += sqrt(2 / (L + 0.0)) * std::exp(cpx(1i * q * (m + 0.0))) * Szm;
+    //else Sq(p, p) += sqrt(2 / (L + 1.0)) * sin(q * (m + 0.0)) * Szm;

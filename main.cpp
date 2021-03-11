@@ -2,8 +2,8 @@
 using namespace Routines;
 
 //externs
-double domega = 0.001; // freq step for DOS
-double eta = 0.02; // ~(peak width) in DOS, eta->0
+double domega = 0.005; // freq step for DOS
+double eta = 0.01; // ~(peak width) in DOS, eta->0
 double T = 0.01; // temperature at which Sq is calculated
 double dT = 0.0001; // temperature step
 double T_end = 10.0; // end temperature, saturated entropy?
@@ -24,7 +24,7 @@ int main() {
     double K = 4 * 0.15 * 0.15 / U; // spin exchange integral*.
     double J_H = U / 4.; // electron-spin interaction
     int N_e = 3 * L / 2; // numer of electrons - parity same as number of sites
-    int M = 300; // number of Lanczos steps
+    int M = 150; // number of Lanczos steps
     int R = 50; // number of randomized steps for thermal average
 
     out << "t=" << t << "\tU/W=" << U / W << "\tK=" << K << "\tJh/U=" << J_H / U << endl;
